@@ -30,6 +30,7 @@ public class FirstPersonCamera : MonoBehaviour {
 
     void Update() {
         controller.Move(GatherMoveInput() * speed);
+
         //gather look input appropriately
         transform.Rotate(Vector3.up, Input.GetAxis("Mouse X"), Space.Self);
         float yInput = -Input.GetAxis("Mouse Y") * lookSensitivity;
@@ -51,10 +52,11 @@ public class FirstPersonCamera : MonoBehaviour {
         }
 
         //zoom in for RMB
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(1)) {
             StartCoroutine("ZoomIn");
         }
-        else if (Input.GetMouseButtonUp(0) && cam.fieldOfView < 60) {
+        else if (Input.GetMouseButtonUp(1) && cam.fieldOfView < 60) {
+            StopCoroutine("ZoomIn");
             StartCoroutine("ZoomOut");
         }
     }
