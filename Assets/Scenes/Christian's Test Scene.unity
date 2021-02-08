@@ -343,9 +343,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b04c8127c2ddb5418e663fb9d31b27c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 5
-  lookSensitivity: 5
+  speed: 1
   interactingWith: {fileID: 0}
+  lookSensitivity: 5
+  upperBoundary: 290
+  lowerBoundary: 60
+  maxZoomVal: 20
 --- !u!143 &468000889
 CharacterController:
   m_ObjectHideFlags: 0
@@ -393,7 +396,7 @@ GameObject:
   - component: {fileID: 1135682844}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Interactable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
