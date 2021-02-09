@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+//Author: Miles Gomez
+//Changes made 2/9/2021
 
 public class Character : MonoBehaviour
 {
@@ -21,6 +23,12 @@ public class Character : MonoBehaviour
 
     // Update is called once per frame
     void Update()
+    {
+        
+
+    }
+
+    private void FixedUpdate()
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
@@ -65,6 +73,7 @@ public class Movement : MonoBehaviour
     {
         //Moves player depending on what 
         rb.velocity = new Vector3(horizontalInput * speed, rb.velocity.y, verticalInput * speed);
+       
     }
 
     public static void Jump(float jumpPower, bool canJump, Rigidbody rb)
