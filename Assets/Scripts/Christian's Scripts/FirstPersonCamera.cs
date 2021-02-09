@@ -9,9 +9,14 @@ using System.Collections;
 [RequireComponent(typeof(CharacterController))]
 public class FirstPersonCamera : MonoBehaviour {
     //public vars
-    public float speed = 5f;
-    public float lookSensitivity = 5f;
+    public float speed = 3f;
     public GameObject interactingWith;
+
+    [Header("Look values for Camera Movement")]
+    public float lookSensitivity = 5f;
+    public float upperBoundary = 290f;  // lower = lower boundary
+    public float lowerBoundary = 60f;   // lower = higher boundary
+    public float maxZoomVal = 20f;      // lower = more zoom-in
     //private vars
     private CharacterController controller;
     private Camera cam;
@@ -30,11 +35,14 @@ public class FirstPersonCamera : MonoBehaviour {
 
     void Update() {
         controller.Move(GatherMoveInput() * speed);
+
         //gather look input appropriately
         transform.Rotate(Vector3.up, Input.GetAxis("Mouse X"), Space.Self);
         float yInput = -Input.GetAxis("Mouse Y") * lookSensitivity;
         //check if this point of looking rotation is valid
-        if (yInput + camTrans.localEulerAngles.x < 30f || yInput + camTrans.localEulerAngles.x > 290f){
+        print(camTrans.localEulerAngles.x);
+        if (yInput + camTrans.localEulerAngles.x < lowerBoundary 
+            || yInput + camTrans.localEulerAngles.x > upperBoundary) {
             camTrans.Rotate(Vector3.right * yInput, Space.Self);
         } //end of gathering inputs
 
@@ -51,10 +59,11 @@ public class FirstPersonCamera : MonoBehaviour {
         }
 
         //zoom in for RMB
-        if (Input.GetMouseButtonDown(0)) {
+        if (Input.GetMouseButtonDown(1)) {
             StartCoroutine("ZoomIn");
         }
-        else if (Input.GetMouseButtonUp(0) && cam.fieldOfView < 60) {
+        else if (Input.GetMouseButtonUp(1) && cam.fieldOfView < 60) {
+            StopCoroutine("ZoomIn");
             StartCoroutine("ZoomOut");
         }
     }
@@ -75,7 +84,7 @@ public class FirstPersonCamera : MonoBehaviour {
     /// </summary>
     private IEnumerator ZoomIn() {
         //FOV starts at 60, ends at 20
-        while (cam.fieldOfView > 20) {
+        while (cam.fieldOfView > maxZoomVal) {
             --cam.fieldOfView;
             yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
