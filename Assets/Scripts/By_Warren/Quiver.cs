@@ -53,7 +53,21 @@ public class Quiver : MonoBehaviour
         {
             if (loadout[(int)Ammo.Standard, CURRENT] > 0)
             {
-                equipped = (int)Ammo.Standard;
+                if (equipped != (int)Ammo.Standard)
+                {
+                    equipped = (int)Ammo.Standard;
+                    Debug.Log("Equipped " +
+                        loadout[(int)Ammo.Standard, CURRENT] +
+                        " Standard arrows");
+                }
+                else
+                {
+                    Debug.Log("Standard type already equipped");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Standard arrows");
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha2)
@@ -61,7 +75,21 @@ public class Quiver : MonoBehaviour
         {
             if (loadout[(int)Ammo.Bramble, CURRENT] > 0)
             {
-                equipped = (int)Ammo.Bramble;
+                if (equipped != (int)Ammo.Bramble)
+                {
+                    equipped = (int)Ammo.Bramble;
+                    Debug.Log("Equipped " +
+                        loadout[(int)Ammo.Bramble, CURRENT] +
+                        " Bramble arrows");
+                }
+                else
+                {
+                    Debug.Log("Bramble type already equipped");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Bramble arrows");
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha3)
@@ -69,7 +97,21 @@ public class Quiver : MonoBehaviour
         {
             if (loadout[(int)Ammo.Warp, CURRENT] > 0)
             {
-                equipped = (int)Ammo.Warp;
+                if (equipped != (int)Ammo.Warp)
+                {
+                    equipped = (int)Ammo.Warp;
+                    Debug.Log("Equipped " +
+                        loadout[(int)Ammo.Warp, CURRENT] +
+                        " Warp arrows");
+                }
+                else
+                {
+                    Debug.Log("Warp type already equipped");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Warp arrows");
             }
         }
         if (Input.GetKeyDown(KeyCode.Alpha4)
@@ -77,7 +119,21 @@ public class Quiver : MonoBehaviour
         {
             if (loadout[(int)Ammo.Airburst, CURRENT] > 0)
             {
-                equipped = (int)Ammo.Airburst;
+                if (equipped != (int)Ammo.Airburst)
+                {
+                    equipped = (int)Ammo.Airburst;
+                    Debug.Log("Equipped " +
+                        loadout[(int)Ammo.Airburst, CURRENT] +
+                        " Airburst arrows");
+                }
+                else
+                {
+                    Debug.Log("Airburst type already equipped");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Airburst arrows");
             }
         }
     }//Update
@@ -99,6 +155,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(Empty). Quiver is empty";
         }
         else if (arrows == "Standard")
         {
@@ -111,8 +168,10 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(Standard). Selected type, " +
+               "default TEST amount of " + TEST);
         }
-        else if(arrows == "Bramble")
+        else if (arrows == "Bramble")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = 0;
@@ -123,8 +182,10 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(Bramble). Selected type, " +
+               "default TEST amount of " + TEST);
         }
-        else if(arrows == "Warp")
+        else if (arrows == "Warp")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = 0;
@@ -135,8 +196,10 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(Warp). Selected type, " +
+               "default TEST amount of " + TEST);
         }
-        else if(arrows == "Airburst")
+        else if (arrows == "Airburst")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = 0;
@@ -147,8 +210,10 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = TEST;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(Airburst). Selected type, " +
+               "default TEST amount of " + TEST);
         }
-        else if(arrows == "All")
+        else if (arrows == "All")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = TEST;
@@ -159,8 +224,10 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = TEST;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(All). All four types, " +
+                "default TEST amount of " + TEST);
         }
-        else if(arrows == "Max")
+        else if (arrows == "Max")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = MAX_CAPACITY;
@@ -171,6 +238,8 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            Debug.Log("Load(Max). All four types, " +
+                "MAX_CAPACITY of " + MAX_CAPACITY);
         }
         else
         {
