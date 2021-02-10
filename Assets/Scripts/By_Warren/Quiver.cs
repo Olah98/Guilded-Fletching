@@ -48,6 +48,16 @@ public class Quiver : MonoBehaviour
     */
     void Update()
     {
+        CheckKeyboardInput();
+    }//Update
+
+    /*
+    * Check Keyboard Input
+    * Called by Update
+    * Listens for keyboard selection, changes equipped selection based on ammo
+    */
+    void CheckKeyboardInput()
+    {
         if (Input.GetKeyDown(KeyCode.Alpha1)
             || Input.GetKeyDown(KeyCode.Keypad1))
         {
@@ -59,6 +69,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped " +
                         loadout[(int)Ammo.Standard, CURRENT] +
                         " Standard arrows");
+                    return; //handles key-mashing
                 }
                 else
                 {
@@ -81,6 +92,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped " +
                         loadout[(int)Ammo.Bramble, CURRENT] +
                         " Bramble arrows");
+                    return; //handles key-mashing
                 }
                 else
                 {
@@ -103,6 +115,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped " +
                         loadout[(int)Ammo.Warp, CURRENT] +
                         " Warp arrows");
+                    return; //handles key-mashing
                 }
                 else
                 {
@@ -125,6 +138,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped " +
                         loadout[(int)Ammo.Airburst, CURRENT] +
                         " Airburst arrows");
+                    return; //handles key-mashing
                 }
                 else
                 {
@@ -136,7 +150,8 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Airburst arrows");
             }
         }
-    }//Update
+    }//CheckKeyboardInput
+
 
     /*
     * Load
