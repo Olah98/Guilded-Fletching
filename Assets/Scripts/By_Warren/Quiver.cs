@@ -33,7 +33,8 @@ public class Quiver : MonoBehaviour
     void Start()
     {
         //Initial loadout
-        Load("Empty");
+        //Load("Empty"); //Main Gameplay
+        Load("Test"); //For testing purposes, sets ammo to the above TEST value
 
         //Base value
         equipped = (int)Ammo.Standard;
