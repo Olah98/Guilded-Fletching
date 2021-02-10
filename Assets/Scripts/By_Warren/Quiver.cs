@@ -34,7 +34,7 @@ public class Quiver : MonoBehaviour
     {
         //Initial loadout
         //Load("Empty"); //Main Gameplay
-        Load("Test"); //For testing purposes, sets ammo to the above TEST value
+        Load("All"); //For testing purposes, sets ammo to the above TEST value
 
         //Base value
         equipped = (int)Ammo.Standard;
@@ -100,7 +100,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
         }
-        if (arrows == "Standard")
+        else if (arrows == "Standard")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = TEST;
@@ -112,7 +112,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
         }
-        if (arrows == "Bramble")
+        else if(arrows == "Bramble")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = 0;
@@ -124,7 +124,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
         }
-        if (arrows == "Warp")
+        else if(arrows == "Warp")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = 0;
@@ -136,7 +136,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
         }
-        if (arrows == "Airburst")
+        else if(arrows == "Airburst")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = 0;
@@ -148,7 +148,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Airburst, CURRENT] = TEST;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
         }
-        if (arrows == "All")
+        else if(arrows == "All")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = TEST;
@@ -160,7 +160,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Airburst, CURRENT] = TEST;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
         }
-        if (arrows == "Max")
+        else if(arrows == "Max")
         {
             //Initial loadout
             loadout[(int)Ammo.Standard, CURRENT] = MAX_CAPACITY;
@@ -171,6 +171,10 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+        }
+        else
+        {
+            Debug.Log("Invalid Load(). Try the ammo type, Empty, All, or Max");
         }
     }//Load
 
