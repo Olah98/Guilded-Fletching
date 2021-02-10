@@ -2,49 +2,104 @@
 using System.Collections.Generic;
 using UnityEngine;
 //Author: Miles Gomez
-//Changes made 2/9/2021
+//Changes made 2/10/2021
 
 public class Character : MonoBehaviour
 {
+    CharacterController cc;
     public float speed;
     public float jumpPower;
     public float maxSpeed;
     public float attackCD;
     public float attackCharge;
-    private Rigidbody rb;
+    public GameObject arrow;
     private bool canJump;
-
+    public Transform bowPosition;
+    private float horizontalInput;
+    private float verticalInput;
+    private float gravity = 9.8f;
+    private Vector3 velocity;
+        
     // Start is called before the first frame update
     void Start()
     {
-        rb = gameObject.GetComponent<Rigidbody>();
-        //Sets rbb
+        cc = gameObject.GetComponent<CharacterController>();
+        
+        //Sets Character controller
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        bool isJumpPressed = Input.GetButton("Jump");
+        GroundCheck();
+        //Checks Ground and if jump input has been pressed
+    
+       
+        if (attackCD > 0)
+        {
+            attackCD -= 1 * Time.deltaTime;
+            //lowers attack cd
+        }
 
+        if (isJumpPressed && canJump)
+        {
+            Jump();
+            //Jumps on input
+        }
+
+        if (Input.GetButton("Fire1"))
+        {
+            if (attackCD <= 0)
+            {
+                if (attackCharge < 100)
+                {
+                    attackCharge += 40 * Time.deltaTime;
+                    //builds attackcharge as long as you hold the mouse button down.
+                }
+            }
+        }
+
+        if (Input.GetButtonUp("Fire1"))
+        {
+            if (attackCD <= 0)
+            {
+                //Checks that attack is off CD, shoots upon letting go of the mouse button
+                Attack.Fire(attackCharge, arrow, transform, bowPosition);
+                attackCD = 1;
+                //Attack cd set  back to 1 second
+                attackCharge = 0;
+                //Bow Chare set back to 0
+            }
+        }
     }
 
     private void FixedUpdate()
     {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        bool isJumpPressed = Input.GetButton("Jump");
+        horizontalInput = Input.GetAxis("Horizontal");
+        verticalInput = Input.GetAxis("Vertical");
+
         //Detects WASD movement or Jump
 
-        GroundCheck();
-        Movement.Move(horizontalInput, verticalInput, speed, rb);
+        Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
+        cc.Move(move * speed * Time.deltaTime);
+        //Moves player when WASD is pressed
 
-        if (isJumpPressed)
-        {
-            //Detects if the player has presssed spacebar
-            Movement.Jump(jumpPower, canJump, rb);
-        }
+        //gravity
+        velocity.y -= gravity * Time.deltaTime;
+        //responsible for Y axis movement
+        cc.Move(velocity * Time.deltaTime);
+     
+    }
+
+
+    public void Jump()
+    {
+        //Adds force to jum pwith
+        velocity.y = Mathf.Sqrt(jumpPower * 2f * gravity);
 
     }
+
 
     public void Interact()
     {
@@ -67,26 +122,15 @@ public class Character : MonoBehaviour
     }    
 }
 
-public class Movement : MonoBehaviour
-{
-    public static void Move(float horizontalInput, float verticalInput, float speed, Rigidbody rb)
-    {
-        //Moves player depending on what 
-        rb.velocity = new Vector3(horizontalInput * speed, rb.velocity.y, verticalInput * speed);
-       
-    }
-
-    public static void Jump(float jumpPower, bool canJump, Rigidbody rb)
-    {
-        //Checks if the player can jump, then if it's true, jumps based on jumpPower while maintaining momentum
-        if (canJump)
-        {
-            rb.velocity = new Vector3(rb.velocity.x, jumpPower, rb.velocity.z);
-        }
-    }
-}
 
 public class Attack : MonoBehaviour
 {
-
+    public static void Fire(float attackCharge, GameObject arrow, Transform character, Transform bowPosition)
+    {
+        GameObject projectile;
+        projectile = Instantiate(arrow, bowPosition.transform.position, character.transform.rotation);
+        //creates force
+        projectile.GetComponent<Rigidbody>().AddForce(character.forward * attackCharge);
+        //grants projectile force based on time spent charging attack
+    }
 }
