@@ -174,7 +174,7 @@ public class Quiver : MonoBehaviour
             loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
             loadout[(int)Ammo.Airburst, CURRENT] = 0;
             loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(Empty). Quiver is empty";
+            Debug.Log("Load(Empty). Quiver is empty");
         }
         else if (arrows == "Standard")
         {
