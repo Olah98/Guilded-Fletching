@@ -10,8 +10,6 @@ using System.Collections;
 public class FirstPersonCamera : MonoBehaviour {
     //public vars
     public float speed = 3f;
-    public GameObject interactingWith;
-
     [Header("Look values for Camera Movement")]
     public float lookSensitivity = 5f;
     public float upperBoundary = 290f;  // lower = lower boundary
@@ -27,7 +25,6 @@ public class FirstPersonCamera : MonoBehaviour {
         controller = GetComponent<CharacterController>();
         cam = GetComponentInChildren<Camera>();
         camTrans = cam.transform;
-        interactingWith = null;
         //set up mouse for FPS view
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -40,7 +37,6 @@ public class FirstPersonCamera : MonoBehaviour {
         transform.Rotate(Vector3.up, Input.GetAxis("Mouse X"), Space.Self);
         float yInput = -Input.GetAxis("Mouse Y") * lookSensitivity;
         //check if this point of looking rotation is valid
-        print(camTrans.localEulerAngles.x);
         if (yInput + camTrans.localEulerAngles.x < lowerBoundary 
             || yInput + camTrans.localEulerAngles.x > upperBoundary) {
             camTrans.Rotate(Vector3.right * yInput, Space.Self);
@@ -48,17 +44,15 @@ public class FirstPersonCamera : MonoBehaviour {
 
         //interact with objects
         if (Input.GetKeyDown(KeyCode.E)) {
-            RaycastHit hit;
-            //TO DO
-                //CHECK IF THIS RAYCAST IS CORRECT
-            if (Physics.Raycast(camTrans.position, camTrans.forward, out hit, 5f)) {
+            if (Physics.Raycast(camTrans.position, camTrans.forward, out RaycastHit hit, 3.5f)) {
                 if (hit.transform.tag == "Interactable") {
-                    //hit.GetComponenet<Interactable>().interactWith;
+                    InteractWithObject(hit.transform.gameObject);
                 }
             }
+
         }
 
-        //zoom in for RMB
+        //zoom in/out using RMB
         if (Input.GetMouseButtonDown(1)) {
             StartCoroutine("ZoomIn");
         }
@@ -101,5 +95,19 @@ public class FirstPersonCamera : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
         yield return null;
+    }
+
+    /// <summary>
+    /// Determine what kind of object the player is interacting with and manipulate it accordingly.
+    /// </summary>
+    /// <param name="interactingWith">GameObject the player's interacting with.</param>
+    private void InteractWithObject(GameObject interactingWith) {
+        //if this is a button/switch
+            //Do stuff
+        //if this is a item pick-up
+            //Do stuff
+        //if this 
+            //Do stuf
+        print("Interacting with: " + interactingWith.name);
     }
 }
