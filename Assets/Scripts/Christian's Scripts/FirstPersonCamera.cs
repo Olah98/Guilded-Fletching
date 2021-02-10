@@ -26,20 +26,23 @@ public class FirstPersonCamera : MonoBehaviour {
         Cursor.lockState = CursorLockMode.Locked;
     }
 
+    //physics/movement
     void FixedUpdate() {
         //gather look input appropriately
-        float xInput = Input.GetAxis("Mouse X") * lookSensitivity;
+        float xInput =  Input.GetAxis("Mouse X") * lookSensitivity;
         float yInput = -Input.GetAxis("Mouse Y") * lookSensitivity;
         Vector3 lookRot = new Vector3 (0f, xInput, 0f);
         //check if this point of looking rotation is valid
         if (yInput + transform.localEulerAngles.x < lowerBoundary 
             || yInput + transform.localEulerAngles.x > upperBoundary) {
-            //up and down looking (must be in local space)
+            //up and down looking (must be in local)
             transform.Rotate(Vector3.right * yInput, Space.Self);
         }
         //left to right looking (must be in world space)
         transform.Rotate(Vector3.up * xInput, Space.World);
-
+    }
+    //inputs
+    void Update() {
         //interact with objects
         if (Input.GetKeyDown(KeyCode.E)) {
             if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
@@ -47,9 +50,7 @@ public class FirstPersonCamera : MonoBehaviour {
                     InteractWithObject(hit.transform.gameObject);
                 }
             }
-
         }
-
         //zoom in/out using RMB
         if (Input.GetMouseButtonDown(1)) {
             StartCoroutine("ZoomIn");
