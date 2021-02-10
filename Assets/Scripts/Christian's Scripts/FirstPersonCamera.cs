@@ -6,52 +6,51 @@ Summary: Basic mouse movements to look around in-game as a player and interact w
 using UnityEngine;
 using System.Collections;
 
-[RequireComponent(typeof(CharacterController))]
 public class FirstPersonCamera : MonoBehaviour {
-    //public vars
-    public float speed = 3f;
     [Header("Look values for Camera Movement")]
+    [Range(1f, 10f)]
     public float lookSensitivity = 5f;
     public float upperBoundary = 290f;  // lower = lower boundary
     public float lowerBoundary = 60f;   // lower = higher boundary
+    [Range(0f, 50f)]
     public float maxZoomVal = 20f;      // lower = more zoom-in
-    //private vars
-    private CharacterController controller;
     private Camera cam;
-    private Transform camTrans;
+    private Transform bodyTrans;
 
     void Start() {
-        //intialize values
-        controller = GetComponent<CharacterController>();
-        cam = GetComponentInChildren<Camera>();
-        camTrans = cam.transform;
+        //initialize values
+        cam = GetComponent<Camera>();
+        bodyTrans = transform.parent;
         //set up mouse for FPS view
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    void Update() {
-        controller.Move(GatherMoveInput() * speed);
-
+    //physics/movement
+    void FixedUpdate() {
         //gather look input appropriately
-        transform.Rotate(Vector3.up, Input.GetAxis("Mouse X"), Space.Self);
+        float xInput =  Input.GetAxis("Mouse X") * lookSensitivity;
         float yInput = -Input.GetAxis("Mouse Y") * lookSensitivity;
+        Vector3 lookRot = new Vector3 (0f, xInput, 0f);
         //check if this point of looking rotation is valid
-        if (yInput + camTrans.localEulerAngles.x < lowerBoundary 
-            || yInput + camTrans.localEulerAngles.x > upperBoundary) {
-            camTrans.Rotate(Vector3.right * yInput, Space.Self);
-        } //end of gathering inputs
-
+        if (yInput + transform.localEulerAngles.x < lowerBoundary 
+            || yInput + transform.localEulerAngles.x > upperBoundary) {
+            //up and down looking (must be in local)
+            transform.Rotate(Vector3.right * yInput, Space.Self);
+        }
+        //left to right looking (must be in world space)
+        transform.Rotate(Vector3.up * xInput, Space.World);
+    }
+    //inputs
+    void Update() {
         //interact with objects
         if (Input.GetKeyDown(KeyCode.E)) {
-            if (Physics.Raycast(camTrans.position, camTrans.forward, out RaycastHit hit, 3.5f)) {
+            if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
                 if (hit.transform.tag == "Interactable") {
                     InteractWithObject(hit.transform.gameObject);
                 }
             }
-
         }
-
         //zoom in/out using RMB
         if (Input.GetMouseButtonDown(1)) {
             StartCoroutine("ZoomIn");
@@ -60,17 +59,6 @@ public class FirstPersonCamera : MonoBehaviour {
             StopCoroutine("ZoomIn");
             StartCoroutine("ZoomOut");
         }
-    }
-
-    /// <summary>
-    /// Grabs inputs from WASD and outputs them as a Vector3.
-    /// (Deprecate when official player movement implemented)
-    /// </summary>
-    /// <returns>Resultant Vector from WASD</returns>
-    private Vector3 GatherMoveInput() {
-        float xAxis = Input.GetAxis("Horizontal");
-        float zAxis = Input.GetAxis("Vertical");
-        return new Vector3(xAxis, 0f, zAxis);
     }
     
     /// <summary>
