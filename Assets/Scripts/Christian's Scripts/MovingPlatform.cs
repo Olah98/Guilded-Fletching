@@ -6,23 +6,24 @@ Summary: Prototype moving platform script that is being used to demonstrate the 
 
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class MovingPlatform : MonoBehaviour {
     public float speed;
     public bool isBrambled;
+
     private LinkedList<Transform> movePoints;
     private LinkedListNode<Transform> curNode;
 
     void Start() {
-        movePoints  = new LinkedList<Transform>(transform.GetComponentsInChildren<Transform>());
+        var waypoints = from point in GetComponentsInChildren<Transform>()
+                        where point.tag == "Waypoint" select point;
+        //only store children with the "Waypoint" tag in a LL
+        movePoints  = new LinkedList<Transform>(waypoints);
         curNode = movePoints.First;
         isBrambled = false;
-        transform.DetachChildren();
-        /*
-        foreach (Transform child in transform) {
-            Destroy(child.gameObject);
-        }
-        */
+        //unparent waypoints
+        foreach (var w in waypoints) w.parent = null;
     }
 
     void FixedUpdate() {
@@ -30,11 +31,17 @@ public class MovingPlatform : MonoBehaviour {
             //move platform
             Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
             transform.Translate(moveTo * speed * Time.deltaTime);
-            //check if this in range of the current move point
-            if (transform.position == curNode.Value.position) {
-                //if the next node is null, return to the first in loop
-                curNode = curNode.Next ?? movePoints.First;
-            }
+        }
+    }
+
+    /// <summary>
+    /// Waypoints are checked through trigger system.
+    /// </summary>
+    /// <param name="other">Colliding object.</param>
+    private void OnTriggerEnter(Collider other) {
+        if (other.tag == "Waypoint") {
+            //if the next node is null, return to the first in loop
+            curNode = curNode.Next ?? movePoints.First;
         }
     }
 }

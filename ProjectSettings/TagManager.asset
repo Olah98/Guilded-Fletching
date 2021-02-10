@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Interactable
   - Stoppable
+  - Waypoint
   layers:
   - Default
   - TransparentFX

@@ -13,9 +13,10 @@ public class BrambleArrow : BaseArrow {
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected override void OnCollisionEnter(Collision other) {
-        if (other.transform.tag == "Stoppable") {
+        if (other.transform.tag == "Stoppable" && !isAbilityUsed) {
             Bind(other.gameObject);
-            print("Hit");
+            isAbilityUsed = true;
+            //print("Hit");
         }
     }
 
@@ -26,14 +27,16 @@ public class BrambleArrow : BaseArrow {
     private void Bind(GameObject binding) {
         base.Hit();
         boundObj = binding;
-        //check for rigidbody (if object run by physics)
-        if (boundObj.TryGetComponent<Rigidbody>(out Rigidbody boundRB)) {
-            boundRB.isKinematic = true;
-        }
-        //else adjust bool
-        else if (boundObj.TryGetComponent<MovingPlatform>(out MovingPlatform mPlat)) {
+        //adjust bool if script is found
+        if (boundObj.TryGetComponent<MovingPlatform>(out MovingPlatform mPlat)) {
+            print("Stopped");
             mPlat.isBrambled = true;
         }
+        //else check for rigidbody (if object run by physics)
+        else if (boundObj.TryGetComponent<Rigidbody>(out Rigidbody boundRB)) {
+            boundRB.isKinematic = true;
+        }
+
         Invoke("UnbindObject", bindTime);
     }
 
@@ -41,12 +44,13 @@ public class BrambleArrow : BaseArrow {
     /// Set bound object free and clear Rigidbody variable.
     /// </summary>
     private void UnbindObject() {
-        if (boundObj.TryGetComponent<Rigidbody>(out Rigidbody boundRB)) {
+        if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)){
+            mPlat.isBrambled = false;
+        }
+        else if (boundObj.TryGetComponent<Rigidbody>(out Rigidbody boundRB)) {
             boundRB.isKinematic = false;
             boundObj = null;
         }
-        else if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)){
-            mPlat.isBrambled = false;
-        }
+
     }
 }
