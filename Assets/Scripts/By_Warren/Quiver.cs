@@ -73,7 +73,8 @@ public class Quiver : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Standard type already equipped");
+                    Debug.Log(loadout[(int)Ammo.Standard, CURRENT] + 
+                        " Standard type arrows already equipped");
                 }
             }
             else
@@ -96,7 +97,8 @@ public class Quiver : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Bramble type already equipped");
+                    Debug.Log(loadout[(int)Ammo.Bramble, CURRENT] +
+                        " Bramble type arrows already equipped");
                 }
             }
             else
@@ -119,7 +121,8 @@ public class Quiver : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Warp type already equipped");
+                    Debug.Log(loadout[(int)Ammo.Warp, CURRENT] +
+                        " Warp type arrows already equipped");
                 }
             }
             else
@@ -142,7 +145,8 @@ public class Quiver : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("Airburst type already equipped");
+                    Debug.Log(loadout[(int)Ammo.Airburst, CURRENT] +
+                        " Airburst type arrows already equipped");
                 }
             }
             else
