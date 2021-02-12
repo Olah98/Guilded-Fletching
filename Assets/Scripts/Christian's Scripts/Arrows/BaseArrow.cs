@@ -15,7 +15,7 @@ public class BaseArrow : MonoBehaviour {
     protected bool isAbilityUsed;
     protected Rigidbody rB;
 
-    void Awake() {
+    protected virtual void Awake() {
         rB = GetComponent<Rigidbody>();
         isAbilityUsed = false;
     }
@@ -25,12 +25,9 @@ public class BaseArrow : MonoBehaviour {
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected virtual void OnCollisionEnter(Collision other) {
-        if (other.transform.tag == "Wall") {
-            //TO DO
-                //Create boolean gate for if the arrow should stick into the wall or bounce off.
-            
-            //call function as invoke to make sure the collider goes through a little.
+        if (!isAbilityUsed) {
             Hit();
+            isAbilityUsed = true;
         }
     }
 
@@ -38,7 +35,6 @@ public class BaseArrow : MonoBehaviour {
     /// Inheritted function that will handle behavior upon hitting an object.
     /// </summary>
     protected virtual void Hit() {
-        //implement arrow sticking function below
-        //rB.isKinematic = true;
+        
     }
 }
