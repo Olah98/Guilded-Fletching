@@ -1,7 +1,7 @@
 ﻿/*
 Author: Warren Rose II
-Data: 02/04/2021
-Summary: Quiver loading and storage.
+Data: 02/12/2021
+Summary: Quiver loading and record-keeping for unlimited ammo.
 */
 using System.Collections;
 using System.Collections.Generic;
@@ -11,7 +11,7 @@ public class Quiver : MonoBehaviour
 {
 
     //First segment is Ammo Type
-    //Second segment is the integer values for current and max capacity
+    //Second segment is the integer values for access status and amount used
     private int[,] loadout = new int[4, 2];
     private int equipped;
 
@@ -22,9 +22,9 @@ public class Quiver : MonoBehaviour
     }
 
     //Bay for Constants
-    //CURRENT and MAX are array indexes
-    //TEST and MAX_CAPACITY are manually set values, please change as needed
-    public const int CURRENT = 0, MAX = 1, TEST = 25, MAX_CAPACITY = 99;
+    //INACTIVE and ACTIVE track the accesibility of the arrow types
+    //ACCESS and RECORD are shortcuts for the loadout array slots
+    public const int INACTIVE = 0, ACTIVE = 1, ACCESS = 0, RECORD = 1;
 
     /*
     * Start
@@ -33,18 +33,20 @@ public class Quiver : MonoBehaviour
     void Start()
     {
         //Initial loadout
-        //Load("Empty"); //Main Gameplay
-        Load("All"); //For testing purposes, sets ammo to the above TEST value
+        //Load("Standard"); //Main Gameplay
+        //Load("FirstCombo"); //Standard and Bramble
+        //Load("SecondCombo"); //All but Airburst
+        Load("All"); //For testing purposes, grants access to everything
 
         //Base value
-        equipped = (int)Ammo.Standard;
+        equipped = (int)Ammo.Standard; //Might add check for non-standard level
     }//Start
 
 
     /*
     * Update 
     * Called once per frame
-    * Listens for keyboard selection, changes equipped selection based on ammo
+    * Listens for keyboard selection, changes equipped selection if accessible
     */
     void Update()
     {
@@ -54,27 +56,27 @@ public class Quiver : MonoBehaviour
     /*
     * Check Keyboard Input
     * Called by Update
-    * Listens for keyboard selection, changes equipped selection based on ammo
+    * Listens for keyboard selection, changes equipped selection if accessible
     */
     void CheckKeyboardInput()
     {
         if (Input.GetKeyDown(KeyCode.Alpha1)
             || Input.GetKeyDown(KeyCode.Keypad1))
         {
-            if (loadout[(int)Ammo.Standard, CURRENT] > 0)
+            if (loadout[(int)Ammo.Standard, ACCESS] == ACTIVE)
             {
                 if (equipped != (int)Ammo.Standard)
                 {
                     equipped = (int)Ammo.Standard;
-                    Debug.Log("Equipped " +
-                        loadout[(int)Ammo.Standard, CURRENT] +
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Standard, RECORD] +
                         " Standard arrows");
                     return; //handles key-mashing
                 }
                 else
                 {
-                    Debug.Log(loadout[(int)Ammo.Standard, CURRENT] + 
-                        " Standard type arrows already equipped");
+                    Debug.Log(loadout[(int)Ammo.Standard, RECORD] +
+                        " Standard type arrows used so far");
                 }
             }
             else
@@ -85,20 +87,20 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2)
             || Input.GetKeyDown(KeyCode.Keypad2))
         {
-            if (loadout[(int)Ammo.Bramble, CURRENT] > 0)
+            if (loadout[(int)Ammo.Bramble, ACCESS] == ACTIVE)
             {
                 if (equipped != (int)Ammo.Bramble)
                 {
                     equipped = (int)Ammo.Bramble;
-                    Debug.Log("Equipped " +
-                        loadout[(int)Ammo.Bramble, CURRENT] +
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Bramble, RECORD] +
                         " Bramble arrows");
                     return; //handles key-mashing
                 }
                 else
                 {
-                    Debug.Log(loadout[(int)Ammo.Bramble, CURRENT] +
-                        " Bramble type arrows already equipped");
+                    Debug.Log(loadout[(int)Ammo.Bramble, RECORD] +
+                        " Bramble type arrows used so far");
                 }
             }
             else
@@ -109,20 +111,20 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)
             || Input.GetKeyDown(KeyCode.Keypad3))
         {
-            if (loadout[(int)Ammo.Warp, CURRENT] > 0)
+            if (loadout[(int)Ammo.Warp, ACCESS] == ACTIVE)
             {
                 if (equipped != (int)Ammo.Warp)
                 {
                     equipped = (int)Ammo.Warp;
-                    Debug.Log("Equipped " +
-                        loadout[(int)Ammo.Warp, CURRENT] +
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Warp, RECORD] +
                         " Warp arrows");
                     return; //handles key-mashing
                 }
                 else
                 {
-                    Debug.Log(loadout[(int)Ammo.Warp, CURRENT] +
-                        " Warp type arrows already equipped");
+                    Debug.Log(loadout[(int)Ammo.Warp, RECORD] +
+                        " Warp type arrows used so far");
                 }
             }
             else
@@ -133,20 +135,20 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha4)
             || Input.GetKeyDown(KeyCode.Keypad4))
         {
-            if (loadout[(int)Ammo.Airburst, CURRENT] > 0)
+            if (loadout[(int)Ammo.Airburst, ACCESS] == ACTIVE)
             {
                 if (equipped != (int)Ammo.Airburst)
                 {
                     equipped = (int)Ammo.Airburst;
-                    Debug.Log("Equipped " +
-                        loadout[(int)Ammo.Airburst, CURRENT] +
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Airburst, RECORD] +
                         " Airburst arrows");
                     return; //handles key-mashing
                 }
                 else
                 {
-                    Debug.Log(loadout[(int)Ammo.Airburst, CURRENT] +
-                        " Airburst type arrows already equipped");
+                    Debug.Log(loadout[(int)Ammo.Airburst, RECORD] +
+                        " Airburst type arrows used so far");
                 }
             }
             else
@@ -159,110 +161,118 @@ public class Quiver : MonoBehaviour
 
     /*
     * Load
-    * Fills out the current loadout based on called parameters
+    * Fills out the ACCESS loadout based on called parameters
+    * Clears all RECORD. May be modified later to keep track?
     */
     void Load(string arrows)
     {
         if (arrows == "Empty")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = 0;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = 0;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = 0;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = 0;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
+            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(Empty). Quiver is empty");
         }
         else if (arrows == "Standard")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = TEST;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = 0;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = 0;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = 0;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(Standard). Selected type, " +
-               "default TEST amount of " + TEST);
+            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(Standard). Selected type only.");
         }
         else if (arrows == "Bramble")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = 0;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = TEST;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = 0;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = 0;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(Bramble). Selected type, " +
-               "default TEST amount of " + TEST);
+            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(Bramble). Selected type only.");
         }
         else if (arrows == "Warp")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = 0;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = 0;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = TEST;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = 0;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(Warp). Selected type, " +
-               "default TEST amount of " + TEST);
+            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(Warp). Selected type only.");
         }
         else if (arrows == "Airburst")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = 0;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = 0;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = 0;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = TEST;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(Airburst). Selected type, " +
-               "default TEST amount of " + TEST);
+            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(Airburst). Selected type only.");
         }
         else if (arrows == "All")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = TEST;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = TEST;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = TEST;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = TEST;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(All). All four types, " +
-                "default TEST amount of " + TEST);
+            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(All). All four types ready to go.");
         }
-        else if (arrows == "Max")
+        else if (arrows == "FirstCombo")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, CURRENT] = MAX_CAPACITY;
-            loadout[(int)Ammo.Standard, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, CURRENT] = MAX_CAPACITY;
-            loadout[(int)Ammo.Bramble, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, CURRENT] = MAX_CAPACITY;
-            loadout[(int)Ammo.Warp, MAX] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, CURRENT] = MAX_CAPACITY;
-            loadout[(int)Ammo.Airburst, MAX] = MAX_CAPACITY;
-            Debug.Log("Load(Max). All four types, " +
-                "MAX_CAPACITY of " + MAX_CAPACITY);
+            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(FirstCombo). Standard and Bramble ready to go");
+        }
+        else if (arrows == "SecondCombo")
+        {
+            //Initial loadout
+            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, RECORD] = 0;
+            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, RECORD] = 0;
+            loadout[(int)Ammo.Warp, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Warp, RECORD] = 0;
+            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, RECORD] = 0;
+            Debug.Log("Load(SecondCombo). Ready to go with all but Airburst");
         }
         else
         {
-            Debug.Log("Invalid Load(). Try the ammo type, Empty, All, or Max");
+            Debug.Log("Invalid Load(). Try the ammo type, Empty, All, FirstCombo or SecondCombo");
         }
     }//Load
 
@@ -277,29 +287,78 @@ public class Quiver : MonoBehaviour
     }//GetArrowType
 
     /*
-    * Get Arrow Number
-    * Returns int value of equipped ammo type
+    * Get Arrow Shot
+    * Returns int value of equipped ammo type used this loadout
     */
-    public int GetArrowNumber()
+    public int GetArrowShot()
     {
-        return loadout[equipped, CURRENT];
-    }//GetArrowNumber
+        return loadout[equipped, RECORD];
+    }//GetArrowShot
 
     /*
-    * Get Arrow Number Max
-    * Returns maximum carryable of equipped ammo type
+    * Get Arrow Type Access
+    * Returns true if arrow type is accessible
     */
-    public int GetArrowNumberMax()
+    public bool GetArrowTypeAccess(string arrows)
     {
-        return loadout[equipped, MAX];
-    }//GetArrowNumberMax
+        if (arrows == "Standard")
+        {
+            return (loadout[(int)Ammo.Standard, ACCESS] == ACTIVE);
+        }
+        else if (arrows == "Bramble")
+        {
+            return (loadout[(int)Ammo.Bramble, ACCESS] == ACTIVE);
+        }
+        if (arrows == "Warp")
+        {
+            return (loadout[(int)Ammo.Warp, ACCESS] == ACTIVE);
+        }
+        if (arrows == "Airburst")
+        {
+            return (loadout[(int)Ammo.Airburst, ACCESS] == ACTIVE);
+        }
+        else
+        {
+            Debug.Log("Invalid arrow type.");
+            return false;
+        }
+    }//GetArrowTypeAccess
+
+    /*
+    * Get Arrow Type Shot
+    * Returns int value of selected ammo type used this loadout
+    */
+    public int GetArrowTypeShot(string arrows)
+    {
+        if (arrows == "Standard")
+        {
+            return loadout[(int)Ammo.Standard, RECORD];
+        }
+        else if (arrows == "Bramble")
+        {
+            return loadout[(int)Ammo.Bramble, RECORD];
+        }
+        if (arrows == "Warp")
+        {
+            return loadout[(int)Ammo.Warp, RECORD];
+        }
+        if (arrows == "Airburst")
+        {
+            return loadout[(int)Ammo.Airburst, RECORD];
+        }
+        else
+        {
+            Debug.Log("Invalid arrow type.");
+            return -1;
+        }
+    }//GetArrowTypeShot
 
     /*
     * Fire
-    * If ammo is available, this returns true and decreases count by 1
+    * If ammo type is available, this returns true and increases count by 1
     * Returns false otherwise
     */
-    bool Fire()
+    public bool Fire()
     {
         bool success = false;
         switch (equipped)
@@ -310,11 +369,11 @@ public class Quiver : MonoBehaviour
             case (int)Ammo.Bramble:
                 success = FireBramble();
                 break;
-            case (int)Ammo.Airburst:
-                success = FireAirburst();
-                break;
             case (int)Ammo.Warp:
                 success = FireWarp();
+                break;
+            case (int)Ammo.Airburst:
+                success = FireAirburst();
                 break;
             default:
                 break;
@@ -324,14 +383,14 @@ public class Quiver : MonoBehaviour
 
     /*
     * Fire Ammo Type
-    * If ammo is available, this returns true and decreases count by 1
+    * If ammo is available, this returns true and increases count by 1
     * Returns false otherwise
     */
     bool FireStandard()
     {
-        if (loadout[(int)Ammo.Standard, CURRENT] > 0)
+        if (loadout[(int)Ammo.Standard, ACCESS] == ACTIVE)
         {
-            loadout[(int)Ammo.Standard, CURRENT]--;
+            loadout[(int)Ammo.Standard, RECORD]++;
             return true;
         }
         return false;
@@ -339,19 +398,9 @@ public class Quiver : MonoBehaviour
 
     bool FireBramble()
     {
-        if (loadout[(int)Ammo.Bramble, CURRENT] > 0)
+        if (loadout[(int)Ammo.Bramble, ACCESS] == ACTIVE)
         {
-            loadout[(int)Ammo.Bramble, CURRENT]--;
-            return true;
-        }
-        return false;
-    }
-
-    bool FireAirburst()
-    {
-        if (loadout[(int)Ammo.Airburst, CURRENT] > 0)
-        {
-            loadout[(int)Ammo.Airburst, CURRENT]--;
+            loadout[(int)Ammo.Bramble, RECORD]++;
             return true;
         }
         return false;
@@ -359,115 +408,21 @@ public class Quiver : MonoBehaviour
 
     bool FireWarp()
     {
-        if (loadout[(int)Ammo.Warp, CURRENT] > 0)
+        if (loadout[(int)Ammo.Warp, ACCESS] == ACTIVE)
         {
-            loadout[(int)Ammo.Warp, CURRENT]--;
+            loadout[(int)Ammo.Warp, RECORD]++;
+            return true;
+        }
+        return false;
+    }
+
+    bool FireAirburst()
+    {
+        if (loadout[(int)Ammo.Airburst, ACCESS] == ACTIVE)
+        {
+            loadout[(int)Ammo.Airburst, RECORD]++;
             return true;
         }
         return false;
     }//End Fire Ammo Type
-
-    /*
-    * Add Ammo Type
-    * Checks incoming number and limits new loadout to max carryable
-    */
-    void AddStandard(int count)
-    {
-        if (loadout[(int)Ammo.Standard, CURRENT] + count < loadout[(int)Ammo.Standard, MAX])
-        {
-            loadout[(int)Ammo.Standard, CURRENT] += count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Standard, CURRENT] = loadout[(int)Ammo.Standard, MAX];
-        }
-    }
-
-    void AddBramble(int count)
-    {
-        if (loadout[(int)Ammo.Bramble, CURRENT] + count < loadout[(int)Ammo.Bramble, MAX])
-        {
-            loadout[(int)Ammo.Bramble, CURRENT] += count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Bramble, CURRENT] = loadout[(int)Ammo.Bramble, MAX];
-        }
-    }
-
-    void AddWarp(int count)
-    {
-        if (loadout[(int)Ammo.Warp, CURRENT] + count < loadout[(int)Ammo.Warp, MAX])
-        {
-            loadout[(int)Ammo.Warp, CURRENT] += count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Warp, CURRENT] = loadout[(int)Ammo.Warp, MAX];
-        }
-    }
-
-    void AddAirburst(int count)
-    {
-        if (loadout[(int)Ammo.Airburst, CURRENT] + count < loadout[(int)Ammo.Airburst, MAX])
-        {
-            loadout[(int)Ammo.Airburst, CURRENT] += count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Airburst, CURRENT] = loadout[(int)Ammo.Airburst, MAX];
-        }
-    }//End Add Ammo Type
-
-    /*
-    * Drop Ammo Type
-    * Checks incoming number and limits new loadout to zero
-    */
-    void DropStandard(int count)
-    {
-        if (loadout[(int)Ammo.Standard, CURRENT] - count > 0)
-        {
-            loadout[(int)Ammo.Standard, CURRENT] -= count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Standard, CURRENT] = 0;
-        }
-    }
-
-    void DropBramble(int count)
-    {
-        if (loadout[(int)Ammo.Bramble, CURRENT] - count > 0)
-        {
-            loadout[(int)Ammo.Bramble, CURRENT] -= count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Bramble, CURRENT] = 0;
-        }
-    }
-
-    void DropWarp(int count)
-    {
-        if (loadout[(int)Ammo.Warp, CURRENT] - count > 0)
-        {
-            loadout[(int)Ammo.Warp, CURRENT] -= count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Warp, CURRENT] = 0;
-        }
-    }
-
-    void DropAirburst(int count)
-    {
-        if (loadout[(int)Ammo.Airburst, CURRENT] - count > 0)
-        {
-            loadout[(int)Ammo.Airburst, CURRENT] -= count;
-        }
-        else
-        {
-            loadout[(int)Ammo.Airburst, CURRENT] = 0;
-        }
-    }//End Drop Ammo Type
 }
