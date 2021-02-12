@@ -11,9 +11,9 @@ public class WarpArrow : BaseArrow {
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected override void OnCollisionEnter(Collision other) {
-        if (other.transform.tag == "Wall") {
+        if (!isAbilityUsed) {
             //reflect velocity to a clamped point to get new position.
-            Vector3 newPlayerPos = other.collider.ClosestPointOnBounds(other.transform.position);
+            Vector3 newPlayerPos = other.collider.ClosestPointOnBounds(transform.position);
             Vector3 tempVec = rB.velocity.normalized;
             //assume arrow arch, so zero the y-axis
             tempVec.y = 0f;
@@ -27,7 +27,9 @@ public class WarpArrow : BaseArrow {
             }
             //teleport player to new position found
             Transform pTrans = GameObject.FindGameObjectWithTag("Player").transform;
-            pTrans.SetPositionAndRotation(newPlayerPos, pTrans.rotation);
+            pTrans.SetPositionAndRotation(transform.position + (5f*Vector3.up), pTrans.rotation);
+            print("Warp");
+            isAbilityUsed = true;
         }
     }
 }
