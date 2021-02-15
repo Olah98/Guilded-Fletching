@@ -11,25 +11,18 @@ public class WarpArrow : BaseArrow {
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected override void OnCollisionEnter(Collision other) {
-        if (!isAbilityUsed) {
-            //reflect velocity to a clamped point to get new position.
-            Vector3 newPlayerPos = other.collider.ClosestPointOnBounds(transform.position);
-            Vector3 tempVec = rB.velocity.normalized;
-            //assume arrow arch, so zero the y-axis
-            tempVec.y = 0f;
-            newPlayerPos -= tempVec;
-            //check if this arrow hit the floor
-                //the floor is hit if the point of collision AND the hit gameobject has a lower
-                //y-position than this gameobject's position
-            if (transform.position.y > other.transform.position.y && transform.position.y > newPlayerPos.y) {
-                //add the height of the player to the object
-                newPlayerPos.y += 1f;
-            }
-            //teleport player to new position found
-            Transform pTrans = GameObject.FindGameObjectWithTag("Player").transform;
-            pTrans.SetPositionAndRotation(transform.position + (5f*Vector3.up), pTrans.rotation);
-            print("Warp");
-            isAbilityUsed = true;
-        }
+        Transform pTrans = GameObject.FindGameObjectWithTag("Player").transform;
+        /*
+            NOTE:
+                CharacterController overrides direct movement of the Player
+                GameObject, in order to prevent this you MUST disable it, 
+                directly teleport, and THEN reenable the CharacterController.
+        */
+        pTrans.GetComponent<CharacterController>().enabled = false;
+        pTrans.position = transform.position;
+        pTrans.GetComponent<CharacterController>().enabled = true;
+        print("Warp");
+        //Warp arrow is fragile and will break on collision
+        Destroy(gameObject);
     }
 }

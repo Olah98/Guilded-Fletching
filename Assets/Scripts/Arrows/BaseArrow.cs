@@ -29,6 +29,9 @@ public class BaseArrow : MonoBehaviour {
             Hit();
             isAbilityUsed = true;
         }
+        if (other.transform.tag == "Enemy") {
+            other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
+        }
     }
 
     /// <summary>
@@ -36,5 +39,15 @@ public class BaseArrow : MonoBehaviour {
     /// </summary>
     protected virtual void Hit() {
         
+    }
+
+    /// <summary>
+    /// Only used for when the arrow hits fire.
+    /// </summary>
+    /// <param name="other">Checking for "Fire" tag.</param>
+    private void OnTriggerEnter(Collider other) {
+        if (other.tag == "Fire") {
+            isLit = true;
+        }
     }
 }
