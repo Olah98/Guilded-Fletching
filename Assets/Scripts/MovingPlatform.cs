@@ -14,7 +14,7 @@ public class MovingPlatform : MonoBehaviour {
 
     private LinkedList<Transform> movePoints;
     private LinkedListNode<Transform> curNode;
-
+    
     void Start() {
         var waypoints = from point in GetComponentsInChildren<Transform>()
                         where point.tag == "Waypoint" select point;

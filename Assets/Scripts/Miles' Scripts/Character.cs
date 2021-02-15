@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 //Author: Miles Gomez
 //Changes made 2/10/2021
 
@@ -19,6 +20,9 @@ public class Character : MonoBehaviour
     private float verticalInput;
     private float gravity = 9.8f;
     private Vector3 velocity;
+
+    public Text charge;
+    //Delete this later, used just for OBS
         
     // Start is called before the first frame update
     void Start()
@@ -31,6 +35,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        charge.text = "Charge: " + attackCharge;
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
@@ -130,7 +135,8 @@ public class Attack : MonoBehaviour
         GameObject projectile;
         projectile = Instantiate(arrow, bowPosition.transform.position, character.transform.rotation);
         //creates force
-        projectile.GetComponent<Rigidbody>().AddForce(character.forward * attackCharge);
+        projectile.GetComponent<Rigidbody>().AddForce(character.forward * attackCharge*20f);
+
         //grants projectile force based on time spent charging attack
     }
 }

@@ -16,7 +16,6 @@ public class BrambleArrow : BaseArrow {
         if (other.transform.tag == "Stoppable" && !isAbilityUsed) {
             Bind(other.gameObject);
             isAbilityUsed = true;
-            //print("Hit");
         }
     }
 
@@ -29,7 +28,6 @@ public class BrambleArrow : BaseArrow {
         boundObj = binding;
         //adjust bool if script is found
         if (boundObj.TryGetComponent<MovingPlatform>(out MovingPlatform mPlat)) {
-            print("Stopped");
             mPlat.isBrambled = true;
         }
         //else check for rigidbody (if object run by physics)
