@@ -7,6 +7,7 @@ TagManager:
   - Interactable
   - Stoppable
   - Waypoint
+  - Enemy
   layers:
   - Default
   - TransparentFX
