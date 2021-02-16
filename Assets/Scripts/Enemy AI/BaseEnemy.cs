@@ -33,6 +33,12 @@ public class BaseEnemy : MonoBehaviour {
     protected virtual void Attack() {}
 
     /// <summary>
+    /// Inheritted function that will act differently depending on the enemy.
+    /// </summary>
+    /// <param name="target">Vector3 of position to shoot.</param>
+    protected virtual void ShootAt(Vector3 target) {}
+
+    /// <summary>
     /// Public variable that enables enemies to take damage from other scripts.
     /// </summary>
     /// <param name="damage">Damage value that the enemy will take.</param>

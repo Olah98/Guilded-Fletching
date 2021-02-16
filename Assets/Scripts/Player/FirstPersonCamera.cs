@@ -90,8 +90,10 @@ public class FirstPersonCamera : MonoBehaviour {
     /// </summary>
     /// <param name="interactingWith">GameObject the player's interacting with.</param>
     private void InteractWithObject(GameObject interactingWith) {
-        //if this is a button/switch
-            //Do stuff
+        // handle if Switch
+        if (interactingWith.TryGetComponent<Switch>(out Switch s)) {
+            s.HitSwitch();
+        }
         //if this is a item pick-up
             //Do stuff
         //if this 

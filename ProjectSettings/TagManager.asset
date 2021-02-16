@@ -9,6 +9,7 @@ TagManager:
   - Waypoint
   - Enemy
   - Fire
+  - Arrow
   layers:
   - Default
   - TransparentFX
