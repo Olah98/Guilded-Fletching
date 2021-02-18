@@ -32,7 +32,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Debug.Log(cc.velocity);
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
@@ -112,7 +112,7 @@ public class Character : MonoBehaviour
         //Checks if the player is on the ground and sets canJump to true, if player is not on the ground, then it is false
       
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.1f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, -1.2f, 0f), out hit, 1.2f))
         {
             canJump = true;
         }
