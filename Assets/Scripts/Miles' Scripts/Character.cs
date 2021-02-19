@@ -32,7 +32,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(cc.velocity);
+        //Debug.Log(cc.velocity);
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
