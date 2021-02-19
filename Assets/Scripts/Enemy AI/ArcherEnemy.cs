@@ -52,7 +52,7 @@ public class ArcherEnemy : BaseEnemy {
             if (isAggroed)
                 moveDir = playerTrans.position - transform.position;
             // am I at the startPos?
-            else if ((startPos - transform.position).magnitude > 0.5f)
+            else if ((startPos - transform.position).magnitude > 1f)
                 moveDir = startPos - transform.position;
         }
         // apply movement if necessary
