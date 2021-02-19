@@ -395,7 +395,6 @@ MonoBehaviour:
   attackCharge: 0
   arrow: {fileID: 8075940447384374392, guid: 03cb1dd037c7d904693a085a62762fbf, type: 3}
   bowPosition: {fileID: 7839380557022578615}
-  charge: {fileID: 0}
 --- !u!143 &4134116233065379065
 CharacterController:
   m_ObjectHideFlags: 0

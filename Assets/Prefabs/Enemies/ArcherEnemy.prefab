@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 5400288156816638467}
   - component: {fileID: 8693990007510423751}
   m_Layer: 0
-  m_Name: ProtoArcherEnemy
+  m_Name: ArcherEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -162,5 +162,5 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0

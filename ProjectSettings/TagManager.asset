@@ -10,6 +10,7 @@ TagManager:
   - Enemy
   - Fire
   - Arrow
+  - Climbable
   layers:
   - Default
   - TransparentFX
