@@ -91,7 +91,12 @@ public class Character : MonoBehaviour
             //gravity
             velocity.y -= gravity * Time.deltaTime;      
         }
-     
+
+        if (velocity.y < -9.8f)
+        {
+            velocity.y = -9.8f;
+        }
+
         //responsible for Y axis movement
         cc.Move(velocity * Time.deltaTime);
 
