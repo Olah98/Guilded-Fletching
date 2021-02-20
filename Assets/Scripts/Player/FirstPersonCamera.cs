@@ -39,7 +39,8 @@ public class FirstPersonCamera : MonoBehaviour {
             transform.Rotate(Vector3.right * yInput, Space.Self);
         }
         //left to right looking (must be in world space)
-        transform.Rotate(Vector3.up * xInput, Space.World);
+        //transform.Rotate(Vector3.up * xInput, Space.World);
+        transform.parent.Rotate(Vector3.up * xInput, Space.World);
     }
     //inputs
     void Update() {

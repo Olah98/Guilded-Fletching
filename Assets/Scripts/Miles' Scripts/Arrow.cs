@@ -26,16 +26,17 @@ public class Arrow : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    public void OnCollisionEnter(Collision collision)
     {
-        Stuck(collision.gameObject);
+        Debug.Log("Collision!");
+        Stuck();
     }
     
     
-    public void Stuck(GameObject other)
+    public void Stuck()
     {
         rb.constraints = RigidbodyConstraints.FreezeAll;
-        gameObject.transform.parent = other.transform;
+        //gameObject.transform.parent = other.transform;
 
         //freezes object
     }

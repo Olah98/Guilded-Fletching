@@ -7,8 +7,11 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     CharacterController cc;
+    public GameObject cam;
+    private Transform camEuler;
     public float speed;
     public float jumpPower;
+    public float jumpCD;
     public float maxSpeed;
     public float attackCD;
     public float attackCharge;
@@ -32,7 +35,17 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(cc.velocity);
+        Debug.Log(cam.transform.eulerAngles.x);
+        //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
+        if (canJump)
+        {
+            cc.stepOffset = 0.2f;
+        }
+        if (!canJump)
+        {
+            cc.stepOffset = 0;
+        }
+
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
@@ -44,11 +57,21 @@ public class Character : MonoBehaviour
             //lowers attack cd
         }
 
+        if (jumpCD > 0)
+        {
+            jumpCD -= 1 * Time.deltaTime;
+            //lowers attack cd
+        }
+
         if (isJumpPressed && canJump)
         {
             Jump();
             //Jumps on input
-        }   
+        }
+        else if (isJumpPressed && canJump)
+        {
+            velocity.y = 0;
+        }
     }
 
     private void FixedUpdate()
@@ -62,8 +85,13 @@ public class Character : MonoBehaviour
         cc.Move(move * speed * Time.deltaTime);
         //Moves player when WASD is pressed
 
-        //gravity
-        velocity.y -= gravity * Time.deltaTime;
+
+        if (!canJump)
+        {
+            //gravity
+            velocity.y -= gravity * Time.deltaTime;      
+        }
+     
         //responsible for Y axis movement
         cc.Move(velocity * Time.deltaTime);
 
@@ -83,7 +111,7 @@ public class Character : MonoBehaviour
             if (attackCD <= 0)
             {
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-                Attack.Fire(attackCharge, arrow, transform, bowPosition);
+                Attack.Fire(attackCharge, arrow, cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
@@ -96,8 +124,14 @@ public class Character : MonoBehaviour
 
     public void Jump()
     {
-        //Adds force to jum pwith
-        velocity.y = Mathf.Sqrt(jumpPower * 2f * gravity);
+        if (jumpCD <=0)
+        {
+            canJump = false;
+            //Adds force to jum pwith
+            velocity.y = Mathf.Sqrt(jumpPower * 2f * gravity);
+            jumpCD = 1;
+        }
+        
 
     }
 
@@ -112,7 +146,7 @@ public class Character : MonoBehaviour
         //Checks if the player is on the ground and sets canJump to true, if player is not on the ground, then it is false
       
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, -1.2f, 0f), out hit, 1.2f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, -2.5f, 0f), out hit, 1.4f))
         {
             canJump = true;
         }
@@ -126,12 +160,12 @@ public class Character : MonoBehaviour
 
 public class Attack : MonoBehaviour
 {
-    public static void Fire(float attackCharge, GameObject arrow, Transform character, Transform bowPosition)
+    public static void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
     {
         GameObject projectile;
-        projectile = Instantiate(arrow, bowPosition.transform.position, character.transform.rotation);
+        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
         //creates force
-        projectile.GetComponent<Rigidbody>().AddForce(character.forward * attackCharge * 20f);
+        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         //projectile.transform.rotation = Quaternion.LookRotation(projectile.GetComponent.velocity);
         //grants projectile force based on time spent charging attack
     }
