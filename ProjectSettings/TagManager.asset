@@ -9,6 +9,7 @@ TagManager:
   - Waypoint
   - Enemy
   - Fire
+  - RC
   layers:
   - Default
   - TransparentFX

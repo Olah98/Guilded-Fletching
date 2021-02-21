@@ -22,12 +22,21 @@ public class Character : MonoBehaviour
     private float verticalInput;
     private float gravity = 9.8f;
     private Vector3 velocity;
+    private bool dead;
+
+    private RespawnCoordinator rc;
 
         
     // Start is called before the first frame update
     void Start()
     {
         cc = gameObject.GetComponent<CharacterController>();
+        rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
+        if (rc.lastCheckpoint!=null)
+        {
+            transform.position = rc.lastCheckpoint;
+        }
+     
         
         //Sets Character controller
     }
@@ -140,6 +149,15 @@ public class Character : MonoBehaviour
 
     }
 
+    public void Die()
+    {
+        dead = true;
+    }
+
+    public void Respawn()
+    {
+
+    }
 
     public void Interact()
     {
