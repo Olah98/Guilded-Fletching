@@ -44,7 +44,11 @@ public class Door : MonoBehaviour {
         yield return null;
     }
 
-    //FIX THIS SO THAT RETURNS TRUES
+    /// <summary>
+    /// Substitute this in for "==" between Vector3s, operator is too exact.
+    /// </summary>
+    /// <param name="compareTo">Destination position.</param>
+    /// <returns>True if the distance is almost 0f.</returns>
     private bool IsPositionApproximateTo(Vector3 compareTo) {
         if (Vector3.Distance(transform.position, compareTo) < 0.25f) 
             return true;

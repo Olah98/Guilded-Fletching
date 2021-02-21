@@ -13,8 +13,9 @@ public class Character : MonoBehaviour
     public float attackCD;
     public float attackCharge;
     public GameObject arrow;
-    private bool canJump;
     public Transform bowPosition;
+    public bool isClimbing;
+    private bool canJump;
     private float horizontalInput;
     private float verticalInput;
     private float gravity = 9.8f;
@@ -24,6 +25,7 @@ public class Character : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
         
         //Sets Character controller
@@ -32,6 +34,9 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        // if the player is climbing, movement will be handled by Climber.cs
+        if (!isClimbing) return;
+
         //Debug.Log(cc.velocity);
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
@@ -53,6 +58,10 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+        // if the player is climbing, movement will be handled by Climber.cs
+        if (isClimbing) return;
+
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 

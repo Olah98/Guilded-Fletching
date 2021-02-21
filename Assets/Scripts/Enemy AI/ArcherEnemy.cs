@@ -9,7 +9,6 @@ public class ArcherEnemy : BaseEnemy {
     [Header("Range based variables")]
     [Range(0, 100)]
     public int shotAccuracy;
-    //public float playerTrackingValue;
     public GameObject arrowGO;
     public Transform bowTrans;
     private float retreatTimer;

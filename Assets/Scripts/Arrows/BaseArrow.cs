@@ -27,14 +27,14 @@ public class BaseArrow : MonoBehaviour {
     }
 
     /// <summary>
-    /// Inheritted function that will be implemented differently on each arrow type.
+    /// Inheritted function that will be implemented differently on each arrow 
+    /// type.
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected virtual void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Enemy") {
             other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
         }
-
         if (!isAbilityUsed) {
             Hit();
             isAbilityUsed = true;
