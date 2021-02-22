@@ -16,8 +16,9 @@ public class Character : MonoBehaviour
     public float attackCD;
     public float attackCharge;
     public GameObject arrow;
-    private bool canJump;
     public Transform bowPosition;
+    public bool isClimbing;
+    private bool canJump;
     private float horizontalInput;
     private float verticalInput;
     private float gravity = 9.8f;
@@ -26,24 +27,26 @@ public class Character : MonoBehaviour
 
     private RespawnCoordinator rc;
 
-        
+
     // Start is called before the first frame update
     void Start()
     {
+        isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
         rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
         if (rc.lastCheckpoint!=null)
         {
             transform.position = rc.lastCheckpoint;
         }
-     
-        
+
+
         //Sets Character controller
     }
 
     // Update is called once per frame
     void Update()
     {
+
         Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
@@ -55,11 +58,17 @@ public class Character : MonoBehaviour
             cc.stepOffset = 0;
         }
 
+
+        // if the player is climbing, movement will be handled by Climber.cs
+        if (!isClimbing) return;
+
+        //Debug.Log(cc.velocity);
+
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
-    
-       
+
+
         if (attackCD > 0)
         {
             attackCD -= 1 * Time.deltaTime;
@@ -85,6 +94,10 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+        // if the player is climbing, movement will be handled by Climber.cs
+        if (isClimbing) return;
+
         horizontalInput = Input.GetAxis("Horizontal");
         verticalInput = Input.GetAxis("Vertical");
 
@@ -98,7 +111,7 @@ public class Character : MonoBehaviour
         if (!canJump)
         {
             //gravity
-            velocity.y -= gravity * Time.deltaTime;      
+            velocity.y -= gravity * Time.deltaTime;
         }
 
         if (velocity.y < -9.8f)
@@ -145,7 +158,7 @@ public class Character : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpPower * 2f * gravity);
             jumpCD = 1;
         }
-        
+
 
     }
 
@@ -162,12 +175,12 @@ public class Character : MonoBehaviour
     public void Interact()
     {
         //Used to interact with objects in a level
-    }    
+    }
 
     public void GroundCheck()
     {
         //Checks if the player is on the ground and sets canJump to true, if player is not on the ground, then it is false
-      
+
         RaycastHit hit;
         if (Physics.Raycast(transform.position, new Vector3(0f, -2.5f, 0f), out hit, 1.4f))
         {
@@ -177,7 +190,7 @@ public class Character : MonoBehaviour
         {
             canJump = false;
         }
-    }    
+    }
 }
 
 

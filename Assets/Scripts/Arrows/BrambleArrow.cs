@@ -8,6 +8,7 @@ using UnityEngine;
 public class BrambleArrow : BaseArrow {
     public float bindTime;
     private GameObject boundObj;
+
     /// <summary>
     /// Check for appropriate collision, if so execute teleportation.
     /// </summary>
@@ -26,12 +27,12 @@ public class BrambleArrow : BaseArrow {
     private void Bind(GameObject binding) {
         base.Hit();
         boundObj = binding;
-        //adjust bool if script is found
-        if (boundObj.TryGetComponent<MovingPlatform>(out MovingPlatform mPlat)) {
+        // adjust bool if script is found
+        if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
             mPlat.isBrambled = true;
         }
-        //else check for rigidbody (if object run by physics)
-        else if (boundObj.TryGetComponent<Rigidbody>(out Rigidbody boundRB)) {
+        // else check for rigidbody (if object run by physics)
+        else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = true;
         }
 
@@ -45,7 +46,7 @@ public class BrambleArrow : BaseArrow {
         if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)){
             mPlat.isBrambled = false;
         }
-        else if (boundObj.TryGetComponent<Rigidbody>(out Rigidbody boundRB)) {
+        else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = false;
             boundObj = null;
         }
