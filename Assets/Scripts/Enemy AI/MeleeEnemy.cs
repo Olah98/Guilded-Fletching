@@ -53,7 +53,6 @@ public class MeleeEnemy : BaseEnemy {
     private IEnumerator AttackCoolDown() {
         yield return new WaitForSeconds(1f);
         // step one
-        print("Backing up!");
         speed = -speed;
         attackTimer = 0f;
         yield return new WaitForSeconds(0.5f);
