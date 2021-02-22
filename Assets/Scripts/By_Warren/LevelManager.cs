@@ -72,7 +72,10 @@ public class LevelManager : MonoBehaviour
         //update the label value
         //timerLabel.text = string.Format("{0:00} : {1:00} 
         //: {2:000}", minutes, seconds, fraction);
-        timerLabel.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+        if (timerLabel != null)
+        {
+            timerLabel.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+        }
 
     }//Update
 
