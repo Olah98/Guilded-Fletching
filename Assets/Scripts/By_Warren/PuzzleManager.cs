@@ -17,6 +17,8 @@ public class PuzzleManager : MonoBehaviour
     private float timer;
     private bool runTimer;
     private bool complete;
+    public bool optional;
+    public int maxFalse;
 
     List<PuzzleNode> index = new List<PuzzleNode>();
     PuzzleNode nullNode = new PuzzleNode(null, false);
@@ -183,17 +185,26 @@ public class PuzzleManager : MonoBehaviour
     * the index for any untriggered nodes. If none are found, the puzzle is
     * marked complete and the timer is stopped.
     * 
+    * The value maxFalse may be set so that Level Designers can fine tune
+    * puzzle pieces that are optional to solving the puzzle. This may be
+    * swapped out for a curTrue value in a later iteration.
+    * 
     * This will incidentally flag a puzzle with an empty index as complete.
     */
     public void CheckStatus()
     {
         if (!complete)
         {
+            int curFalse = 0;
             foreach (PuzzleNode entry in index)
             {
                 if (entry.triggered == false)
                 {
-                    return;
+                    curFalse++;
+                    if (curFalse > maxFalse)
+                    {
+                        return;
+                    }
                 }
             }
             runTimer = false;
@@ -209,6 +220,15 @@ public class PuzzleManager : MonoBehaviour
     {
         return complete;
     }//IsComplete
+
+    /*
+    * Is Optional
+    * Outside facing function, reports status of the boolean optional variable.
+    */
+    public bool IsOptional()
+    {
+        return optional;
+    }//IsOptional
 
     /*
      * Report Time

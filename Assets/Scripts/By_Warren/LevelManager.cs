@@ -4,11 +4,13 @@ Data: 02/21/2021
 Summary: Enables the Level Designers to keep track of elapsed time in a level
 * as well as reporting the time at which all puzzles are completed.
 Refs: Unity - https://docs.unity3d.com/ScriptReference/ExecuteAlways.html
+* Timer - https://answers.unity.com/questions/905990/
 ** ** Troubleshooting may be helped by looking at ExcAlways docs in particular
 */
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [ExecuteAlways]
 public class LevelManager : MonoBehaviour
@@ -17,6 +19,7 @@ public class LevelManager : MonoBehaviour
     private float timerPuzzles;
     private bool runTimer;
     private bool complete;
+    public Text timerLabel;
 
     List<PuzzleManager> index = new List<PuzzleManager>();
 
@@ -62,6 +65,15 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
+        var minutes = time / 60;
+        var seconds = time % 60;
+        //var fraction = (time * 100) % 100;
+
+        //update the label value
+        //timerLabel.text = string.Format("{0:00} : {1:00} 
+        //: {2:000}", minutes, seconds, fraction);
+        timerLabel.text = string.Format("{0:00} : {1:00}", minutes, seconds);
+
     }//Update
 
     /*
@@ -84,8 +96,8 @@ public class LevelManager : MonoBehaviour
    /*
     * Check Status
     * If the level as a whole has not been marked as complete, this searches
-    * the index for any untriggered nodes. If none are found, the level is
-    * marked complete and the puzzles timer is stopped.
+    * the index for any untriggered non-optional nodes. If none are found,
+    * the level is marked complete and the puzzles timer is stopped.
     * 
     * This will incidentally flag a level with an empty index as complete.
     */
@@ -95,7 +107,8 @@ public class LevelManager : MonoBehaviour
         {
             foreach (PuzzleManager entry in index)
             {
-                if (entry.IsComplete() == false)
+                if ((entry.IsComplete() == false)
+                    && (entry.IsOptional() == false))
                 {
                     return;
                 }
