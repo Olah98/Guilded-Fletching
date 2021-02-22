@@ -393,6 +393,7 @@ GameObject:
   - component: {fileID: 1785129512}
   - component: {fileID: 1785129511}
   - component: {fileID: 1785129515}
+  - component: {fileID: 1785129516}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -487,6 +488,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerLabel: {fileID: 614125210}
+--- !u!114 &1785129516
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1785129510}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88e16dd9f604f3a4f9bc2cd9bc7136c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  optional: 0
+  maxFalse: 0
+  dragPuzzlePieceHere: {fileID: 0}
+  index:
+  - item: {fileID: 0}
+    triggered: 0
+  - item: {fileID: 0}
+    triggered: 0
+  - item: {fileID: 1563946537}
+    triggered: 1
 --- !u!1 &1902007182
 GameObject:
   m_ObjectHideFlags: 0

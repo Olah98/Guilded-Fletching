@@ -5,6 +5,8 @@ Summary: Enables the Level Designers to handle nodes that carry bools and ids.
 This will be updated with a better Editor script in the next assigned task.
 Refs: Struct - https://forum.unity.com/threads/how-to-use-structs-in-c.333682/
 ** Unity, such as https://docs.unity3d.com/ScriptReference/ExecuteAlways.html
+** Fix for List:
+ https://forum.unity.com/threads/public-list-not-appearing-in-inspector.520160/
 ** ** Troubleshooting may be helped by looking at ExcAlways docs in particular
 */
 using System.Collections;
@@ -16,18 +18,21 @@ public class PuzzleManager : MonoBehaviour
 {
     private float timer;
     private bool runTimer;
-    private bool complete;
+    public bool complete;
     public bool optional;
-    public int maxFalse;
+    public int maxFalseNodesAllowed;
+    public GameObject dragPuzzlePieceHere;
 
-    List<PuzzleNode> index = new List<PuzzleNode>();
-    PuzzleNode nullNode = new PuzzleNode(null, false);
+    public List<PuzzleNode> index = new List<PuzzleNode>();
+    private PuzzleNode nullNode = new PuzzleNode(null, false);
 
 
     //struct for handling puzzle node data
+    [System.Serializable]
     public struct PuzzleNode
     {
         //public string name;
+        [SerializeField]
         public GameObject item;
         public bool triggered;
 
@@ -167,6 +172,10 @@ public class PuzzleManager : MonoBehaviour
     public PuzzleNode ScanList(GameObject hasItem)
     {
         PuzzleNode result = nullNode;
+        if (hasItem == null)
+        {
+            return result;
+        }
         //Debug.Log(hasItem);
         foreach (PuzzleNode entry in index)
         {
@@ -201,7 +210,7 @@ public class PuzzleManager : MonoBehaviour
                 if (entry.triggered == false)
                 {
                     curFalse++;
-                    if (curFalse > maxFalse)
+                    if (curFalse > maxFalseNodesAllowed)
                     {
                         return;
                     }
