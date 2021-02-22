@@ -65,9 +65,9 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
-        var minutes = time / 60;
-        var seconds = time % 60;
-        //var fraction = (time * 100) % 100;
+        var minutes = timer / 60;
+        var seconds = timer % 60;
+        //var fraction = (timer * 100) % 100;
 
         //update the label value
         //timerLabel.text = string.Format("{0:00} : {1:00} 
