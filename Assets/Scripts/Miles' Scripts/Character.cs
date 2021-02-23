@@ -36,11 +36,11 @@ public class Character : MonoBehaviour
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-        rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
-        if (rc.lastCheckpoint!=null)
-        {
-            transform.position = rc.lastCheckpoint;
-        }
+      // rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
+      // if (rc.lastCheckpoint!=null)
+      // {
+      //     transform.position = rc.lastCheckpoint;
+      // }
 
 
         //Sets Character controller
@@ -49,7 +49,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rc.lastCheckpoint);
+        //Debug.Log(rc.lastCheckpoint);
         Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
