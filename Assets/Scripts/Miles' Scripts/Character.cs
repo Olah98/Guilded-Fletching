@@ -46,7 +46,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Debug.Log(rc.lastCheckpoint);
         Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
