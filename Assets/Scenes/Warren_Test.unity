@@ -594,7 +594,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c581750207db3e64097d149759189aaf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  complete: 0
   timerLabel: {fileID: 1870237692}
+  dragPuzzleManagerHere: {fileID: 0}
+  index:
+  - {fileID: 1785129516}
 --- !u!114 &1785129516
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -18,10 +18,11 @@ public class LevelManager : MonoBehaviour
     private float timer;
     private float timerPuzzles;
     private bool runTimer;
-    private bool complete;
+    public bool complete;
     public Text timerLabel;
+    public PuzzleManager dragPuzzleManagerHere;
 
-    List<PuzzleManager> index = new List<PuzzleManager>();
+    public List<PuzzleManager> index = new List<PuzzleManager>();
 
     /*
     * Start
@@ -86,6 +87,10 @@ public class LevelManager : MonoBehaviour
     */
     public void AddPuzzleManager(PuzzleManager item)
     {
+        if (dragPuzzleManagerHere == null)
+        {
+            return;
+        }
         foreach (PuzzleManager entry in index)
         {
             if (entry.GetInstanceID() == item.GetInstanceID())
