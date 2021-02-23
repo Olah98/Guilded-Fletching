@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 //Author: Miles Gomez
 //Changes made 2/10/2021
@@ -27,17 +28,19 @@ public class Character : MonoBehaviour
 
     private RespawnCoordinator rc;
 
+    public Text chargeText;
+
 
     // Start is called before the first frame update
     void Start()
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-        rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
-        if (rc.lastCheckpoint!=null)
-        {
-            transform.position = rc.lastCheckpoint;
-        }
+      // rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
+      // if (rc.lastCheckpoint!=null)
+      // {
+      //     transform.position = rc.lastCheckpoint;
+      // }
 
 
         //Sets Character controller
@@ -46,7 +49,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rc.lastCheckpoint);
+        //Debug.Log(rc.lastCheckpoint);
         Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
@@ -58,6 +61,7 @@ public class Character : MonoBehaviour
             cc.stepOffset = 0;
         }
 
+        chargeText.text = "charge: " + attackCharge;
 
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
