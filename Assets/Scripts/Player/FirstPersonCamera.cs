@@ -5,9 +5,11 @@ Summary: Basic mouse movements to look around in-game as a player and
         interact with objects.
 */
 using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class FirstPersonCamera : MonoBehaviour {
+    public Text interactionHintText;
     [Header("Look values for Camera Movement")]
     [Range(1f, 10f)]
     public float lookSensitivity = 5f;
@@ -21,6 +23,7 @@ public class FirstPersonCamera : MonoBehaviour {
     void Start() {
         cam = GetComponent<Camera>();
         bodyTrans = transform.parent;
+        interactionHintText.enabled = false;
         // set up mouse for FPS view
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -46,14 +49,17 @@ public class FirstPersonCamera : MonoBehaviour {
     // inputs
     void Update() {
         // interact with objects
-        if (Input.GetKeyDown(KeyCode.E)) {
-            if (Physics.Raycast(transform.position, transform.forward,
-                                out var hit, 3.5f)) {
-                if (hit.transform.tag == "Interactable") {
+        if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
+            if (hit.transform.tag == "Interactable") {
+                if (Input.GetKeyDown(KeyCode.E)) 
                     InteractWithObject(hit.transform.gameObject);
-                }
+                // display hint only under this condition
+                interactionHintText.enabled = true;
             }
+            else interactionHintText.enabled = false;
         }
+        else interactionHintText.enabled = false;
+
         // zoom in/out using RMB
         if (Input.GetMouseButtonDown(1)) {
             StartCoroutine("ZoomIn");
@@ -100,10 +106,16 @@ public class FirstPersonCamera : MonoBehaviour {
         if (interactingWith.TryGetComponent<Switch>(out Switch s)) {
             s.HitSwitch();
         }
+        else if(interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
+        {
+            t.interact();
+        }
         // if this is a item pick-up
             // Do stuff
         // if this
             // Do stuf
         print("Interacting with: " + interactingWith.name);
+        // to prevent "reinteraction"
+        interactingWith.tag = "Untagged";
     }
 }
