@@ -7,28 +7,29 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
-    CharacterController cc;
     public GameObject cam;
-    private Transform camEuler;
     public float speed;
     public float jumpPower;
     public float jumpCD;
     public float maxSpeed;
     public float attackCD;
     public float attackCharge;
-    public GameObject arrow;
     public Transform bowPosition;
     public bool isClimbing;
+    public Text chargeText;
+    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
+    public GameObject[] arrowPrefabs;
+
+    private CharacterController cc;
     private bool canJump;
     private float horizontalInput;
     private float verticalInput;
     private float gravity = 9.8f;
     private Vector3 velocity;
     private bool dead;
-
+    private Transform camEuler;
     private RespawnCoordinator rc;
-
-    public Text chargeText;
+    private Quiver myQuiver;
 
 
     // Start is called before the first frame update
@@ -41,16 +42,17 @@ public class Character : MonoBehaviour
       // {
       //     transform.position = rc.lastCheckpoint;
       // }
-
-
         //Sets Character controller
+        
+        // initialize quiver (StandardArrow equipped first)
+        myQuiver = GetComponent<Quiver>();
     }
 
     // Update is called once per frame
     void Update()
     {
         //Debug.Log(rc.lastCheckpoint);
-        Debug.Log(cam.transform.eulerAngles.x);
+        //Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
         {
@@ -141,8 +143,11 @@ public class Character : MonoBehaviour
         {
             if (attackCD <= 0)
             {
+                // get currently equipped arrow and increment record
+                GameObject arrowEquipped = arrowPrefabs[myQuiver.GetArrowType()];
+                myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-                Attack.Fire(attackCharge, arrow, cam.transform, bowPosition);
+                Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
