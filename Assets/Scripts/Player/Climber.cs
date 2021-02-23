@@ -48,6 +48,11 @@ public class Climber : MonoBehaviour {
     /// <param name="other">Only activates if player</param>
     private void OnTriggerExit(Collider other) {
         if (other.tag == "Player") {
+            // if the player is ascending upon exit
+            if (Input.GetAxis("Vertical") > 0f) {
+                // give a boost to reach the top
+                controller.Move(Vector3.up * 0.5f);
+            }
             controller = null;
             other.GetComponent<Character>().isClimbing = false;
         }
