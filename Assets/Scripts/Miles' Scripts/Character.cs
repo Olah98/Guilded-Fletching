@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 //Author: Miles Gomez
 //Changes made 2/10/2021
@@ -26,6 +27,8 @@ public class Character : MonoBehaviour
     private bool dead;
 
     private RespawnCoordinator rc;
+
+    public Text chargeText;
 
 
     // Start is called before the first frame update
@@ -58,6 +61,7 @@ public class Character : MonoBehaviour
             cc.stepOffset = 0;
         }
 
+        chargeText.text = "charge: " + attackCharge;
 
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
