@@ -47,7 +47,7 @@ public class Character : MonoBehaviour
     void Update()
     {
 
-        Debug.Log(cam.transform.eulerAngles.x);
+        //Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
         {

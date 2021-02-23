@@ -6,7 +6,8 @@ Summary: Class that interacts with and triggers the Door script class.
 using UnityEngine;
 
 public class Switch : MonoBehaviour {
-    public Door myDoor;
+    [Tooltip("Can be any object that needs a triggered movement.")]
+    public Door myDoor; // can be a door or ladder
     public bool isFlipped;
 
     void Start() {
