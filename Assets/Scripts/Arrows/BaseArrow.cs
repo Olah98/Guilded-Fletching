@@ -20,17 +20,24 @@ public class BaseArrow : MonoBehaviour {
         isAbilityUsed = false;
     }
 
+    private void FixedUpdate() {
+        if (!rB.IsSleeping() && !isAbilityUsed) {
+            transform.up = rB.velocity;
+        }
+    }
+
     /// <summary>
-    /// Inheritted function that will be implemented differently on each arrow type.
+    /// Inheritted function that will be implemented differently on each arrow 
+    /// type.
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected virtual void OnCollisionEnter(Collision other) {
+        if (other.transform.tag == "Enemy") {
+            other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
+        }
         if (!isAbilityUsed) {
             Hit();
             isAbilityUsed = true;
-        }
-        if (other.transform.tag == "Enemy") {
-            other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
         }
     }
 

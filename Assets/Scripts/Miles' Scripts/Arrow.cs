@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
-    private Rigidbody rb;
+    public Rigidbody rb;
     private bool stuck = false;
     // Start is called before the first frame update
 
     void Start()
     {
       
-        rb = gameObject.GetComponent<Rigidbody>();
+      
         transform.rotation = Quaternion.LookRotation(rb.velocity);
+        Destroy(gameObject, 30f);
     }
 
     // Update is called once per frame
@@ -26,16 +27,20 @@ public class Arrow : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        Stuck(collision.gameObject);
+        Debug.Log("Collision!");
+        Stuck();
     }
     
     
-    public void Stuck(GameObject other)
+    public void Stuck()
     {
-        rb.constraints = RigidbodyConstraints.FreezeAll;
-        gameObject.transform.parent = other.transform;
+        stuck = true;
+        //rb.constraints = RigidbodyConstraints.FreezeAll;
+        rb.isKinematic = true;
+        rb.velocity = new Vector3(0, 0, 0);
+        //gameObject.transform.parent = other.transform;
 
         //freezes object
     }
