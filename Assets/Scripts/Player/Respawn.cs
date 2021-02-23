@@ -2,6 +2,7 @@
 
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.SceneManagement;
 using UnityEngine;
 
 public class Respawn : MonoBehaviour
@@ -15,7 +16,7 @@ public class Respawn : MonoBehaviour
     
     void Update()
     {
-        if (transform.position.y <= -5)
-            transform.position = respawnPoint;
+        if (transform.position.y <= -2)
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 }

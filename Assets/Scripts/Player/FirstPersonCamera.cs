@@ -106,6 +106,10 @@ public class FirstPersonCamera : MonoBehaviour {
         if (interactingWith.TryGetComponent<Switch>(out Switch s)) {
             s.HitSwitch();
         }
+        else if(interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
+        {
+            t.interact();
+        }
         // if this is a item pick-up
             // Do stuff
         // if this
