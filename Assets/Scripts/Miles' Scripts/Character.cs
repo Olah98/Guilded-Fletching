@@ -60,7 +60,7 @@ public class Character : MonoBehaviour
 
 
         // if the player is climbing, movement will be handled by Climber.cs
-        if (!isClimbing) return;
+        if (isClimbing) return;
 
         //Debug.Log(cc.velocity);
 
