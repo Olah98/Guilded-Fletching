@@ -46,7 +46,7 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        Debug.Log(rc.lastCheckpoint);
         Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
@@ -60,7 +60,7 @@ public class Character : MonoBehaviour
 
 
         // if the player is climbing, movement will be handled by Climber.cs
-        if (!isClimbing) return;
+        if (isClimbing) return;
 
         //Debug.Log(cc.velocity);
 
