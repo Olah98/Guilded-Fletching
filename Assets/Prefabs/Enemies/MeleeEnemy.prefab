@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 5109355656932596720}
   - component: {fileID: 8693990007510423751}
   m_Layer: 0
-  m_Name: ProtoMeleeEnemy
+  m_Name: MeleeEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,8 +112,8 @@ MonoBehaviour:
   damage: 10
   attackFrequency: 5
   rangeOfAttack: 2
-  agroArea: 15
-  isAgroed: 0
+  aggroArea: 0
+  isAggroed: 0
 --- !u!54 &8693990007510423751
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -128,5 +128,5 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
