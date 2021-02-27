@@ -134,7 +134,9 @@ public class Character : MonoBehaviour
             {
                 if (attackCharge < 100)
                 {
-                    attackCharge += 40 * Time.deltaTime;
+                    float drawMultiplier = arrowPrefabs[myQuiver.GetArrowType()]
+                                            .GetComponent<BaseArrow>().drawSpeed;
+                    attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
                     //builds attackcharge as long as you hold the mouse button down.
                 }
             }

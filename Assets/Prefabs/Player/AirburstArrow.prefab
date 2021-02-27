@@ -124,8 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 299b05c1a39e365449f0919abf843c4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
-  drawSpeed: 0
+  damage: 20
+  drawSpeed: 0.7
   distance: 0
   isLit: 0
   burstPower: 20

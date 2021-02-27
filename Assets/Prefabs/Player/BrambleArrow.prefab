@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5
-  drawSpeed: 0
+  drawSpeed: 1
   distance: 0
   isLit: 0
   bindTime: 3
