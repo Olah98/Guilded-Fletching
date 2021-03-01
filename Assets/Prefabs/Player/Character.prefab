@@ -488,6 +488,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 702849857952666717}
+  health: 100
   speed: 5
   jumpPower: 1.4
   jumpCD: 0

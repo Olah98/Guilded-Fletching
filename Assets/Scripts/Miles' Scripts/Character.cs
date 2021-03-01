@@ -8,6 +8,7 @@ using UnityEngine;
 public class Character : MonoBehaviour
 {
     public GameObject cam;
+    public int health;
     public float speed;
     public float jumpPower;
     public float jumpCD;
@@ -200,6 +201,21 @@ public class Character : MonoBehaviour
         else
         {
             canJump = false;
+        }
+    }
+
+    //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
+    /// <summary>
+    /// Public function that removes health while checking for if the
+    /// player has died.
+    /// </summary>
+    /// <param name="damage">Amount to damage player.</param>
+    public void TakeDamage(int damage) {
+        health -= damage;
+        if (health < 1) {
+            // implement player death
+            health = 0;
+            dead = true;
         }
     }
 }

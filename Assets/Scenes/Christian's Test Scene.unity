@@ -5436,7 +5436,7 @@ GameObject:
   - component: {fileID: 107696361}
   - component: {fileID: 107696360}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6291,12 +6291,12 @@ GameObject:
   - component: {fileID: 130787372}
   - component: {fileID: 130787371}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris (6)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &130787371
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -16959,12 +16959,12 @@ GameObject:
   - component: {fileID: 347083439}
   - component: {fileID: 347083438}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &347083438
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -19778,12 +19778,12 @@ GameObject:
   - component: {fileID: 404619779}
   - component: {fileID: 404619783}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris (5)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!65 &404619779
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -26213,7 +26213,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &511214115
 Transform:
   m_ObjectHideFlags: 0
@@ -30555,12 +30555,12 @@ GameObject:
   - component: {fileID: 599749127}
   - component: {fileID: 599749126}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris (4)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!54 &599749126
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -33256,7 +33256,7 @@ PrefabInstance:
     - target: {fileID: 4125321366855341335, guid: b65a8a751c2efaf4690a7cd438776fd3,
         type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4125321366855341416, guid: b65a8a751c2efaf4690a7cd438776fd3,
         type: 3}
@@ -47005,7 +47005,7 @@ GameObject:
   - component: {fileID: 909409669}
   - component: {fileID: 909409668}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -54972,7 +54972,7 @@ GameObject:
   - component: {fileID: 1053995420}
   - component: {fileID: 1053995419}
   m_Layer: 0
-  m_Name: collateral
+  m_Name: Debris
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -91371,6 +91371,7 @@ MonoBehaviour:
   isLit: 0
   burstPower: 7.5
   burstRadius: 3
+  canPushPlayer: 0
 --- !u!1 &1734706568
 GameObject:
   m_ObjectHideFlags: 0
