@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 125030891909573550}
   - component: {fileID: 389671498798720147}
   - component: {fileID: -4004642369045121068}
-  - component: {fileID: 4588530870848639454}
+  - component: {fileID: -57264003717425002}
   - component: {fileID: 4983532946320009758}
   m_Layer: 9
-  m_Name: StandardArrow
+  m_Name: AirburstArrow
   m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,7 +112,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4588530870848639454
+--- !u!114 &-57264003717425002
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,13 +121,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 1926641923919432315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a65fc882c7fc14e43a17a3551e3fbbdd, type: 3}
+  m_Script: {fileID: 11500000, guid: 299b05c1a39e365449f0919abf843c4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
-  drawSpeed: 1
+  damage: 20
+  drawSpeed: 0.7
   distance: 0
   isLit: 0
+  burstPower: 20
+  burstRadius: 6
 --- !u!114 &4983532946320009758
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,7 +8,9 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class BaseArrow : MonoBehaviour {
     public int damage;
-    public float drawSpeed;
+    [Tooltip("Acts as a multiplier when calculating draw speed.")]
+    [Range(0.1f, 2.0f)]
+    public float drawSpeed = 1.0f; // baseline multiplier
     public float distance;
     public bool isLit;
 
@@ -21,9 +23,8 @@ public class BaseArrow : MonoBehaviour {
     }
 
     private void FixedUpdate() {
-        if (!rB.IsSleeping() && !isAbilityUsed) {
+        if (!rB.IsSleeping() && !isAbilityUsed)
             transform.up = rB.velocity;
-        }
     }
 
     /// <summary>

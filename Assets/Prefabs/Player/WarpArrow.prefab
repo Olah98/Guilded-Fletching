@@ -13,10 +13,10 @@ GameObject:
   - component: {fileID: 125030891909573550}
   - component: {fileID: 389671498798720147}
   - component: {fileID: -4004642369045121068}
-  - component: {fileID: 4588530870848639454}
+  - component: {fileID: -6594066224092230051}
   - component: {fileID: 4983532946320009758}
   m_Layer: 9
-  m_Name: StandardArrow
+  m_Name: WarpArrow
   m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,7 +112,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &4588530870848639454
+--- !u!114 &-6594066224092230051
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -121,11 +121,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 1926641923919432315}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a65fc882c7fc14e43a17a3551e3fbbdd, type: 3}
+  m_Script: {fileID: 11500000, guid: d34dd6e39a2312b4187e3ba6c5b9e19c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 10
-  drawSpeed: 1
+  damage: 0
+  drawSpeed: 1.2
   distance: 0
   isLit: 0
 --- !u!114 &4983532946320009758

@@ -279,11 +279,12 @@ public class Quiver : MonoBehaviour
     /*
     * Get Arrow Type
     * Returns the equipped type as int value
-    * Standard = 1, Bramble = 2, Warp = 3, Airburst = 4
+    * //Standard = 1, Bramble = 2, Warp = 3, Airburst = 4
+    * Edit by Christian: Start index at 0 to work better with arrays.
     */
     public int GetArrowType()
     {
-        return (equipped + 1);
+        return equipped;
     }//GetArrowType
 
     /*

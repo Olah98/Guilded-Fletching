@@ -369,8 +369,9 @@ GameObject:
   - component: {fileID: 4125321366855341417}
   - component: {fileID: 4125321366855341334}
   - component: {fileID: 4125321366855341335}
-  - component: {fileID: 4125321366855341333}
   - component: {fileID: 4134116233065379065}
+  - component: {fileID: 4125321366855341333}
+  - component: {fileID: 731142644768104468}
   m_Layer: 8
   m_Name: Character
   m_TagString: Player
@@ -456,29 +457,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4125321366855341333
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4125321366855341330}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f078325a6a77d24389a56df4fb5ef89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cam: {fileID: 702849857952666717}
-  speed: 5
-  jumpPower: 1.4
-  jumpCD: 0
-  maxSpeed: 0
-  attackCD: 0
-  attackCharge: 0
-  arrow: {fileID: 1926641923919432315, guid: 6d11b5fc3bacdec49b4fd9525d787d37, type: 3}
-  bowPosition: {fileID: 7839380557022578615}
-  isClimbing: 0
-  chargeText: {fileID: 8147869731306815488}
 --- !u!143 &4134116233065379065
 CharacterController:
   m_ObjectHideFlags: 0
@@ -497,6 +475,46 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &4125321366855341333
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4125321366855341330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f078325a6a77d24389a56df4fb5ef89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cam: {fileID: 702849857952666717}
+  health: 100
+  speed: 5
+  jumpPower: 1.4
+  jumpCD: 0
+  maxSpeed: 0
+  attackCD: 0
+  attackCharge: 0
+  bowPosition: {fileID: 7839380557022578615}
+  isClimbing: 0
+  chargeText: {fileID: 8147869731306815488}
+  arrowPrefabs:
+  - {fileID: 1926641923919432315, guid: 6d11b5fc3bacdec49b4fd9525d787d37, type: 3}
+  - {fileID: 1926641923919432315, guid: fdd0fda0e9837ba4b90e44b711d3f6b1, type: 3}
+  - {fileID: 1926641923919432315, guid: feef72cda7e1b154ea6af02565530d3c, type: 3}
+  - {fileID: 1926641923919432315, guid: b1d6c379958bddb4c98e15067655fb0b, type: 3}
+--- !u!114 &731142644768104468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4125321366855341330}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f17b03ca1837bb34b8661385cb26f06f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4170306045562329959
 GameObject:
   m_ObjectHideFlags: 0
