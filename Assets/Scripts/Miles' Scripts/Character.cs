@@ -32,6 +32,9 @@ public class Character : MonoBehaviour
     private RespawnCoordinator rc;
     private Quiver myQuiver;
 
+    // delegates
+    public Quiver getMyQuiver { get { return myQuiver; } }
+
 
     // Start is called before the first frame update
     void Start()

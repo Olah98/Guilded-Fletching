@@ -10,7 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-// object must be attached to Canvas object
+// script must be attached to Canvas object
 [RequireComponent(typeof(Canvas))]
 public class LoadGameController : MonoBehaviour {
     public Button[] saveSlotButtons = new Button[3];
@@ -19,14 +19,12 @@ public class LoadGameController : MonoBehaviour {
     [Header("UI Animation Values")]
     [Range(0.1f, 2.0f)]
     public float uiSpeed = 1f;
-    [Range(0.1f, 2.0f)]
-    public float uiOpacity = 1f;
 
     private int slotSelected = -1;
     private SavedData[] dataArr = new SavedData[3];
     private TimeSpan timeSpanOfSlot = new TimeSpan(0, 0, 0);
-    private const string currentLevelTextPrefix = "Current Level: ";
-    private const string timePlayedTextPrefix = "Time Played: ";
+    private const string currentLevelTextPrefix    = "Current Level: ";
+    private const string timePlayedTextPrefix      = "Time Played: ";
     private const string totalArrowsShotTextPrefix = "Total Arrows Shot: ";
     
     private void Start() {
@@ -39,34 +37,44 @@ public class LoadGameController : MonoBehaviour {
                     = saveSlotTitle;
             }
         }
+        // hide on intialization
+        EnabledShowButtonsOnSelections(false);
     }
 
-    // go back to main menu
+    /// <summary>
+    /// Change scene back to Main Menu
+    /// </summary>
     public void GoToMainMenu() {
-        SceneManager.LoadScene("MainMenu");
         slotSelected = -1;
+        SceneManager.LoadScene("MainMenu");
     }
 
-    // button is selected, so start animation and fill appropriate variables
+    /// <summary>
+    /// Called when initially selecting a save slot.
+    /// </summary>
+    /// <param name="slot">Save slot selected.</param>
     public void SelectDataSlot(int slot) {
-        slotSelected = slot;
+        if (slotSelected != -1) return; //prevent double clicks
+
+        slotSelected = ++slot;
         var selected = SavedData.GetDataStoredAt(slot);
         //display important stats
         currentLevelText.text = currentLevelTextPrefix + selected.currentLevel;
         timePlayedText.text = timePlayedTextPrefix + selected.timePlayed;
-        totalArrowsShotText.text = totalArrowsShotTextPrefix
-                                 + GetTotalArrowsShot(selected.playerQuiver);
+        string numOfArrowsStr = (selected.playerQuiver == null) ? "0" 
+                            : GetTotalArrowsShot(selected.playerQuiver).ToString();
+        totalArrowsShotText.text = totalArrowsShotTextPrefix + numOfArrowsStr;
         StartCoroutine(AnimateShowStatistics(true));
     }
 
     public void CancelSlotSelection() {
         StartCoroutine(AnimateShowStatistics(false));
-        slotSelected = -1; // set at the end
     }
 
     //actually open data, load appropriate scene
-    public void LoadSaveSlotAt() {
+    public void LoadSlotSelected() {
         var loading = SavedData.GetDataStoredAt(slotSelected);
+        loading.StartTimer();
         //output in console that you're loading something
         //load scene
         // set player and position up
@@ -75,39 +83,71 @@ public class LoadGameController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Run fade-in or fade-out UI animation depending on the boolean 
+    /// parameter.
     /// </summary>
-    /// <param name="isShowing"></param>
-    /// <returns></returns>
+    /// <param name="isShowing">True to enabled, false to disable</param>
     private IEnumerator AnimateShowStatistics(bool isShowing) {
-        Color statColor = currentLevelText.color;
-        Color sSColor = saveSlotButtons[0].image.color;
+        EnabledShowButtonsOnSelections(isShowing);
+        Color statColor   = currentLevelText.color;
+        Color sSColor     = saveSlotButtons[0].image.color;
         Color sSTextColor = saveSlotButtons[0]
                                   .GetComponentInChildren<Text>().color;
-        // swap direction of opacity incrementation
-        float incrementVal     = (isShowing) ? 0.1f : -0.1f;
-        float inverseIncrement = (isShowing) ? -1f  : 1f;
-        for (float opacity = 0f; opacity <= 1.0f; opacity += incrementVal) {
-            // fade unselected buttons out
-            sSColor.a = opacity + inverseIncrement;
-            sSTextColor.a = opacity + inverseIncrement;
+        // swap direction of looping values
+        bool  isLooping;
+        float incrementVal = (isShowing) ? 0.1f : -0.1f;
+        float opacity      = (isShowing) ? 0f   : 1f;
+        float endBound     = (isShowing) ? 1f   : 0f;
+        // start animating
+        do {
+            sSColor.a = 1f - opacity;
+            sSTextColor.a = 1f - opacity;
             for (int i = 0; i < 3; ++i) {
-                if (i == slotSelected) continue;
+                // don't adjust a slot if not neccessary*****
+                if (i == slotSelected - 1) continue;
+
                 saveSlotButtons[i].image.color = sSColor;
                 saveSlotButtons[i].GetComponentInChildren<Text>()
                     .color = sSTextColor;
             }
-            // fade stat text in
+            // fade stat text in/out
             statColor.a = (isShowing) ? opacity : 1f - opacity;
-            currentLevelText.color = statColor;
-            timePlayedText.color = statColor;
+            currentLevelText.color    = statColor;
+            timePlayedText.color      = statColor;
             totalArrowsShotText.color = statColor;
-            yield return new WaitForSeconds(0.1f);
+            // increment and evaluate
+            isLooping = (isShowing) ? opacity <= endBound 
+                                    : opacity >= endBound;
+            opacity += incrementVal;
+            yield return new WaitForSeconds(uiSpeed * Time.deltaTime);
+        } while (isLooping);
+
+        if (!isShowing) { 
+            EnabledShowButtonsOnSelections(false); 
+            slotSelected = -1; 
         }
         yield return null;
     }
 
+    /// <summary>
+    /// Function to set certain 
+    /// </summary>
+    /// <param name="isShowing">Determines if UI is enabled or disabled</param>
+    private void EnabledShowButtonsOnSelections(bool isShowing) {
+        currentLevelText.enabled    = isShowing;
+        timePlayedText.enabled      = isShowing;
+        totalArrowsShotText.enabled = isShowing;
+        loadSaveButton.gameObject.SetActive    (isShowing);
+        cancelSelectButton.gameObject.SetActive(isShowing);
+        mainMenuButton.gameObject.SetActive    (!isShowing);
+    }
+
     // private helper statistic functions
+    /// <summary>
+    /// Take record of all arrows and return the sum as an unsigned integer.
+    /// </summary>
+    /// <param name="q">Quiver being calculated.</param>
+    /// <returns>Total number of arrows fired.</returns>
     private uint GetTotalArrowsShot(Quiver q) {
         uint total = 0;
         string[] arrowStr = { "Standard", "Bramble", "Warp", "Airburst" };
