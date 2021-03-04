@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+//Author: Miles Gomez
+//Changes made 3/4/2021
+
 public class Checkpoint : MonoBehaviour
 {
     public bool activeCheckpoint = false;

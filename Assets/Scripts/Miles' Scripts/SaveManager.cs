@@ -6,6 +6,9 @@ using UnityEngine.SceneManagement;
 using System.Xml;
 using System.Xml.Serialization;
 
+//Author: Miles Gomez
+//Changes made 3/4/2021
+
 public class SaveManager : MonoBehaviour
 {
 

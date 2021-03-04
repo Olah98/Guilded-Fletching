@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 //Author: Miles Gomez
-//Changes made 2/10/2021
+//Changes made 3/4/2021
 
 public class Character : MonoBehaviour
 {
