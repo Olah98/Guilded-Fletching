@@ -9,10 +9,11 @@ TagManager:
   - Waypoint
   - Enemy
   - Fire
-  - RC
   - Arrow
   - Climbable
   - Warpable
+  - Checkpoint
+  - Save Manager
   layers:
   - Default
   - TransparentFX

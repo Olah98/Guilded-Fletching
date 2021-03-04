@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 //Author: Miles Gomez
 //Changes made 2/10/2021
 
@@ -31,7 +32,6 @@ public class Character : MonoBehaviour
     private Vector3 velocity;
 
     private Transform camEuler;
-    private RespawnCoordinator rc;
     private Quiver myQuiver;
 
 
@@ -56,10 +56,14 @@ public class Character : MonoBehaviour
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-        rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
-        if (rc.lastCheckpoint!=null)
+      
+        
+        if (SaveManager.instance.activeSave.respawnPos!=null &&
+            SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
         {
-            transform.position = rc.lastCheckpoint;
+            cc.enabled = false;
+            transform.position = SaveManager.instance.activeSave.respawnPos;
+            cc.enabled = true;
         }
 
 
@@ -72,6 +76,12 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //Checks if dead and respawns.
+        if (dead)
+        {
+            Respawn();
+        }
+
         //Debug.Log(rc.lastCheckpoint);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
@@ -198,14 +208,17 @@ public class Character : MonoBehaviour
 
     }
 
-    public void Die()
-    {
-        dead = true;
-    }
-
     public void Respawn()
     {
+        //Disables player movement.
+        cc.enabled = false;
+        StartCoroutine(RespawnCo());
+    }
 
+    public IEnumerator RespawnCo()
+    {
+        yield return new WaitForSeconds(.5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Interact()
@@ -232,6 +245,21 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void RoofCheck()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out hit, 1.2f))
+        {
+            if (velocity.y > 0f)
+            {
+                velocity.y = 0f;
+            }
+        }
+    }
+
+
+    
+
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
     /// Public function that removes health while checking for if the
@@ -247,17 +275,7 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void RoofCheck()
-    {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out hit, 1.2f))
-        {
-            if (velocity.y > 0f)
-            {
-                velocity.y = 0f;
-            }
-        }
-    }
+
 
     public void Damage(int damage)
     {

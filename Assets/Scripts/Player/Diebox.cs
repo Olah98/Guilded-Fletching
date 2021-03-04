@@ -18,9 +18,6 @@ public class Diebox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag=="Player")
-        {
-            other.gameObject.GetComponent<Character>().Die();
-        }
+        
     }
 }
