@@ -30,4 +30,9 @@ public class RespawnCoordinator : MonoBehaviour
     {
         
     }
+
+    public void Respawn()
+    {
+
+    }
 }

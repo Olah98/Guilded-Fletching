@@ -7,30 +7,48 @@ using UnityEngine;
 
 public class Character : MonoBehaviour
 {
+    [Header ("GameObjects")]
+    CharacterController cc;
     public GameObject cam;
-    public int health;
+    public GameObject arrow;
+    public Transform bowPosition;
+
+    [Header ("Movement")]
     public float speed;
+    public float maxSpeed;
     public float jumpPower;
     public float jumpCD;
-    public float maxSpeed;
-    public float attackCD;
-    public float attackCharge;
-    public Transform bowPosition;
+    public float fallMod;
     public bool isClimbing;
-    public Text chargeText;
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
-    private CharacterController cc;
+    
     private bool canJump;
     private float horizontalInput;
     private float verticalInput;
     private float gravity = 9.8f;
     private Vector3 velocity;
-    private bool dead;
+
     private Transform camEuler;
     private RespawnCoordinator rc;
     private Quiver myQuiver;
+
+
+    [Header ("Attacking")]
+    public float attackCD;
+    public float chargeRate;
+    public float attackCharge;
+
+    [Header ("Health")]
+    public int maxHp;
+    public int currentHp;
+    public bool dead = false;
+
+
+    [Header ("UI Elements")]
+    public Text chargeText;
+
 
 
     // Start is called before the first frame update
@@ -38,11 +56,13 @@ public class Character : MonoBehaviour
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-      // rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
-      // if (rc.lastCheckpoint!=null)
-      // {
-      //     transform.position = rc.lastCheckpoint;
-      // }
+        rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
+        if (rc.lastCheckpoint!=null)
+        {
+            transform.position = rc.lastCheckpoint;
+        }
+
+
         //Sets Character controller
         
         // initialize quiver (StandardArrow equipped first)
@@ -53,7 +73,6 @@ public class Character : MonoBehaviour
     void Update()
     {
         //Debug.Log(rc.lastCheckpoint);
-        //Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
         {
@@ -74,6 +93,8 @@ public class Character : MonoBehaviour
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
+        RoofCheck();
+        //Checks To see if the player has touched a roof, will stop upwards movement.
 
 
         if (attackCD > 0)
@@ -111,19 +132,22 @@ public class Character : MonoBehaviour
         //Detects WASD movement or Jump
 
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
-        cc.Move(move * speed * Time.deltaTime);
+        if (!dead)
+        {
+            cc.Move(move * speed * Time.deltaTime);
+        }
         //Moves player when WASD is pressed
 
 
         if (!canJump)
         {
             //gravity
-            velocity.y -= gravity * Time.deltaTime;
+            velocity.y -= gravity * Time.deltaTime * (1f + fallMod);
         }
 
-        if (velocity.y < -9.8f)
+        if (velocity.y < -gravity)
         {
-            velocity.y = -9.8f;
+            velocity.y = -gravity;
         }
 
         //responsible for Y axis movement
@@ -131,7 +155,7 @@ public class Character : MonoBehaviour
 
         if (Input.GetButton("Fire1"))
         {
-            if (attackCD <= 0)
+            if (attackCD <= 0 && !dead)
             {
                 if (attackCharge < 100)
                 {
@@ -144,7 +168,7 @@ public class Character : MonoBehaviour
         }
         else if (attackCharge > 0)
         {
-            if (attackCD <= 0)
+            if (attackCD <= 0 && !dead)
             {
                 // get currently equipped arrow and increment record
                 GameObject arrowEquipped = arrowPrefabs[myQuiver.GetArrowType()];
@@ -163,12 +187,12 @@ public class Character : MonoBehaviour
 
     public void Jump()
     {
-        if (jumpCD <=0)
+        if (jumpCD <=0 && !dead)
         {
             canJump = false;
             //Adds force to jum pwith
-            velocity.y = Mathf.Sqrt(jumpPower * 2f * gravity);
-            jumpCD = 1;
+            velocity.y = Mathf.Sqrt(jumpPower * gravity);
+            jumpCD = .5f;
         }
 
 
@@ -186,6 +210,10 @@ public class Character : MonoBehaviour
 
     public void Interact()
     {
+        if (!dead)
+        {
+
+        }
         //Used to interact with objects in a level
     }
 
@@ -194,7 +222,7 @@ public class Character : MonoBehaviour
         //Checks if the player is on the ground and sets canJump to true, if player is not on the ground, then it is false
 
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, -2.5f, 0f), out hit, 1.4f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.4f))
         {
             canJump = true;
         }
@@ -211,13 +239,31 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="damage">Amount to damage player.</param>
     public void TakeDamage(int damage) {
-        health -= damage;
-        if (health < 1) {
+        currentHp -= damage;
+        if (currentHp < 1) {
             // implement player death
-            health = 0;
+            currentHp = 0;
             dead = true;
         }
     }
+
+    public void RoofCheck()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out hit, 1.2f))
+        {
+            if (velocity.y > 0f)
+            {
+                velocity.y = 0f;
+            }
+        }
+    }
+
+    public void Damage(int damage)
+    {
+        currentHp -= damage;
+    }
+
 }
 
 

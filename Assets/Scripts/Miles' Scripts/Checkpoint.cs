@@ -6,7 +6,6 @@ public class Checkpoint : MonoBehaviour
 {
 
     private RespawnCoordinator rc;
-    private bool checkPointed = false;
     // Start is called before the first frame update
     private void Start()
     {
@@ -16,11 +15,8 @@ public class Checkpoint : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (!checkPointed)
-            {
-                rc.lastCheckpoint = transform.position;
-                checkPointed = true;
-            }
+            rc.lastCheckpoint = transform.position;
+
         }
 
     }
