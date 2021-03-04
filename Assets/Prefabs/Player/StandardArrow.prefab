@@ -124,8 +124,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a65fc882c7fc14e43a17a3551e3fbbdd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 5
-  drawSpeed: 0
+  damage: 10
+  drawSpeed: 1
   distance: 0
   isLit: 0
 --- !u!114 &4983532946320009758
