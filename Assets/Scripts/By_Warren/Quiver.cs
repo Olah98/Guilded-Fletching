@@ -10,6 +10,10 @@ using UnityEngine;
 public class Quiver : MonoBehaviour
 {
 
+    //public delegates added by Christian for serialization
+    public int[,] getLoadout { get { return loadout; } }
+    public int getEquipped   { get { return equipped; } }
+
     //First segment is Ammo Type
     //Second segment is the integer values for access status and amount used
     private int[,] loadout = new int[4, 2];
@@ -426,4 +430,15 @@ public class Quiver : MonoBehaviour
         }
         return false;
     }//End Fire Ammo Type
+
+    /* FUNCTION BELOW WRITTEN BY CHRISTIAN */
+    /// <summary>
+    /// Copy the parameter instance of the Quiver class to this current 
+    /// instance of the class for initialization.
+    /// </summary>
+    /// <param name="savedInstance">Instance that's being copied.</param>
+    public void CopySerializedQuiver(in SerializableQuiver serialized) {
+        this.equipped = serialized.equipped;
+        this.loadout  = serialized.loadout;
+    }
 }

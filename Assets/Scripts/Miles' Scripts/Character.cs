@@ -31,9 +31,11 @@ public class Character : MonoBehaviour
     private Transform camEuler;
     private RespawnCoordinator rc;
     private Quiver myQuiver;
+    private SavedData currentData;
 
     // delegates
-    public Quiver getMyQuiver { get { return myQuiver; } }
+    public Quiver    getMyQuiver    { get { return myQuiver;    } }
+    public SavedData getCurrentData { get { return currentData; } }
 
 
     // Start is called before the first frame update
@@ -50,6 +52,8 @@ public class Character : MonoBehaviour
         
         // initialize quiver (StandardArrow equipped first)
         myQuiver = GetComponent<Quiver>();
+        currentData = (SavedData)ScriptableObject.CreateInstance(
+                                                    typeof(SavedData));
     }
 
     // Update is called once per frame
@@ -220,6 +224,17 @@ public class Character : MonoBehaviour
             health = 0;
             dead = true;
         }
+    }
+
+    public void SetSaveFile(SavedData data) {
+        currentData = data;
+        health = data.playerHealth;
+        myQuiver.CopySerializedQuiver(data.s_Quiver);
+        cc.enabled = false;
+        transform.position = data.s_Vector3.toVector3 + Vector3.up;
+        cc.enabled = true;
+        // future implementations will handle checkpoint system
+        SavedData.StoreDataAtSlot(data, SavedData.currentSaveSlot);
     }
 }
 

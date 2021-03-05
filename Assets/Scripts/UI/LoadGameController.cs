@@ -1,4 +1,4 @@
-﻿/*
+/*
 Author: Christian Mullins
 Date: 03/01/2021
 Summary: Handles everything in the save select screen from animation to
@@ -13,39 +13,39 @@ using UnityEngine.SceneManagement;
 // script must be attached to Canvas object
 [RequireComponent(typeof(Canvas))]
 public class LoadGameController : MonoBehaviour {
-    public Button[] saveSlotButtons = new Button[3];
-    public Button mainMenuButton, loadSaveButton, cancelSelectButton;
+    private enum ButtonInput {
+        Save1, Save2, Save3, MainMenu, Load, Back, Delete, SaveNameAndLoad
+    }
+    [Header("Check buttons[] Tooltip for order")]
+    [Tooltip("Save 1-3\nMainMenu\nLoad\nBack\nDelete\nSaveNameAndLoad")]
+    public Button[] buttons = new Button[8];
+    public GameObject inputFieldGroup;
     public Text currentLevelText, timePlayedText, totalArrowsShotText;
     [Header("UI Animation Values")]
     [Range(0.1f, 2.0f)]
     public float uiSpeed = 1f;
 
-    private int slotSelected = -1;
     private SavedData[] dataArr = new SavedData[3];
     private TimeSpan timeSpanOfSlot = new TimeSpan(0, 0, 0);
     private const string currentLevelTextPrefix    = "Current Level: ";
     private const string timePlayedTextPrefix      = "Time Played: ";
     private const string totalArrowsShotTextPrefix = "Total Arrows Shot: ";
+    private Scene loadGameScene;
     
     private void Start() {
-        for (int i = 0; i < 3; ++i) {
-            string saveSlotTitle = "#" + (i + 1).ToString() + ": ";
-            dataArr[i] = SavedData.GetDataStoredAt(i + 1);
-            // only change text if there's no data available
-            if (dataArr[i].saveName != String.Empty) {
-                saveSlotButtons[i].GetComponentInChildren<Text>().text 
-                    = saveSlotTitle;
-            }
-        }
+        RefreshSaveNames();
         // hide on intialization
         EnabledShowButtonsOnSelections(false);
+        inputFieldGroup.SetActive(false);
+        loadGameScene = SceneManager.GetActiveScene();
     }
 
+    /* PUBLIC BUTTON FUNCTIONS FOR UI */
     /// <summary>
     /// Change scene back to Main Menu
     /// </summary>
     public void GoToMainMenu() {
-        slotSelected = -1;
+        SavedData.currentSaveSlot = -1;
         SceneManager.LoadScene("MainMenu");
     }
 
@@ -54,34 +54,85 @@ public class LoadGameController : MonoBehaviour {
     /// </summary>
     /// <param name="slot">Save slot selected.</param>
     public void SelectDataSlot(int slot) {
-        if (slotSelected != -1) return; //prevent double clicks
+        if (SavedData.currentSaveSlot != -1) return; //prevent double clicks
 
-        slotSelected = ++slot;
+        SavedData.currentSaveSlot = ++slot;
         var selected = SavedData.GetDataStoredAt(slot);
         //display important stats
-        currentLevelText.text = currentLevelTextPrefix + selected.currentLevel;
-        timePlayedText.text = timePlayedTextPrefix + selected.timePlayed;
-        string numOfArrowsStr = (selected.playerQuiver == null) ? "0" 
-                            : GetTotalArrowsShot(selected.playerQuiver).ToString();
+        currentLevelText.text    = currentLevelTextPrefix + selected.currentLevel;
+        timePlayedText.text      = timePlayedTextPrefix + selected.timePlayed.ToString(@"hh\:mm\:ss");
+        string numOfArrowsStr    = (selected.IsNewInstance()) ? "0" :
+                                    GetTotalArrowsShot(selected.s_Quiver).ToString();
         totalArrowsShotText.text = totalArrowsShotTextPrefix + numOfArrowsStr;
         StartCoroutine(AnimateShowStatistics(true));
     }
 
+    /// <summary>
+    /// Used whenever "Back" is selected in UI or we want to return to original
+    /// Load Game layout.
+    /// </summary>
     public void CancelSlotSelection() {
         StartCoroutine(AnimateShowStatistics(false));
+        SavedData.currentSaveSlot = -1;
+        inputFieldGroup.SetActive(false);
     }
 
     //actually open data, load appropriate scene
     public void LoadSlotSelected() {
-        var loading = SavedData.GetDataStoredAt(slotSelected);
-        loading.StartTimer();
-        //output in console that you're loading something
-        //load scene
-        // set player and position up
-        //dont destroy on load until everything is set up
-        print("loading slot: " + slotSelected);
+        // disable this button if setting the saveName
+        if (inputFieldGroup.activeInHierarchy) return;
+
+        var load = SavedData.GetDataStoredAt(SavedData.currentSaveSlot);
+        if (load.saveName == String.Empty && load.timePlayed.Seconds == 0) {
+            // throw up input box
+            inputFieldGroup.SetActive(true);
+        }
+        else {
+            //load.StartTimer();
+            print("loading slot: " + SavedData.currentSaveSlot);
+            // load scene
+            int curLeveIndex = GetCurrentLevelIndex(load.currentLevel);
+            StartCoroutine(LoadAndMigrateData(curLeveIndex, SavedData.GetCurrentlyLoadedData()));
+            // set player and position upon scene load
+            // dont destroy on load until everything is set up
+        }
     }
 
+    /// <summary>
+    /// Button for Play! once the player enters their save name.
+    /// </summary>
+    public void SaveNameForData() {
+        var name = inputFieldGroup.GetComponentInChildren<InputField>().text;
+        //only return a non empty name
+        if (name == String.Empty) return;
+        // get currently used data
+        var curData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot);
+
+        // set relavent values
+        curData.saveName = name;
+        print("savedName: " + name);
+        inputFieldGroup.SetActive(false);
+        // now load game (may need to "DontDestroyOnLoad this)
+        //StartCoroutine(SavedData.StoreDataAsyncAtSlot(curData, SavedData.currentSaveSlot));
+        // get player's quiver in scene 
+        // copy quiver to saved data
+
+        // store saved data
+        int curLevelIndex = GetCurrentLevelIndex(curData.currentLevel);
+        StartCoroutine(LoadAndMigrateData(curLevelIndex, curData));
+    }
+
+    /// <summary>
+    /// Function for the Delete button.
+    /// </summary>
+    public void DeleteSelectedDataSlot() {
+        SavedData.DeleteDataSlot(SavedData.currentSaveSlot);
+        SavedData.currentSaveSlot = -1;
+        CancelSlotSelection();
+        RefreshSaveNames();
+    }
+
+    /* PRIVATE UI MOVEMENT FUNCTIONS */
     /// <summary>
     /// Run fade-in or fade-out UI animation depending on the boolean 
     /// parameter.
@@ -90,9 +141,8 @@ public class LoadGameController : MonoBehaviour {
     private IEnumerator AnimateShowStatistics(bool isShowing) {
         EnabledShowButtonsOnSelections(isShowing);
         Color statColor   = currentLevelText.color;
-        Color sSColor     = saveSlotButtons[0].image.color;
-        Color sSTextColor = saveSlotButtons[0]
-                                  .GetComponentInChildren<Text>().color;
+        Color sSColor     = buttons[0].image.color;
+        Color sSTextColor = buttons[0].GetComponentInChildren<Text>().color;
         // swap direction of looping values
         bool  isLooping;
         float incrementVal = (isShowing) ? 0.1f : -0.1f;
@@ -104,11 +154,9 @@ public class LoadGameController : MonoBehaviour {
             sSTextColor.a = 1f - opacity;
             for (int i = 0; i < 3; ++i) {
                 // don't adjust a slot if not neccessary*****
-                if (i == slotSelected - 1) continue;
-
-                saveSlotButtons[i].image.color = sSColor;
-                saveSlotButtons[i].GetComponentInChildren<Text>()
-                    .color = sSTextColor;
+                if (i == SavedData.currentSaveSlot - 1) continue;
+                buttons[i].image.color = sSColor;
+                buttons[i].GetComponentInChildren<Text>().color = sSTextColor;
             }
             // fade stat text in/out
             statColor.a = (isShowing) ? opacity : 1f - opacity;
@@ -124,7 +172,7 @@ public class LoadGameController : MonoBehaviour {
 
         if (!isShowing) { 
             EnabledShowButtonsOnSelections(false); 
-            slotSelected = -1; 
+            SavedData.currentSaveSlot = -1; 
         }
         yield return null;
     }
@@ -137,22 +185,97 @@ public class LoadGameController : MonoBehaviour {
         currentLevelText.enabled    = isShowing;
         timePlayedText.enabled      = isShowing;
         totalArrowsShotText.enabled = isShowing;
-        loadSaveButton.gameObject.SetActive    (isShowing);
-        cancelSelectButton.gameObject.SetActive(isShowing);
-        mainMenuButton.gameObject.SetActive    (!isShowing);
+        // !MainMenu, Load, Back, Delete
+        for (int i = 3; i < 8; ++i) {
+            bool setTo = (i == 3)  ? !isShowing : isShowing; // 3 is MainMenu
+            buttons[i].gameObject.SetActive(setTo);
+        }
     }
 
-    // private helper statistic functions
+    /// <summary>
+    /// 
+    /// </summary>
+    private void RefreshSaveNames() {
+        for (int i = 0; i < 3; ++i) {
+            // only change text if it's an existing save
+            if (dataArr[i] == null || dataArr[i].IsNewInstance()) continue;
+
+            string saveSlotTitle = "#" + (i + 1).ToString() + ": ";
+            dataArr[i] = SavedData.GetDataStoredAt(i + 1);
+            buttons[i].GetComponentInChildren<Text>()
+                        .text = saveSlotTitle + dataArr[i].saveName;
+        }
+    }
+
+    /* PRIVATE HELPER STATISTIC FUNCTIONS */
     /// <summary>
     /// Take record of all arrows and return the sum as an unsigned integer.
     /// </summary>
-    /// <param name="q">Quiver being calculated.</param>
+    /// <param name="sQ">SerializableQuiver being calculated.</param>
     /// <returns>Total number of arrows fired.</returns>
-    private uint GetTotalArrowsShot(Quiver q) {
+    private uint GetTotalArrowsShot(in SerializableQuiver sQ) {
         uint total = 0;
         string[] arrowStr = { "Standard", "Bramble", "Warp", "Airburst" };
         for (int i = 0; i < 4; ++i)
-            total += (uint)q.GetArrowTypeShot(arrowStr[i]);
+            total += (uint)sQ.loadout[i, 1];
         return total;
+    }
+
+    /* PRIVATE SCENE MIGRATION FUNCTIONS */
+
+    private int GetCurrentLevelIndex(int levelNum) {
+        /*
+        WILL BE UPDATED AS MORE LEVELS ARE IMPLEMENTED
+        Future Implementation #1:
+        switch (levelNum) {
+            case 1:
+        }
+        Future Implementation #2
+        return levelNum + pad;
+        */
+        // NOTE: function must pass the index, not the Scene itself (it's null)
+        string path = "Assets/Scenes/Digital Prototype 1/Digital Enviroment.unity";
+        int index = SceneUtility.GetBuildIndexByScenePath(path);
+        print("sceneyscene: " + index);
+        SceneUtility.GetScenePathByBuildIndex(3);
+        if (SceneUtility.GetScenePathByBuildIndex(index) != path)
+            Debug.LogWarning("Error for Christian:" 
+                             +" update scenes for level loading");
+        return index;
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="levelIndex">Index of the current level to play.</param>
+    /// <param name="data">Player data in use.</param>
+    private IEnumerator LoadAndMigrateData(int levelIndex, SavedData data) {
+        var levelOp = SceneManager.LoadSceneAsync(
+                                        GetCurrentLevelIndex(levelIndex),
+                                        LoadSceneMode.Additive);
+        while (!levelOp.isDone) {
+            print("Loading Level...");
+            yield return new WaitForEndOfFrame();
+        }
+
+        // execute data transferal
+        // fill SavedData if this a new game else fill the GameObject
+        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
+        // new game
+        if (data.IsNewInstance()) {
+            // initialize values and save
+            data.s_Vector3 = new SerializableVector3(
+                                    playerGO.transform.position + Vector3.up);
+            data.s_Quiver = new SerializableQuiver(
+                                    playerGO.GetComponent<Quiver>());
+            SavedData.StoreDataAtSlot(data, SavedData.currentSaveSlot);
+        }
+       // existing game
+        else
+            playerGO.GetComponent<Character>().SetSaveFile(data);
+        SavedData.StartTimer();
+        // finally unload the load scene
+        SceneManager.UnloadSceneAsync(loadGameScene);
+        yield return null;
     }
 }

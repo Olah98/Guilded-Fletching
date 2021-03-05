@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 using UnityEngine.Audio;
 
 public class UI : MonoBehaviour
@@ -17,7 +18,7 @@ public class UI : MonoBehaviour
    // public GameObject howToPlay;
 
 
-   
+    private Character character;
 
     public static UI Instance;
 
@@ -33,6 +34,9 @@ public class UI : MonoBehaviour
             Destroy(Instance.gameObject);
         }
         Instance = this;
+
+        character = GameObject.FindGameObjectWithTag("Player")
+                                .GetComponent<Character>();
     }
 
     private void Start()
@@ -43,7 +47,6 @@ public class UI : MonoBehaviour
         Time.timeScale = 1;
 
         
-
     }
 
     // Update is called once per frame
@@ -133,6 +136,9 @@ public class UI : MonoBehaviour
     /// </summary>
     public void Quit()
     {
+        StartCoroutine(SavedData.CutCurrentPlayTime(character.getCurrentData)); //added by Christian
+        
+        //store values!!
         Debug.Log("Quit Game");
         Application.Quit();
     }
@@ -145,6 +151,7 @@ public class UI : MonoBehaviour
     {
         if (value)
         {
+            StartCoroutine(SavedData.CutCurrentPlayTime(character.getCurrentData)); //added by Christian
             Time.timeScale = 1;
             SceneManager.LoadScene("MainMenu");
             Debug.Log("Go To Main Menu");
