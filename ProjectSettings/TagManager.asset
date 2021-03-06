@@ -14,6 +14,7 @@ TagManager:
   - Warpable
   - Checkpoint
   - Save Manager
+  - EnemyParent
   layers:
   - Default
   - TransparentFX

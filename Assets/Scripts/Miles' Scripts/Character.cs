@@ -76,6 +76,10 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Respawn();
+        }
         //Checks if dead and respawns.
         if (dead)
         {
@@ -142,7 +146,7 @@ public class Character : MonoBehaviour
         //Detects WASD movement or Jump
 
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
-        if (!dead)
+        if (!dead && cc.enabled == true)
         {
             cc.Move(move * speed * Time.deltaTime);
         }
@@ -161,7 +165,11 @@ public class Character : MonoBehaviour
         }
 
         //responsible for Y axis movement
-        cc.Move(velocity * Time.deltaTime);
+        if (cc.enabled == true)
+        {
+            cc.Move(velocity * Time.deltaTime);
+        }
+        
 
         if (Input.GetButton("Fire1"))
         {

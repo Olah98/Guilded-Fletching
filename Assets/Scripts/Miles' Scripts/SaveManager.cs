@@ -17,12 +17,22 @@ public class SaveManager : MonoBehaviour
     public bool hasLoaded;
 
     private GameObject[] switches;
+    private GameObject[] enemies;
     // Start is called before the first frame update
 
     private void Awake()
     {
-        DontDestroyOnLoad(gameObject);
-        instance = this;
+        
+        if (instance==null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else if (instance!=this)
+        {
+            Destroy(gameObject);
+        }
+       
 
         Load();
     }
@@ -36,76 +46,83 @@ public class SaveManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.K))
         {
-            Save();
+            DeleteSave();
         }
+    }
 
-        
+    public string FileName()
+    {
+        //sets datapath to save user folder
+        string dataPath = Application.persistentDataPath;
+        //file name
+        return (dataPath + "/" + activeSave.saveName + ".save");
     }
 
     public void Save()
-    {
-   
-        //sets location to game path
-        string dataPath = Application.persistentDataPath;
+    {  
         //Sets save data type
         var serializer = new XmlSerializer(typeof(SaveData));
         //Creates file and name
-        var stream = new FileStream(dataPath + "/" + activeSave.saveName + ".save", FileMode.Create);
+        var stream = new FileStream(FileName(), FileMode.Create);
         
         //Stores data
         serializer.Serialize(stream, activeSave);
         //Ends saving process
         stream.Close();
 
-        Debug.Log("Saved");
+    
     }
 
     public void Load()
     {
         
         //Sets location to game path
-        string dataPath = Application.persistentDataPath;
 
         //Check that file exists before loading and is of the same scene
-        if (System.IO.File.Exists(dataPath + "/" + activeSave.saveName + ".save"))
+        if (File.Exists(FileName()))
         {
             //Sets save data type
             var serializer = new XmlSerializer(typeof(SaveData));
             //Sets file path
-            var stream = new FileStream(dataPath + "/" + activeSave.saveName + ".save", FileMode.Open);
+            var stream = new FileStream(FileName(), FileMode.Open);
             //
             activeSave = serializer.Deserialize(stream) as SaveData;
             stream.Close();
 
-            Debug.Log("Loaded");
+            
             //Load varaibles
             LoadVariables();
             //Checks if it has been loaded
             hasLoaded = true;
 
         }
+        instance.activeSave.unsavedDead.Clear();
     }
 
     public void DeleteSave()
     {
         //Detects File location to game location
-        string dataPath = Application.persistentDataPath;
+       
 
-        if (System.IO.File.Exists(dataPath + "/" + activeSave.saveName + ".save"))
+        if (File.Exists(FileName()))
         {
             //Deletes file save.
-            File.Delete(dataPath + "/" + activeSave.saveName + ".save");
+            
+            File.Delete(FileName());
+            ResetVariables();
+          
         }
+
+        //delete variables
     }
 
     //Saves variables onto each individual object.
     public void SaveVariables()
     {
-
+        //Saves switch bools
         switches = GameObject.FindGameObjectsWithTag("Interactable");  
         instance.activeSave.switchBools = new bool[switches.Length];
 
-        
         for (int i = 0; i < switches.Length; i++)
         {
             if (switches[i].GetComponent<Switch>() != null)
@@ -113,23 +130,75 @@ public class SaveManager : MonoBehaviour
                 instance.activeSave.switchBools[i] = switches[i].GetComponent<Switch>().isFlipped;
             }
         }
+
+        //Saves enemy bools for isDead
+        if (instance.activeSave.unsavedDead.Count != 0)
+        {
+            foreach (string enemy in instance.activeSave.unsavedDead)
+            {
+                instance.activeSave.enemyDead.Add(enemy);
+            }
+
+            instance.activeSave.unsavedDead.Clear();
+        }
         
-       
     }
 
     //Loads the set variables into the scene after the laod.
     public void LoadVariables()
     {
         if (instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
-        switches = GameObject.FindGameObjectsWithTag("Interactable");
-
-        for (int i = 0; i < switches.Length; i++)
         {
-            if (switches[i].GetComponent<Switch>() != null)
+
+            //Switches
+            switches = GameObject.FindGameObjectsWithTag("Interactable");
+
+            for (int i = 0; i < switches.Length; i++)
             {
-                switches[i].GetComponent<Switch>().isFlipped = instance.activeSave.switchBools[i];
+                if (switches[i].GetComponent<Switch>() != null)
+                {
+                    switches[i].GetComponent<Switch>().isFlipped = instance.activeSave.switchBools[i];
+                }
             }
+
+            //Active Checkpoint
+            if (GameObject.Find(activeSave.activeCheckpoint)!=null)
+            {
+                GameObject checkPoint;
+                checkPoint = GameObject.Find(activeSave.activeCheckpoint);
+                checkPoint.GetComponent<Checkpoint>().activeCheckpoint = true;
+            }
+
+            //Enemies
+            //clear unsaved enemies list
+            instance.activeSave.unsavedDead.Clear();
+            //kill targets in deadenemy list
+            foreach(string enemy in instance.activeSave.enemyDead)
+            {
+                if (GameObject.Find(enemy)!=null)
+                {
+                    GameObject killTarget;
+                    killTarget = GameObject.Find(enemy);
+                    Destroy(killTarget);
+                }
+            }
+           
         }
+    }
+
+    public void ResetVariables()
+    {
+        instance.activeSave.sceneName = default;
+        instance.activeSave.activeCheckpoint = default;
+
+        instance.activeSave.respawnPos = default;
+
+        instance.activeSave.switchBools = new bool[0];
+
+        instance.activeSave.unsavedDead.Clear();
+        instance.activeSave.enemyDead.Clear();
+
+
     }
 }
 
@@ -142,10 +211,15 @@ public class SaveData
 
     public string sceneName;
 
+    public string activeCheckpoint;
+
     //Respawn Position of Player
     public Vector3 respawnPos;
 
     //Determines what bools are flipped on or off at start of save
     public bool[] switchBools;
+
+    public List<string> unsavedDead;
+    public List<string> enemyDead;
 
 }

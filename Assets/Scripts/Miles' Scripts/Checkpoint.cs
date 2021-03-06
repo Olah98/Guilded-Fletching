@@ -31,9 +31,8 @@ public class Checkpoint : MonoBehaviour
             SaveManager.instance.activeSave.respawnPos = transform.position;
             SaveManager.instance.SaveVariables();
             SaveManager.instance.activeSave.sceneName = SceneManager.GetActiveScene().name;
+            SaveManager.instance.activeSave.activeCheckpoint = gameObject.name;
             SaveManager.instance.Save();
-  
-
         }
 
     }
