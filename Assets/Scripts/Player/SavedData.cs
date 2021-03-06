@@ -89,10 +89,14 @@ public class SavedData : ScriptableObject {
     [Header("Misc Values")]
     public TimeSpan timePlayed = TimeSpan.Zero;
 
+    // delegate
+    public bool isNewInstance { get {
+        return (timePlayed == TimeSpan.Zero && saveName == String.Empty);
+    } }
+
     public static int currentSaveSlot = -1;
     public static string getDataPath { get { return dataPath; } }
     
-    //private DataWrapper myWrapper = new DataWrapper();
     private static DateTime? startPlayTime;      // nullable
     private const string saveStr = "SAVE_SLOT_"; // concatenate 1, 2, or 3
     private static string dataPath = Application.persistentDataPath;
@@ -118,8 +122,8 @@ public class SavedData : ScriptableObject {
             }
         }
         catch (SerializationException sE) {
-            Debug.LogWarning("Trying to read form corrupted file" 
-                         + ", overwriting to new file\n" + sE);
+            Debug.LogWarning("Trying to read from corrupted file" 
+                         + ", overwriting to new file\n" + sE);                         
             if (fStream != null) fStream.Close();
             DeleteDataSlot(slot);
             //throw;
@@ -227,11 +231,6 @@ public class SavedData : ScriptableObject {
         else
             return timePlayed + ((DateTime)startPlayTime - DateTime.Now);
     }
-
-    public bool IsNewInstance() {
-        return (timePlayed == TimeSpan.Zero && currentLevel == 1);
-    }
-
 }
 
 /// <summary>
@@ -277,9 +276,14 @@ public struct SerializableVector3 {
 public class SerializableQuiver {
     public int[,] loadout = new int[4, 2];
     public int equipped;
-
+    /*
+        TODO
+            In the future implement constructors based on what 
+    */
     public SerializableQuiver() {
-        loadout = new int[,] { { 0, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } };
+        // 1s mean that this type of arrow is usable
+        // second index is how many shot
+        loadout = new int[,] { { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 } };
         equipped = 0;
     }
 

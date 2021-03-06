@@ -33,6 +33,9 @@ public class LoadGameController : MonoBehaviour {
     private Scene loadGameScene;
     
     private void Start() {
+        for (int i = 0; i < 3; ++i) {
+            dataArr[i] = SavedData.GetDataStoredAt(i + 1);
+        }
         RefreshSaveNames();
         // hide on intialization
         EnabledShowButtonsOnSelections(false);
@@ -61,7 +64,7 @@ public class LoadGameController : MonoBehaviour {
         //display important stats
         currentLevelText.text    = currentLevelTextPrefix + selected.currentLevel;
         timePlayedText.text      = timePlayedTextPrefix + selected.timePlayed.ToString(@"hh\:mm\:ss");
-        string numOfArrowsStr    = (selected.IsNewInstance()) ? "0" :
+        string numOfArrowsStr    = (selected.isNewInstance) ? "0" :
                                     GetTotalArrowsShot(selected.s_Quiver).ToString();
         totalArrowsShotText.text = totalArrowsShotTextPrefix + numOfArrowsStr;
         StartCoroutine(AnimateShowStatistics(true));
@@ -197,13 +200,17 @@ public class LoadGameController : MonoBehaviour {
     /// </summary>
     private void RefreshSaveNames() {
         for (int i = 0; i < 3; ++i) {
-            // only change text if it's an existing save
-            if (dataArr[i] == null || dataArr[i].IsNewInstance()) continue;
-
+            // only change text if it's an existing sav
             string saveSlotTitle = "#" + (i + 1).ToString() + ": ";
             dataArr[i] = SavedData.GetDataStoredAt(i + 1);
-            buttons[i].GetComponentInChildren<Text>()
+            if (dataArr[i].isNewInstance)  {
+                buttons[i].GetComponentInChildren<Text>()
+                        .text = "Save Slot #" + (i + 1).ToString();
+            }
+            else {
+                buttons[i].GetComponentInChildren<Text>()
                         .text = saveSlotTitle + dataArr[i].saveName;
+            }
         }
     }
 
@@ -215,9 +222,11 @@ public class LoadGameController : MonoBehaviour {
     /// <returns>Total number of arrows fired.</returns>
     private uint GetTotalArrowsShot(in SerializableQuiver sQ) {
         uint total = 0;
-        string[] arrowStr = { "Standard", "Bramble", "Warp", "Airburst" };
-        for (int i = 0; i < 4; ++i)
-            total += (uint)sQ.loadout[i, 1];
+        try {
+            string[] arrowStr = { "Standard", "Bramble", "Warp", "Airburst" };
+            for (int i = 0; i < 4; ++i)
+                total += (uint)sQ.loadout[i, 1];
+        } catch (NullReferenceException) {}
         return total;
     }
 
@@ -262,20 +271,25 @@ public class LoadGameController : MonoBehaviour {
         // fill SavedData if this a new game else fill the GameObject
         GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
         // new game
-        if (data.IsNewInstance()) {
+        if (data.isNewInstance) {
             // initialize values and save
             data.s_Vector3 = new SerializableVector3(
                                     playerGO.transform.position + Vector3.up);
             data.s_Quiver = new SerializableQuiver(
                                     playerGO.GetComponent<Quiver>());
-            SavedData.StoreDataAtSlot(data, SavedData.currentSaveSlot);
         }
-       // existing game
-        else
-            playerGO.GetComponent<Character>().SetSaveFile(data);
+        // existing game
+        //else
+        playerGO.GetComponent<Character>().UpdateCharacterToSaveData(data);
+        var curData = playerGO.GetComponent<Character>().UpdateAndGetSaveData();
+        SavedData.StoreDataAtSlot(curData, SavedData.currentSaveSlot);
         SavedData.StartTimer();
         // finally unload the load scene
-        SceneManager.UnloadSceneAsync(loadGameScene);
+        levelOp = SceneManager.UnloadSceneAsync(loadGameScene);
+        while (!levelOp.isDone) {
+            print("Unloading load scene...");
+            yield return new WaitForEndOfFrame();
+        }
         yield return null;
     }
 }

@@ -136,8 +136,8 @@ public class UI : MonoBehaviour
     /// </summary>
     public void Quit()
     {
-        StartCoroutine(SavedData.CutCurrentPlayTime(character.getCurrentData)); //added by Christian
-        
+        var curData = character.UpdateAndGetSaveData();
+        StartCoroutine(SavedData.CutCurrentPlayTime(curData));
         //store values!!
         Debug.Log("Quit Game");
         Application.Quit();
@@ -151,7 +151,8 @@ public class UI : MonoBehaviour
     {
         if (value)
         {
-            StartCoroutine(SavedData.CutCurrentPlayTime(character.getCurrentData)); //added by Christian
+            var curData = character.UpdateAndGetSaveData();
+            StartCoroutine(SavedData.CutCurrentPlayTime(curData)); //added by Christian
             Time.timeScale = 1;
             SceneManager.LoadScene("MainMenu");
             Debug.Log("Go To Main Menu");

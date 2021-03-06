@@ -36,8 +36,7 @@ public class Character : MonoBehaviour
     // delegates
     public Quiver    getMyQuiver    { get { return myQuiver;    } }
     public SavedData getCurrentData { get { return currentData; } }
-
-
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -226,15 +225,28 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void SetSaveFile(SavedData data) {
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public SavedData UpdateAndGetSaveData() {
+        currentData.playerHealth = health;
+        currentData.s_Quiver = new SerializableQuiver(myQuiver);
+        // future implementations will handle checkpoint system
+        //SavedData.StoreDataAtSlot(data, SavedData.currentSaveSlot);
+        return currentData;
+    }
+
+    /// <summary>
+    /// Take argument data and overwrite Character's save data.
+    /// </summary>
+    /// <param name="data">Data that will be stored</param>
+    /// <returns>Updated save file</returns>
+    public void UpdateCharacterToSaveData(in SavedData data) {
         currentData = data;
         health = data.playerHealth;
         myQuiver.CopySerializedQuiver(data.s_Quiver);
-        cc.enabled = false;
-        transform.position = data.s_Vector3.toVector3 + Vector3.up;
-        cc.enabled = true;
-        // future implementations will handle checkpoint system
-        SavedData.StoreDataAtSlot(data, SavedData.currentSaveSlot);
     }
 }
 
