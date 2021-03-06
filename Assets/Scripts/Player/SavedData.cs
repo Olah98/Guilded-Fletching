@@ -28,6 +28,10 @@ public class SavedData : ScriptableObject {
         /// </summary>
         public DataWrapper() {}
 
+        /// <summary>
+        /// Initializing constructor to immediately package save data.
+        /// </summary>
+        /// <param name="packing">Save data we're serializing.</param>
         public DataWrapper(SavedData packing) {
             data = packing;
             var context = new StreamingContext(StreamingContextStates.File);
@@ -65,8 +69,8 @@ public class SavedData : ScriptableObject {
         }
     }
     /*
-        Variables marked "s_" are serializable structs and must be reworked to
-        be used as MonoBehaviors.
+        Variables marked "s_" are serializable variables and must be reworked 
+        to be used as their respective MonoBehaviors class.
     */
     public string saveName = String.Empty;
     [Header("Player Values")]
@@ -89,7 +93,6 @@ public class SavedData : ScriptableObject {
     [Header("Misc Values")]
     public TimeSpan timePlayed = TimeSpan.Zero;
 
-    // delegate
     public bool isNewInstance { get {
         return (timePlayed == TimeSpan.Zero && saveName == String.Empty);
     } }
@@ -122,11 +125,11 @@ public class SavedData : ScriptableObject {
             }
         }
         catch (SerializationException sE) {
-            Debug.LogWarning("Trying to read from corrupted file" 
-                         + ", overwriting to new file\n" + sE);                         
+            // error should only occur if a save file didn't get
+            Debug.LogWarning("Trying to read from corrupted file"
+                         + ", overwriting to new file\n" + sE);
             if (fStream != null) fStream.Close();
             DeleteDataSlot(slot);
-            //throw;
         }
         return (SavedData)ScriptableObject.CreateInstance(typeof(SavedData));
     }
@@ -173,23 +176,14 @@ public class SavedData : ScriptableObject {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
         string filePath = getDataPath + saveStr 
                           + slot.ToString() + ".dat";
-        if (File.Exists(filePath)) {
-            File.Delete(filePath);
-        }
+
+        if (File.Exists(filePath)) File.Delete(filePath);
+        
         var fStream = File.OpenWrite(filePath);
         var wrapper = new DataWrapper((SavedData)ScriptableObject
                                     .CreateInstance(typeof(SavedData)));
-        new BinaryFormatter().Serialize(fStream, wrapper); // not writable? // or nah?
+        new BinaryFormatter().Serialize(fStream, wrapper);
         fStream.Close();
-    }
-
-    /// <summary>
-    /// Short little function to immediately get the currently used data.
-    /// USE WITH CAUTION (sharing violation errors could be thrown).
-    /// </summary>
-    /// <returns>The SavedData of the game currently loaded.</returns>
-    public static SavedData GetCurrentlyLoadedData() {
-        return GetDataStoredAt(currentSaveSlot);
     }
 
     /* PUBLIC FUNCTIONS TO MANIPULATE TIMEPLAYED TIMESPAN VARIABLE */
@@ -199,20 +193,21 @@ public class SavedData : ScriptableObject {
     /// </summary>
     public static void StartTimer() {
         if (startPlayTime == null) startPlayTime = DateTime.Now;
-        else Debug.Log("StartTimer(): no action taken, timer already running");
+        else Debug.Log("StartTimer: no action taken, timer already running");
     }
 
     /// <summary>
     /// Upon quitting, cut off the current play time and update timePlayed.
     /// </summary>
     public static IEnumerator CutCurrentPlayTime(SavedData data) {
+        // logic check for the timer
         if (startPlayTime == null)
-            Debug.LogError("SavedData.cs: play timer has not yet been set.");
+            Debug.LogError("SavedData: play timer has not yet been set.");
         else {
-            //data.timePlayed is not set to an instance of an object
             data.timePlayed += DateTime.Now - (DateTime)startPlayTime;
             startPlayTime = null;
         }
+        // store data
         var task = Task.Run(() => StoreDataAtSlot(data, currentSaveSlot));
         while (!task.IsCompleted) {
             Debug.Log("Saving...");
@@ -278,7 +273,8 @@ public class SerializableQuiver {
     public int equipped;
     /*
         TODO
-            In the future implement constructors based on what 
+            In the future implement constructors based on what arrows should
+            be available to the player.
     */
     public SerializableQuiver() {
         // 1s mean that this type of arrow is usable
@@ -294,14 +290,5 @@ public class SerializableQuiver {
     public SerializableQuiver(in Quiver serialize) {
         loadout  = serialize.getLoadout;
         equipped = serialize.getEquipped;
-    }
-
-    /// <summary>
-    /// Serialize a Quiver based on implicitly passing Quiver's variables as
-    /// parameters.
-    /// </summary>
-    public SerializableQuiver(in int[,] load, in int equip) {
-        loadout  = load;
-        equipped = equip;
     }
 }

@@ -17,7 +17,7 @@ public class UI : MonoBehaviour
     public GameObject pauseBG;
    // public GameObject howToPlay;
 
-
+    // Character ref to aid in persistant data
     private Character character;
 
     public static UI Instance;
@@ -151,8 +151,10 @@ public class UI : MonoBehaviour
     {
         if (value)
         {
+            // persisten data handling (by Christian)
             var curData = character.UpdateAndGetSaveData();
-            StartCoroutine(SavedData.CutCurrentPlayTime(curData)); //added by Christian
+            StartCoroutine(SavedData.CutCurrentPlayTime(curData));
+
             Time.timeScale = 1;
             SceneManager.LoadScene("MainMenu");
             Debug.Log("Go To Main Menu");

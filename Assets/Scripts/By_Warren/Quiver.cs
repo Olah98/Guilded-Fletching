@@ -9,8 +9,7 @@ using UnityEngine;
 
 public class Quiver : MonoBehaviour
 {
-
-    //public delegates added by Christian for serialization
+    // public delegates added by Christian for serialization
     public int[,] getLoadout { get { return loadout; } }
     public int getEquipped   { get { return equipped; } }
 

@@ -13,9 +13,6 @@ using UnityEngine.SceneManagement;
 // script must be attached to Canvas object
 [RequireComponent(typeof(Canvas))]
 public class LoadGameController : MonoBehaviour {
-    private enum ButtonInput {
-        Save1, Save2, Save3, MainMenu, Load, Back, Delete, SaveNameAndLoad
-    }
     [Header("Check buttons[] Tooltip for order")]
     [Tooltip("Save 1-3\nMainMenu\nLoad\nBack\nDelete\nSaveNameAndLoad")]
     public Button[] buttons = new Button[8];
@@ -57,10 +54,10 @@ public class LoadGameController : MonoBehaviour {
     /// </summary>
     /// <param name="slot">Save slot selected.</param>
     public void SelectDataSlot(int slot) {
-        if (SavedData.currentSaveSlot != -1) return; //prevent double clicks
+        if (SavedData.currentSaveSlot != -1) return; // prevent double clicks
 
+        var selected = dataArr[slot];
         SavedData.currentSaveSlot = ++slot;
-        var selected = SavedData.GetDataStoredAt(slot);
         //display important stats
         currentLevelText.text    = currentLevelTextPrefix + selected.currentLevel;
         timePlayedText.text      = timePlayedTextPrefix + selected.timePlayed.ToString(@"hh\:mm\:ss");
@@ -80,47 +77,34 @@ public class LoadGameController : MonoBehaviour {
         inputFieldGroup.SetActive(false);
     }
 
-    //actually open data, load appropriate scene
+    /// <summary>
+    /// Open and load scene if existing data. New data enables the input box.
+    /// </summary>
     public void LoadSlotSelected() {
         // disable this button if setting the saveName
         if (inputFieldGroup.activeInHierarchy) return;
 
-        var load = SavedData.GetDataStoredAt(SavedData.currentSaveSlot);
+        var load = dataArr[SavedData.currentSaveSlot];
+        // throw input or load scene
         if (load.saveName == String.Empty && load.timePlayed.Seconds == 0) {
-            // throw up input box
             inputFieldGroup.SetActive(true);
         }
         else {
-            //load.StartTimer();
-            print("loading slot: " + SavedData.currentSaveSlot);
-            // load scene
             int curLeveIndex = GetCurrentLevelIndex(load.currentLevel);
-            StartCoroutine(LoadAndMigrateData(curLeveIndex, SavedData.GetCurrentlyLoadedData()));
-            // set player and position upon scene load
-            // dont destroy on load until everything is set up
+            StartCoroutine(LoadAndMigrateData(curLeveIndex, load));
         }
     }
 
     /// <summary>
-    /// Button for Play! once the player enters their save name.
+    /// Button for "Play!" once the player enters their save name.
     /// </summary>
     public void SaveNameForData() {
         var name = inputFieldGroup.GetComponentInChildren<InputField>().text;
-        //only return a non empty name
         if (name == String.Empty) return;
-        // get currently used data
-        var curData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot);
-
-        // set relavent values
+        // retrieve current data and migrate it the first level
+        var curData = dataArr[SavedData.currentSaveSlot];
         curData.saveName = name;
-        print("savedName: " + name);
         inputFieldGroup.SetActive(false);
-        // now load game (may need to "DontDestroyOnLoad this)
-        //StartCoroutine(SavedData.StoreDataAsyncAtSlot(curData, SavedData.currentSaveSlot));
-        // get player's quiver in scene 
-        // copy quiver to saved data
-
-        // store saved data
         int curLevelIndex = GetCurrentLevelIndex(curData.currentLevel);
         StartCoroutine(LoadAndMigrateData(curLevelIndex, curData));
     }
@@ -152,11 +136,10 @@ public class LoadGameController : MonoBehaviour {
         float opacity      = (isShowing) ? 0f   : 1f;
         float endBound     = (isShowing) ? 1f   : 0f;
         // start animating
-        do {
+        do { // this is basically a "for" loop
             sSColor.a = 1f - opacity;
             sSTextColor.a = 1f - opacity;
             for (int i = 0; i < 3; ++i) {
-                // don't adjust a slot if not neccessary*****
                 if (i == SavedData.currentSaveSlot - 1) continue;
                 buttons[i].image.color = sSColor;
                 buttons[i].GetComponentInChildren<Text>().color = sSTextColor;
@@ -166,7 +149,7 @@ public class LoadGameController : MonoBehaviour {
             currentLevelText.color    = statColor;
             timePlayedText.color      = statColor;
             totalArrowsShotText.color = statColor;
-            // increment and evaluate
+            // increment opacity and evaluate boolean
             isLooping = (isShowing) ? opacity <= endBound 
                                     : opacity >= endBound;
             opacity += incrementVal;
@@ -181,22 +164,24 @@ public class LoadGameController : MonoBehaviour {
     }
 
     /// <summary>
-    /// Function to set certain 
+    /// Function to set certain Buttons as visible or not.
     /// </summary>
-    /// <param name="isShowing">Determines if UI is enabled or disabled</param>
+    /// <param name="isShowing">Determines if UI is enabled or disabled.</param>
     private void EnabledShowButtonsOnSelections(bool isShowing) {
         currentLevelText.enabled    = isShowing;
         timePlayedText.enabled      = isShowing;
         totalArrowsShotText.enabled = isShowing;
         // !MainMenu, Load, Back, Delete
         for (int i = 3; i < 8; ++i) {
-            bool setTo = (i == 3)  ? !isShowing : isShowing; // 3 is MainMenu
+            // 3 is the MainMenu_Button index
+            bool setTo = (i == 3)  ? !isShowing : isShowing;
             buttons[i].gameObject.SetActive(setTo);
         }
     }
 
     /// <summary>
-    /// 
+    /// Updates if the SaveSlot's data changed, thus triggering a name change
+    /// of the button's text.
     /// </summary>
     private void RefreshSaveNames() {
         for (int i = 0; i < 3; ++i) {
@@ -231,18 +216,24 @@ public class LoadGameController : MonoBehaviour {
     }
 
     /* PRIVATE SCENE MIGRATION FUNCTIONS */
-
+    /// <summary>
+    /// Function that keeps up to date with the build indexes and how they
+    /// relate. *SUBJECT TO FREQUENT CHANGES*
+    /// </summary>
+    /// <param name="levelNum">Adjust levelNum to equal build index.</param>
+    /// <returns>Build index of the desired level.</returns>
     private int GetCurrentLevelIndex(int levelNum) {
+        // NOTE: This function must pass the index, not the Scene itself,
+        //      Scenes can only be passed as variables if they are loaded.
         /*
         WILL BE UPDATED AS MORE LEVELS ARE IMPLEMENTED
-        Future Implementation #1:
+        Future Possible Implementation #1:
         switch (levelNum) {
             case 1:
         }
-        Future Implementation #2
+        Future Possible Implementation #2
         return levelNum + pad;
         */
-        // NOTE: function must pass the index, not the Scene itself (it's null)
         string path = "Assets/Scenes/Digital Prototype 1/Digital Enviroment.unity";
         int index = SceneUtility.GetBuildIndexByScenePath(path);
         print("sceneyscene: " + index);
@@ -254,39 +245,38 @@ public class LoadGameController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Asynchronously load the next desired level, pass data to the player,
+    /// and unload the previous scene.
     /// </summary>
     /// <param name="levelIndex">Index of the current level to play.</param>
     /// <param name="data">Player data in use.</param>
     private IEnumerator LoadAndMigrateData(int levelIndex, SavedData data) {
-        var levelOp = SceneManager.LoadSceneAsync(
+        var task = SceneManager.LoadSceneAsync(
                                         GetCurrentLevelIndex(levelIndex),
                                         LoadSceneMode.Additive);
-        while (!levelOp.isDone) {
+        while (!task.isDone) {
             print("Loading Level...");
             yield return new WaitForEndOfFrame();
         }
-
-        // execute data transferal
-        // fill SavedData if this a new game else fill the GameObject
-        GameObject playerGO = GameObject.FindGameObjectWithTag("Player");
-        // new game
+        // gather Character ref to migrate the data to the next scene
+        Character playerChar = GameObject.FindGameObjectWithTag("Player")
+                                        .GetComponent<Character>();
+        // initialize values if new game
         if (data.isNewInstance) {
-            // initialize values and save
-            data.s_Vector3 = new SerializableVector3(
-                                    playerGO.transform.position + Vector3.up);
-            data.s_Quiver = new SerializableQuiver(
-                                    playerGO.GetComponent<Quiver>());
+            data.s_Vector3 = 
+                new SerializableVector3(playerChar.transform.position 
+                                        + Vector3.up);
+            data.s_Quiver = 
+                new SerializableQuiver(playerChar.GetComponent<Quiver>());
         }
-        // existing game
-        //else
-        playerGO.GetComponent<Character>().UpdateCharacterToSaveData(data);
-        var curData = playerGO.GetComponent<Character>().UpdateAndGetSaveData();
+        // update SavedData and begin play timer
+        playerChar.UpdateCharacterToSaveData(data);
+        var curData = playerChar.UpdateAndGetSaveData();
         SavedData.StoreDataAtSlot(curData, SavedData.currentSaveSlot);
         SavedData.StartTimer();
         // finally unload the load scene
-        levelOp = SceneManager.UnloadSceneAsync(loadGameScene);
-        while (!levelOp.isDone) {
+        task = SceneManager.UnloadSceneAsync(loadGameScene);
+        while (!task.isDone) {
             print("Unloading load scene...");
             yield return new WaitForEndOfFrame();
         }
