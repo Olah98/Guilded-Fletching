@@ -22,7 +22,9 @@ public class MainMenuButtons : MonoBehaviour
         Application.Quit();
     }
 
-
+    public void LoadOptions() {
+        SceneManager.LoadScene("Options");
+    }
 
 
 }

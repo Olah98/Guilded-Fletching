@@ -12,10 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 986a9cdda276c52429a6cac3439c3f27, type: 3}
   m_Name: SavedData
   m_EditorClassIdentifier: 
+  saveName: 
   playerHealth: 100
-  maxLevelReached: 1
+  s_Quiver:
+    equipped: 0
   currentLevel: 1
-  spawnPos: {x: 0, y: 0, z: 0}
+  s_Vector3:
+    x: 0
+    y: 0
+    z: 0
+  masterVol: 1
   musicVol: 1
   soundFXVol: 1
   mouseSensitivity: 0.3

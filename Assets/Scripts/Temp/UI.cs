@@ -19,6 +19,7 @@ public class UI : MonoBehaviour
 
     // Character ref to aid in persistant data
     private Character character;
+    private GameObject pausePrompt;
 
     public static UI Instance;
 
@@ -37,6 +38,7 @@ public class UI : MonoBehaviour
 
         character = GameObject.FindGameObjectWithTag("Player")
                                 .GetComponent<Character>();
+        pausePrompt = mainMenuPrompt.transform.parent.gameObject;
     }
 
     private void Start()
@@ -165,15 +167,12 @@ public class UI : MonoBehaviour
         }
     }
 
-
-
     /// <summary>
     /// Hides Other Menus and Shows the Menu that is Input
     /// </summary>
     /// <param name="menu"> Menu to Show</param>
     public void ShowMenu(GameObject menu)
     {
-
         //HideAll();
         menu.SetActive(true);
     }
@@ -187,5 +186,15 @@ public class UI : MonoBehaviour
         Application.OpenURL(url);
     }
 
-    
+    /* FUNCTIONS ADDED BY CHRISTIAN */
+    /// <summary>
+    /// Enable or disable showing the options screen based on parameter.
+    /// </summary>
+    /// <param name="showing">Bool to activate Options.</param>
+    public void ToggleOptions(bool showing) {
+        var oc = optionMenu.GetComponent<OptionsController>();
+        if (!showing) oc.SaveOptionsToCurrentData();
+        optionMenu.SetActive(showing);
+        pausePrompt.SetActive(!showing);
+    }
 }

@@ -6,6 +6,7 @@ Summary: Handles everything in the save select screen from animation to
 */
 using System;
 using System.Collections;
+using System.Linq; // for data migration concerning audio
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
@@ -84,7 +85,7 @@ public class LoadGameController : MonoBehaviour {
         // disable this button if setting the saveName
         if (inputFieldGroup.activeInHierarchy) return;
 
-        var load = dataArr[SavedData.currentSaveSlot];
+        var load = dataArr[SavedData.currentSaveSlot - 1];
         // throw input or load scene
         if (load.saveName == String.Empty && load.timePlayed.Seconds == 0) {
             inputFieldGroup.SetActive(true);
@@ -236,7 +237,6 @@ public class LoadGameController : MonoBehaviour {
         */
         string path = "Assets/Scenes/Digital Prototype 1/Digital Enviroment.unity";
         int index = SceneUtility.GetBuildIndexByScenePath(path);
-        print("sceneyscene: " + index);
         SceneUtility.GetScenePathByBuildIndex(3);
         if (SceneUtility.GetScenePathByBuildIndex(index) != path)
             Debug.LogWarning("Error for Christian:" 
@@ -269,6 +269,17 @@ public class LoadGameController : MonoBehaviour {
             data.s_Quiver = 
                 new SerializableQuiver(playerChar.GetComponent<Quiver>());
         }
+        // get all Audio Sources, categorize, and set values to where's appropriate
+        float clampSoundFX = data.soundFXVol * data.masterVol;
+        float clampAmbient = data.musicVol   * data.masterVol;
+
+        var audioSources = GameObject.FindObjectOfType<AudioSource>();
+        /*
+            TODO
+                -get all audio sources in the scene, categorize and set values to where's appropriate
+                -LINQ statements may be most beneficial
+        */
+
         // update SavedData and begin play timer
         playerChar.UpdateCharacterToSaveData(data);
         var curData = playerChar.UpdateAndGetSaveData();

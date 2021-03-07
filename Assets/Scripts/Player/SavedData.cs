@@ -81,15 +81,13 @@ public class SavedData : ScriptableObject {
     public int currentLevel = 1;
     public SerializableVector3 s_Vector3;
     [Header("Option Values")]
-    [Range(0.0f, 1.0f)]
-    public float masterVol = 1f;
-    [Range(0.0f, 1.0f)]
-    public float musicVol = 1f;
-    [Range(0.0f, 1.0f)]
-    public float soundFXVol = 1f;
-    [Range(0.1f, 1f)]
-    public float mouseSensitivity = 0.3f;
-    public float baseFOV = 60f;                  // default Unity FOV
+    [Range(0.1f, 1.0f)] public float graphicsQuality = 1f;
+    [Range(0.0f, 1.0f)] public float masterVol = 1f;
+    [Range(0.0f, 1.0f)] public float musicVol = 1f;
+    [Range(0.0f, 1.0f)] public float soundFXVol = 1f;
+    [Range(0.1f, 1.0f)] public float mouseSensitivity = 0.3f;
+    // 20 units left for room to zoom in
+    [Range(20f, 200f)]  public float baseFOV = 60f; // default Unity FOV
     [Header("Misc Values")]
     public TimeSpan timePlayed = TimeSpan.Zero;
 
@@ -102,20 +100,35 @@ public class SavedData : ScriptableObject {
     
     private static DateTime? startPlayTime;      // nullable
     private const string saveStr = "SAVE_SLOT_"; // concatenate 1, 2, or 3
-    private static string dataPath = Application.persistentDataPath;
+    private static string dataPath;
+
+    private void OnEnable() {
+        dataPath = Application.persistentDataPath;
+    }
 
     /* STATIC STORAGE AND RETRIEVAL METHODS */
     /// <summary>
     /// Returns data stored at a given slot.
+    /// (w/ error handling during production)
     /// </summary>
     /// <param name="slot">1, 2, or 3 (else error thrown).</param>
     /// <returns>Data stored at the argument slot.</returns>
     public static SavedData GetDataStoredAt(in int slot) {
+        #if UNITY_EDITOR
+            if (slot == -1)
+                return (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        #endif
+
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
-        string filePath = getDataPath + saveStr 
-                          + slot.ToString() + ".dat";
+
+        string filePath = dataPath + saveStr + slot + ".dat";
         FileStream fStream = null;
+        // any file errors are due to features being implemented during 
+        //  production, this turns the error into a yield, these preprocessor 
+        //  directives won't ship the catch statement
+        #if UNITY_EDITOR
         try {
+        #endif
             if (File.Exists(filePath)) {
                 fStream = File.OpenRead(filePath);
                 var bf = new BinaryFormatter();
@@ -123,15 +136,18 @@ public class SavedData : ScriptableObject {
                 fStream.Close();
                 return wrapper.data;
             }
+        #if UNITY_EDITOR                
         }
-        catch (SerializationException sE) {
-            // error should only occur if a save file didn't get
-            Debug.LogWarning("Trying to read from corrupted file"
-                         + ", overwriting to new file\n" + sE);
+        catch (Exception e) {
+            // errors should only occur if a save file didn't get saved
+            //  sucessfully or a variable was added to SavedData class
+            Debug.LogWarning("SavedData invalid: writing new "
+                + "instance...\n" + e);
             if (fStream != null) fStream.Close();
             DeleteDataSlot(slot);
         }
-        return (SavedData)ScriptableObject.CreateInstance(typeof(SavedData));
+        #endif
+        return (SavedData)ScriptableObject.CreateInstance<SavedData>();
     }
 
     /// <summary>
@@ -141,8 +157,8 @@ public class SavedData : ScriptableObject {
     /// <param name="slot">1, 2, or 3 (else error thrown).</param>
     public static void StoreDataAtSlot(in SavedData data, in int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
-        var fStream = File.Create(getDataPath + saveStr 
-                                  + slot.ToString() + ".dat");
+
+        var fStream = File.Create(getDataPath + saveStr + slot + ".dat");
         var wrapper = new DataWrapper(data);
         new BinaryFormatter().Serialize(fStream, wrapper);
         fStream.Close();
@@ -155,9 +171,9 @@ public class SavedData : ScriptableObject {
     /// <param name="slot">1, 2, or 3 (else error thrown).</param>
     public static IEnumerator StoreDataAsyncAtSlot(SavedData data, int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
+
         var wrapper = new DataWrapper(data);
-        var fStream = File.Create(getDataPath + saveStr 
-                                  + slot.ToString() + ".dat");
+        var fStream = File.Create(getDataPath + saveStr + ".dat");
         var serialization = Task.Run(() => new BinaryFormatter()
                                 .Serialize(fStream, wrapper));
         while (!serialization.IsCompleted || !serialization.IsFaulted) {
@@ -174,14 +190,12 @@ public class SavedData : ScriptableObject {
     /// <param name="slot">1, 2, or 3 (else error thrown).</param>
     public static void DeleteDataSlot(in int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
-        string filePath = getDataPath + saveStr 
-                          + slot.ToString() + ".dat";
 
+        string filePath = getDataPath + saveStr + ".dat";
         if (File.Exists(filePath)) File.Delete(filePath);
-        
         var fStream = File.OpenWrite(filePath);
         var wrapper = new DataWrapper((SavedData)ScriptableObject
-                                    .CreateInstance(typeof(SavedData)));
+                                    .CreateInstance<SavedData>());
         new BinaryFormatter().Serialize(fStream, wrapper);
         fStream.Close();
     }
