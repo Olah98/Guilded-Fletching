@@ -49,6 +49,11 @@ public class Character : MonoBehaviour
     [Header ("UI Elements")]
     public Text chargeText;
 
+    [Header("Tessting")]
+    public bool timedJump;
+    public float upTime;
+    private float jumpTime = 0f;
+
 
 
     // Start is called before the first frame update
@@ -132,6 +137,9 @@ public class Character : MonoBehaviour
         {
             velocity.y = 0;
         }
+
+        
+
     }
 
     private void FixedUpdate()
@@ -153,16 +161,20 @@ public class Character : MonoBehaviour
         //Moves player when WASD is pressed
 
 
-        if (!canJump)
+        if (jumpTime <= 0)
         {
-            //gravity
-            velocity.y -= gravity * Time.deltaTime * (1f + fallMod);
-        }
+            if (!canJump)
+            {
+                //gravity
+                velocity.y -= gravity * Time.deltaTime * (1f + fallMod);
+            }
 
-        if (velocity.y < -gravity)
-        {
-            velocity.y = -gravity;
+            if (velocity.y < -gravity)
+            {
+                velocity.y = -gravity;
+            }
         }
+        
 
         //responsible for Y axis movement
         if (cc.enabled == true)
@@ -170,6 +182,11 @@ public class Character : MonoBehaviour
             cc.Move(velocity * Time.deltaTime);
         }
         
+        //Testing new jump system
+        if (jumpTime >0 && timedJump == true)
+        {
+            jumpTime -= Time.deltaTime;
+        }
 
         if (Input.GetButton("Fire1"))
         {
@@ -211,6 +228,13 @@ public class Character : MonoBehaviour
             //Adds force to jum pwith
             velocity.y = Mathf.Sqrt(jumpPower * gravity);
             jumpCD = .5f;
+
+            //testing New jump movement
+            if (timedJump)
+            {
+                jumpTime += upTime;
+            }
+     
         }
 
 

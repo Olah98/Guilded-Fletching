@@ -40,7 +40,7 @@ public class Arrow : MonoBehaviour
     public void Stuck()
     {
         Debug.Log(gameObject.transform.rotation);
-        gameObject.GetComponent<CapsuleCollider>().enabled = false;
+        gameObject.GetComponent<BoxCollider>().enabled = false;
         Vector3 temp = transform.rotation.eulerAngles;
         stuck = true;
         //rb.constraints = RigidbodyConstraints.FreezeAll;
