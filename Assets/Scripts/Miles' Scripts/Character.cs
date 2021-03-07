@@ -49,7 +49,7 @@ public class Character : MonoBehaviour
     [Header ("UI Elements")]
     public Text chargeText;
 
-    [Header("Tessting")]
+    [Header("Testing")]
     public bool timedJump;
     public float upTime;
     private float jumpTime = 0f;
