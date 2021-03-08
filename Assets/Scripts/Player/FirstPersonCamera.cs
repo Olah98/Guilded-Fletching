@@ -100,8 +100,9 @@ public class FirstPersonCamera : MonoBehaviour {
     /// zoom the camera in.
     /// </summary>
     private IEnumerator ZoomIn() {
-        // FOV starts at s_baseFOV, ends at s_baseFOV + maxZoomVal
-        while (cam.fieldOfView > s_baseFOV + maxZoomVal) {
+        print("baseFOV: " + s_baseFOV + ", camFOV: " + cam.fieldOfView);
+        // FOV starts at s_baseFOV, ends at s_baseFOV - maxZoomVal
+        while (cam.fieldOfView > s_baseFOV - maxZoomVal) {
             --cam.fieldOfView;
             yield return new WaitForSeconds(Time.fixedDeltaTime);
         }
@@ -113,7 +114,7 @@ public class FirstPersonCamera : MonoBehaviour {
     ///  the camera back out.
     /// </summary>
     private IEnumerator ZoomOut() {
-        // FOV starts at maxZoomVal + s_baseFOV, ends at s_baseFOV
+        // FOV starts at s_baseFOV - maxZoomVal, ends at s_baseFOV
         while (cam.fieldOfView < s_baseFOV) {
             ++cam.fieldOfView;
             yield return new WaitForEndOfFrame();

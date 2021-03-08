@@ -86366,6 +86366,11 @@ PrefabInstance:
       propertyPath: m_AnchorMin.x
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7563612288532450811, guid: b65a8a751c2efaf4690a7cd438776fd3,
+        type: 3}
+      propertyPath: maxZoomVal
+      value: 40
+      objectReference: {fileID: 0}
     - target: {fileID: 8089442750607011895, guid: b65a8a751c2efaf4690a7cd438776fd3,
         type: 3}
       propertyPath: m_OnValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_IntArgument
@@ -86424,24 +86429,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 1461161584}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1463048865 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4125321366855341330, guid: b65a8a751c2efaf4690a7cd438776fd3,
-    type: 3}
-  m_PrefabInstance: {fileID: 1461161584}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1463048872
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1463048865}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1f761b8c000e4bc4bb7d309c96cfaeb2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1465742980
 GameObject:
   m_ObjectHideFlags: 0
