@@ -325,7 +325,7 @@ public class Character : MonoBehaviour
         currentHp -= damage;
     }
 
-}
+
 
     /// <summary>
     ///
@@ -333,7 +333,7 @@ public class Character : MonoBehaviour
     /// <param name="data"></param>
     /// <returns></returns>
     public SavedData UpdateAndGetSaveData() {
-        currentData.playerHealth = health;
+        currentData.playerHealth = currentHp;
         currentData.s_Quiver = new SerializableQuiver(myQuiver);
         // future implementations will handle checkpoint system
         return currentData;
@@ -346,7 +346,7 @@ public class Character : MonoBehaviour
     /// <returns>Updated save file</returns>
     public void UpdateCharacterToSaveData(in SavedData data) {
         currentData = data;
-        health = data.playerHealth;
+        currentHp = data.playerHealth;
         myQuiver.CopySerializedQuiver(data.s_Quiver);
         // update children
         GetComponentInChildren<FirstPersonCamera>().SetOptionVals(data);
