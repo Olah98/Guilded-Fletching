@@ -1927,8 +1927,7 @@ PrefabInstance:
       propertyPath: attackChargePerSecond
       value: 50
       objectReference: {fileID: 0}
-    - target: {fileID: 4125321366855341335, guid: b65a8a751c2efaf4690a7cd438776fd3,
-        type: 3}
+    - target: {fileID: 0}
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
@@ -1940,12 +1939,12 @@ PrefabInstance:
     - target: {fileID: 4125321366855341416, guid: b65a8a751c2efaf4690a7cd438776fd3,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 6.53
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4125321366855341416, guid: b65a8a751c2efaf4690a7cd438776fd3,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 2.34
       objectReference: {fileID: 0}
     - target: {fileID: 4125321366855341416, guid: b65a8a751c2efaf4690a7cd438776fd3,
         type: 3}
@@ -2012,8 +2011,7 @@ PrefabInstance:
       propertyPath: lookSensitivity
       value: 2.7
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 4125321366855341335, guid: b65a8a751c2efaf4690a7cd438776fd3, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b65a8a751c2efaf4690a7cd438776fd3, type: 3}
 --- !u!1001 &1715846680
 PrefabInstance:
