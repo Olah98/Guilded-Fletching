@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 using UnityEngine.Audio;
 
 public class UI : MonoBehaviour
@@ -16,8 +17,9 @@ public class UI : MonoBehaviour
     public GameObject pauseBG;
    // public GameObject howToPlay;
 
-
-   
+    // Character ref to aid in persistant data
+    private Character character;
+    private GameObject pausePrompt;
 
     public static UI Instance;
 
@@ -33,6 +35,10 @@ public class UI : MonoBehaviour
             Destroy(Instance.gameObject);
         }
         Instance = this;
+
+        character = GameObject.FindGameObjectWithTag("Player")
+                                .GetComponent<Character>();
+        pausePrompt = mainMenuPrompt.transform.parent.gameObject;
     }
 
     private void Start()
@@ -43,7 +49,6 @@ public class UI : MonoBehaviour
         Time.timeScale = 1;
 
         
-
     }
 
     // Update is called once per frame
@@ -133,6 +138,9 @@ public class UI : MonoBehaviour
     /// </summary>
     public void Quit()
     {
+        var curData = character.UpdateAndGetSaveData();
+        StartCoroutine(SavedData.CutCurrentPlayTime(curData));
+        //store values!!
         Debug.Log("Quit Game");
         Application.Quit();
     }
@@ -145,6 +153,10 @@ public class UI : MonoBehaviour
     {
         if (value)
         {
+            // persisten data handling (by Christian)
+            var curData = character.UpdateAndGetSaveData();
+            StartCoroutine(SavedData.CutCurrentPlayTime(curData));
+
             Time.timeScale = 1;
             SceneManager.LoadScene("MainMenu");
             Debug.Log("Go To Main Menu");
@@ -155,15 +167,12 @@ public class UI : MonoBehaviour
         }
     }
 
-
-
     /// <summary>
     /// Hides Other Menus and Shows the Menu that is Input
     /// </summary>
     /// <param name="menu"> Menu to Show</param>
     public void ShowMenu(GameObject menu)
     {
-
         //HideAll();
         menu.SetActive(true);
     }
@@ -177,5 +186,15 @@ public class UI : MonoBehaviour
         Application.OpenURL(url);
     }
 
-    
+    /* FUNCTIONS ADDED BY CHRISTIAN */
+    /// <summary>
+    /// Enable or disable showing the options screen based on parameter.
+    /// </summary>
+    /// <param name="showing">Bool to activate Options.</param>
+    public void ToggleOptions(bool showing) {
+        var oc = optionMenu.GetComponent<OptionsController>();
+        if (!showing) oc.SaveOptionsToCurrentData();
+        optionMenu.SetActive(showing);
+        pausePrompt.SetActive(!showing);
+    }
 }

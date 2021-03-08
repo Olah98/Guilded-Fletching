@@ -31,8 +31,12 @@ public class Character : MonoBehaviour
     private Transform camEuler;
     private RespawnCoordinator rc;
     private Quiver myQuiver;
+    private SavedData currentData;
 
-
+    // delegates
+    public SavedData getCurrentData { get { return currentData; } }
+    public Quiver    getMyQuiver    { get { return myQuiver;    } }
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -46,7 +50,12 @@ public class Character : MonoBehaviour
         //Sets Character controller
         
         // initialize quiver (StandardArrow equipped first)
+        // initialize values if new game, else grab existing
+        //          **** OR HAS THE EXISTING DATA ALREADY BEEN TAKEN CARE OF?****
         myQuiver = GetComponent<Quiver>();
+        if (currentData == null)
+            currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        UpdateCharacterToSaveData(currentData);
     }
 
     // Update is called once per frame
@@ -218,8 +227,32 @@ public class Character : MonoBehaviour
             dead = true;
         }
     }
-}
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public SavedData UpdateAndGetSaveData() {
+        currentData.playerHealth = health;
+        currentData.s_Quiver = new SerializableQuiver(myQuiver);
+        // future implementations will handle checkpoint system
+        return currentData;
+    }
+
+    /// <summary>
+    /// Take argument data and overwrite Character's save data.
+    /// </summary>
+    /// <param name="data">Data that will be stored</param>
+    /// <returns>Updated save file</returns>
+    public void UpdateCharacterToSaveData(in SavedData data) {
+        currentData = data;
+        health = data.playerHealth;
+        myQuiver.CopySerializedQuiver(data.s_Quiver);
+        // update children
+        GetComponentInChildren<FirstPersonCamera>().SetOptionVals(data);
+    }
+}
 
 public class Attack : MonoBehaviour
 {

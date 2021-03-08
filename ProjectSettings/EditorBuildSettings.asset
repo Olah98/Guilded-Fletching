@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Digital Prototype 1/Digital Enviroment.unity
     guid: 863e59e5814d6dd408407135dd95bea1
+  - enabled: 1
+    path: Assets/Scenes/MenuScenes/Options.unity
+    guid: 9fb15d84e69385c41a2e1b1b26fe8e03
   m_configObjects: {}
