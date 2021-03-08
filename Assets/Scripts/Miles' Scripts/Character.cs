@@ -24,7 +24,7 @@ public class Character : MonoBehaviour
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
-    
+
     private bool canJump;
     private float horizontalInput;
     private float verticalInput;
@@ -33,6 +33,7 @@ public class Character : MonoBehaviour
 
     private Transform camEuler;
     private Quiver myQuiver;
+    private SavedData currentData;
 
 
     [Header ("Attacking")]
@@ -56,13 +57,17 @@ public class Character : MonoBehaviour
 
 
 
+    // delegates
+    public SavedData getCurrentData { get { return currentData; } }
+    public Quiver    getMyQuiver    { get { return myQuiver;    } }
+
     // Start is called before the first frame update
     void Start()
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-      
-        
+
+
         if (SaveManager.instance.activeSave.respawnPos!=null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
         {
@@ -73,9 +78,14 @@ public class Character : MonoBehaviour
 
 
         //Sets Character controller
-        
+
         // initialize quiver (StandardArrow equipped first)
+        // initialize values if new game, else grab existing
+        //          **** OR HAS THE EXISTING DATA ALREADY BEEN TAKEN CARE OF?****
         myQuiver = GetComponent<Quiver>();
+        if (currentData == null)
+            currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        UpdateCharacterToSaveData(currentData);
     }
 
     // Update is called once per frame
@@ -139,7 +149,7 @@ public class Character : MonoBehaviour
             velocity.y = 0;
         }
 
-        
+
 
     }
 
@@ -175,14 +185,14 @@ public class Character : MonoBehaviour
                 velocity.y = -gravity;
             }
         }
-        
+
 
         //responsible for Y axis movement
         if (cc.enabled == true)
         {
             cc.Move(velocity * Time.deltaTime);
         }
-        
+
         //Testing new jump system
         if (jumpTime >0 && timedJump == true)
         {
@@ -235,7 +245,7 @@ public class Character : MonoBehaviour
             {
                 jumpTime += upTime;
             }
-     
+
         }
 
 
@@ -291,7 +301,7 @@ public class Character : MonoBehaviour
     }
 
 
-    
+
 
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
@@ -317,6 +327,31 @@ public class Character : MonoBehaviour
 
 }
 
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public SavedData UpdateAndGetSaveData() {
+        currentData.playerHealth = health;
+        currentData.s_Quiver = new SerializableQuiver(myQuiver);
+        // future implementations will handle checkpoint system
+        return currentData;
+    }
+
+    /// <summary>
+    /// Take argument data and overwrite Character's save data.
+    /// </summary>
+    /// <param name="data">Data that will be stored</param>
+    /// <returns>Updated save file</returns>
+    public void UpdateCharacterToSaveData(in SavedData data) {
+        currentData = data;
+        health = data.playerHealth;
+        myQuiver.CopySerializedQuiver(data.s_Quiver);
+        // update children
+        GetComponentInChildren<FirstPersonCamera>().SetOptionVals(data);
+    }
+}
 
 public class Attack : MonoBehaviour
 {

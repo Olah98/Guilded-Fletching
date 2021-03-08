@@ -9,6 +9,7 @@ using System.Collections.Generic;
 
 public class Door : MonoBehaviour {
     public float openSpeed;
+    [HideInInspector]
     public List<Switch> mySwitches;
     private Transform slideTo;
 
