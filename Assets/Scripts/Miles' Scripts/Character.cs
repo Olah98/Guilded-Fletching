@@ -34,6 +34,7 @@ public class Character : MonoBehaviour
     private Transform camEuler;
     private Quiver myQuiver;
     private SavedData currentData;
+    private PlayerAnimationController pAnimController;
 
 
     [Header ("Attacking")]
@@ -78,11 +79,9 @@ public class Character : MonoBehaviour
 
 
         //Sets Character controller
-
-        // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
-        //          **** OR HAS THE EXISTING DATA ALREADY BEEN TAKEN CARE OF?****
         myQuiver = GetComponent<Quiver>();
+        pAnimController = cam.GetComponent<PlayerAnimationController>();
         if (currentData == null)
             currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
         UpdateCharacterToSaveData(currentData);
@@ -209,7 +208,10 @@ public class Character : MonoBehaviour
                                             .GetComponent<BaseArrow>().drawSpeed;
                     attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
                     //builds attackcharge as long as you hold the mouse button down.
+                    pAnimController.SetAnimationTrue(AnimState.DrawingArrow);
                 }
+                else
+                    pAnimController.SetAnimationTrue(AnimState.FullyDrawn);
             }
         }
         else if (attackCharge > 0)
@@ -219,6 +221,7 @@ public class Character : MonoBehaviour
                 // get currently equipped arrow and increment record
                 GameObject arrowEquipped = arrowPrefabs[myQuiver.GetArrowType()];
                 myQuiver.Fire();
+                pAnimController.SetAnimationTrue(AnimState.Shooting);
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
                 Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
                 attackCD = 1;
@@ -325,15 +328,13 @@ public class Character : MonoBehaviour
         currentHp -= damage;
     }
 
-}
-
     /// <summary>
     ///
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
     public SavedData UpdateAndGetSaveData() {
-        currentData.playerHealth = health;
+        currentData.playerHealth = currentHp;
         currentData.s_Quiver = new SerializableQuiver(myQuiver);
         // future implementations will handle checkpoint system
         return currentData;
@@ -346,7 +347,7 @@ public class Character : MonoBehaviour
     /// <returns>Updated save file</returns>
     public void UpdateCharacterToSaveData(in SavedData data) {
         currentData = data;
-        health = data.playerHealth;
+        currentHp = data.playerHealth;
         myQuiver.CopySerializedQuiver(data.s_Quiver);
         // update children
         GetComponentInChildren<FirstPersonCamera>().SetOptionVals(data);
