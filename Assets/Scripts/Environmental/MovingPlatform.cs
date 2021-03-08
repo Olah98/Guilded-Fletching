@@ -23,14 +23,14 @@ public class MovingPlatform : MonoBehaviour {
         curNode = movePoints.First;
         isBrambled = false;
         //unparent waypoints
-        foreach (var w in waypoints) w.parent = null;
+        foreach (var w in waypoints) w.parent = transform.parent;
     }
 
     void FixedUpdate() {
         if (!isBrambled) {
             //move platform
             Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
-            transform.Translate(moveTo * speed * Time.deltaTime);
+            transform.position += moveTo * speed * Time.fixedDeltaTime;
         }
     }
 
@@ -39,7 +39,7 @@ public class MovingPlatform : MonoBehaviour {
     /// </summary>
     /// <param name="other">Colliding object.</param>
     private void OnTriggerEnter(Collider other) {
-        if (other.tag == "Waypoint") {
+        if (other.tag == "Waypoint" && other.transform == curNode.Value) {
             //if the next node is null, return to the first in loop
             curNode = curNode.Next ?? movePoints.First;
         }
