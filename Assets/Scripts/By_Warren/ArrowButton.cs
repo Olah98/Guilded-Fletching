@@ -1,4 +1,9 @@
-﻿using System.Collections;
+﻿/*
+Author: Warren Rose II
+Data: 03/9/2021
+Summary: Toggle for Arrow UI tranparency and image.
+*/
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,6 +16,7 @@ public class ArrowButton : MonoBehaviour
     public int type;
     public Sprite imageOn;
     public Sprite imageOff;
+    public Text myText;
     // Start is called before the first frame update
     void Start()
     {
@@ -35,6 +41,10 @@ public class ArrowButton : MonoBehaviour
                 myButton.interactable = false;
                 myButton.image.sprite = imageOff;
             }
+        }
+        if (myButton.interactable)
+        {
+            myText.text = "" + myQuiver.GetComponent<Quiver>().GetArrowTypeShot(type);
         }
     }
 }

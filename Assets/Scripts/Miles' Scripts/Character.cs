@@ -51,6 +51,7 @@ public class Character : MonoBehaviour
 
     [Header ("UI Elements")]
     public Text chargeText;
+    //
 
     [Header("Testing")]
     public bool timedJump;

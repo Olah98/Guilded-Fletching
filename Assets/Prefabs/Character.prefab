@@ -1609,12 +1609,12 @@ GameObject:
   - component: {fileID: 4098767820897059272}
   - component: {fileID: 1555643837277827437}
   m_Layer: 8
-  m_Name: Text
+  m_Name: ABText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6940905041120683048
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1631,8 +1631,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -40}
+  m_SizeDelta: {x: 0, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4098767820897059272
 CanvasRenderer:
@@ -1655,7 +1655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1663,10 +1663,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -1674,7 +1674,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: '0
+
+'
 --- !u!1 &2503762511657947163
 GameObject:
   m_ObjectHideFlags: 0
@@ -1847,6 +1849,7 @@ MonoBehaviour:
   type: 0
   imageOn: {fileID: 21300000, guid: 126b4a19bcc37f24d87a6960dca49e9b, type: 3}
   imageOff: {fileID: 21300000, guid: ac10bd4bb4d06c94d9af4a6074f63c71, type: 3}
+  myText: {fileID: 1982849229181505705}
 --- !u!1 &2601179964438122284
 GameObject:
   m_ObjectHideFlags: 0
@@ -1859,12 +1862,12 @@ GameObject:
   - component: {fileID: 6197632034144044924}
   - component: {fileID: 1982849229181505705}
   m_Layer: 8
-  m_Name: Text
+  m_Name: SBText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5183623346533538684
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1881,8 +1884,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -40}
+  m_SizeDelta: {x: 0, y: -0.0000038146973}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6197632034144044924
 CanvasRenderer:
@@ -1905,7 +1908,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -1913,10 +1916,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -1924,7 +1927,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: 0
 --- !u!1 &2630332845159332698
 GameObject:
   m_ObjectHideFlags: 0
@@ -2355,6 +2358,7 @@ MonoBehaviour:
   type: 2
   imageOn: {fileID: 21300000, guid: d47e74813fd2aa7468a635f6d79177a8, type: 3}
   imageOff: {fileID: 21300000, guid: 39e497cad07a28e4eb77b76ad8afa08f, type: 3}
+  myText: {fileID: 3725513204754247325}
 --- !u!1 &3174040768369005606
 GameObject:
   m_ObjectHideFlags: 0
@@ -2651,12 +2655,12 @@ GameObject:
   - component: {fileID: 1022324912743631538}
   - component: {fileID: 3725513204754247325}
   m_Layer: 8
-  m_Name: Text
+  m_Name: WBText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &538235229244032552
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2673,8 +2677,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -40}
+  m_SizeDelta: {x: 0, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1022324912743631538
 CanvasRenderer:
@@ -2697,7 +2701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2705,10 +2709,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -2716,7 +2720,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: '0
+
+'
 --- !u!1 &3515677992633857852
 GameObject:
   m_ObjectHideFlags: 0
@@ -2729,12 +2735,12 @@ GameObject:
   - component: {fileID: 7905276953118741916}
   - component: {fileID: 4181015177451547103}
   m_Layer: 8
-  m_Name: Text
+  m_Name: BBText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3101301893587684011
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2751,8 +2757,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -40}
+  m_SizeDelta: {x: 0, y: -40}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7905276953118741916
 CanvasRenderer:
@@ -2775,7 +2781,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -2783,10 +2789,10 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
+    m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
-    m_MinSize: 10
+    m_MinSize: 2
     m_MaxSize: 40
     m_Alignment: 4
     m_AlignByGeometry: 0
@@ -2794,7 +2800,9 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Button
+  m_Text: '0
+
+'
 --- !u!1 &3599417086486415313
 GameObject:
   m_ObjectHideFlags: 0
@@ -4306,6 +4314,7 @@ MonoBehaviour:
   type: 1
   imageOn: {fileID: 21300000, guid: aebb78452defe5840a1c36d2215e6d00, type: 3}
   imageOff: {fileID: 21300000, guid: a2d36f2e61bbf5c45ace802ec174b545, type: 3}
+  myText: {fileID: 4181015177451547103}
 --- !u!1 &5976303519503958764
 GameObject:
   m_ObjectHideFlags: 0
@@ -5678,6 +5687,7 @@ MonoBehaviour:
   type: 3
   imageOn: {fileID: 21300000, guid: b52b65f5b192e1244a6446e2976c4ef7, type: 3}
   imageOff: {fileID: 21300000, guid: cbc1996088c8b974586b11a5ab4cb2e9, type: 3}
+  myText: {fileID: 1555643837277827437}
 --- !u!1 &8940206403359634448
 GameObject:
   m_ObjectHideFlags: 0

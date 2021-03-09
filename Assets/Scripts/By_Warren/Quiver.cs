@@ -358,6 +358,35 @@ public class Quiver : MonoBehaviour
     }//GetArrowTypeShot
 
     /*
+    * Get Arrow Type Shot (Int Overload)
+    * Returns int value of selected ammo type used this loadout
+    */
+    public int GetArrowTypeShot(int arrows)
+    {
+        if (arrows == 0)
+        {
+            return loadout[(int)Ammo.Standard, RECORD];
+        }
+        else if (arrows == 1)
+        {
+            return loadout[(int)Ammo.Bramble, RECORD];
+        }
+        if (arrows == 2)
+        {
+            return loadout[(int)Ammo.Warp, RECORD];
+        }
+        if (arrows == 3)
+        {
+            return loadout[(int)Ammo.Airburst, RECORD];
+        }
+        else
+        {
+            Debug.Log("Invalid arrow type.");
+            return -1;
+        }
+    }//GetArrowTypeShot
+
+    /*
     * Fire
     * If ammo type is available, this returns true and increases count by 1
     * Returns false otherwise
