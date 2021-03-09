@@ -382,6 +382,7 @@ MonoBehaviour:
   jumpPower: 2.8
   jumpCD: 0
   fallMod: 0.4
+  coyoteJump: 0.5
   isClimbing: 0
   arrowPrefabs:
   - {fileID: 1926641923919432315, guid: 6d11b5fc3bacdec49b4fd9525d787d37, type: 3}
