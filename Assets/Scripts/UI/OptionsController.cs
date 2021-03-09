@@ -169,4 +169,10 @@ public class OptionsController : MonoBehaviour {
         }
         throw new System.IndexOutOfRangeException();
     }
+
+
+    public void loadScene(string level)
+    {
+        SceneManager.LoadScene(level);
+    }
 }

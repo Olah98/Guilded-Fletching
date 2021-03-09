@@ -12,9 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Digital Prototype 1/HowToPlay.unity
     guid: 778c078b43b0e514e994dccbfbc0a815
   - enabled: 1
-    path: Assets/Scenes/Digital Prototype 1/Faround.unity
-    guid: 8e8fd7731e4c67e4aaaba170b39e24ef
-  - enabled: 1
     path: Assets/Scenes/Digital Prototype 1/Digital Enviroment.unity
     guid: 863e59e5814d6dd408407135dd95bea1
   - enabled: 1
