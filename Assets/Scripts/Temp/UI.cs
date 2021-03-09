@@ -130,6 +130,14 @@ public class UI : MonoBehaviour
     {
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
+        SaveManager.instance.DeleteSave();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+    
+    public void RetryAtCheckpoint()
+    {
+        Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
+        Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
