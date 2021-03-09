@@ -6,7 +6,16 @@ using UnityEngine;
 
 public class MainMenuButtons : MonoBehaviour
 {
-    
+    public Button cont;
+    private void Awake()
+    {
+        SaveManager.instance.Load();
+        if (SaveManager.instance.activeSave.sceneName!=null)
+        {
+            cont.GetComponent<Button>().interactable = false;
+        }
+    }
+
     public void LoadScene(string level)
     {
         SceneManager.LoadScene(level);
@@ -29,7 +38,18 @@ public class MainMenuButtons : MonoBehaviour
     public void Continue()
     {
         SaveManager.instance.Load();
-        SceneManager.LoadScene(SaveManager.instance.activeSave.sceneName);
+        string sceneToLoad = SaveManager.instance.activeSave.sceneName;
+        if (sceneToLoad !=null &&
+            (sceneToLoad != "AlexOlahTest" ||
+            sceneToLoad != "Christian's Test Scene" ||
+            sceneToLoad != "Jon_Test" ||
+            sceneToLoad != "MilesGomezTest" ||
+            sceneToLoad != "TylerMunstockTest" ||
+            sceneToLoad != "Warren_Test"))
+        {
+            SceneManager.LoadScene(SaveManager.instance.activeSave.sceneName);
+        }
+        
     }
 
 
