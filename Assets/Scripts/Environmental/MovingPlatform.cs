@@ -14,6 +14,10 @@ public class MovingPlatform : MonoBehaviour {
 
     private LinkedList<Transform> movePoints;
     private LinkedListNode<Transform> curNode;
+    //velocity tracker
+    public Vector3 GetVelocity { get { return velocity; } }
+    private Vector3 velocity = Vector3.zero;
+    private Vector3 posLastFrame;
     
     void Start() {
         var waypoints = from point in GetComponentsInChildren<Transform>()
@@ -22,6 +26,7 @@ public class MovingPlatform : MonoBehaviour {
         movePoints  = new LinkedList<Transform>(waypoints);
         curNode = movePoints.First;
         isBrambled = false;
+        posLastFrame = transform.position;
         //unparent waypoints
         foreach (var w in waypoints) w.parent = transform.parent;
     }
@@ -32,6 +37,9 @@ public class MovingPlatform : MonoBehaviour {
             Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
             transform.position += moveTo * speed * Time.fixedDeltaTime;
         }
+
+        velocity = (transform.position - posLastFrame) / Time.fixedDeltaTime;
+        posLastFrame = transform.position;
     }
 
     /// <summary>
