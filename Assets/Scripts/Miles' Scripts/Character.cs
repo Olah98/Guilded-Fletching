@@ -20,6 +20,8 @@ public class Character : MonoBehaviour
     public float jumpPower;
     public float jumpCD;
     public float fallMod;
+    public float coyoteJump;
+    private float coyoteJumpTime;
     public bool isClimbing;
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
@@ -138,7 +140,7 @@ public class Character : MonoBehaviour
             //lowers attack cd
         }
 
-        if (isJumpPressed && canJump)
+        if ((isJumpPressed && canJump) || (isJumpPressed && coyoteJumpTime >0f))
         {
             Jump();
             //Jumps on input
@@ -232,12 +234,13 @@ public class Character : MonoBehaviour
 
     public void Jump()
     {
-        if (jumpCD <=0 && !dead)
+        if ((jumpCD <=0 && !dead) || (coyoteJumpTime > 0 && !dead))
         {
             canJump = false;
             //Adds force to jum pwith
             velocity.y = Mathf.Sqrt(jumpPower * gravity);
             jumpCD = .5f;
+            coyoteJumpTime = 0f;
 
             //testing New jump movement
             if (timedJump)
@@ -279,10 +282,12 @@ public class Character : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.4f))
         {
+            coyoteJumpTime = coyoteJump;
             canJump = true;
         }
         else
         {
+            coyoteJumpTime -= Time.deltaTime * 1;
             canJump = false;
         }
     }
