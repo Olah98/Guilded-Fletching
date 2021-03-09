@@ -196,7 +196,7 @@ MonoBehaviour:
   maxSpeed: 0
   jumpPower: 2.8
   jumpCD: 0
-  fallMod: 0.4
+  fallMod: 0.8
   isClimbing: 0
   arrowPrefabs:
   - {fileID: 1926641923919432315, guid: 6d11b5fc3bacdec49b4fd9525d787d37, type: 3}
@@ -644,7 +644,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   interactionHintText: {fileID: 7045501865581663304}
-  lookSensitivity: 2.7
+  lookSpeed: 10
   upperBoundary: 290
   lowerBoundary: 60
   maxZoomVal: 20
