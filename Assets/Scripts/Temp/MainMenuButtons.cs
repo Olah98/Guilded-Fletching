@@ -7,7 +7,7 @@ using UnityEngine;
 public class MainMenuButtons : MonoBehaviour
 {
     public Button cont;
-    private void Awake()
+    private void Start()
     {
         SaveManager.instance.Load();
         if (cont != null)
