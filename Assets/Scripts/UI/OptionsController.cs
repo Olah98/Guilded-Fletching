@@ -62,7 +62,7 @@ public class OptionsController : MonoBehaviour {
         // mouse sensitivity
         curData.mouseSensitivity = Mathf.Clamp(curData.mouseSensitivity, 0.1f, 1.0f);
         options[1].slider.value = curData.mouseSensitivity;
-        options[1].numStr.text  = ((int)(curData.mouseSensitivity * 100)).ToString();
+        options[1].numStr.text  = ((int)((curData.mouseSensitivity * 100))).ToString();
         // base fov(field of view)
         options[2].slider.value = curData.baseFOV * 0.005f;
         options[2].numStr.text  = ((int)curData.baseFOV).ToString();
@@ -95,12 +95,9 @@ public class OptionsController : MonoBehaviour {
             || options[optionIndex].numStr == null) return;
 
         if (optionIndex == (int)OptionType.MouseSensitivity) {
-            float newVal = options[1].slider.value;
-            newVal = Mathf.Clamp(newVal, 0.1f, 1.0f);
-            options[1].slider.value = newVal;
-            options[1].numStr.text  = ((int)(newVal * 100)).ToString();
+            options[1].numStr.text = ((int)(options[1].slider.value * 100f)).ToString();
         }
-        if (optionIndex == (int)OptionType.BaseFOV) {
+        else if (optionIndex == (int)OptionType.BaseFOV) {
             float fovVal = Mathf.Clamp(
                             options[optionIndex].slider.value * 200,
                             20f, 
