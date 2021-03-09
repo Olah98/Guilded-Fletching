@@ -100,7 +100,6 @@ public class FirstPersonCamera : MonoBehaviour {
     /// zoom the camera in.
     /// </summary>
     private IEnumerator ZoomIn() {
-        print("baseFOV: " + s_baseFOV + ", camFOV: " + cam.fieldOfView);
         // FOV starts at s_baseFOV, ends at s_baseFOV - maxZoomVal
         while (cam.fieldOfView > s_baseFOV - maxZoomVal) {
             --cam.fieldOfView;
