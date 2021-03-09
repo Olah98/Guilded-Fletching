@@ -52,6 +52,10 @@ public class OptionsController : MonoBehaviour {
         InitializeOptionUI();
     }
 
+    private void OnEnable() {
+        if (curData != null) InitializeOptionUI();
+    }
+
     /// <summary>
     /// Immediately set up UI values in the Options in one function.
     /// </summary>

@@ -83,8 +83,8 @@ public class Character : MonoBehaviour
         // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
         myQuiver = GetComponent<Quiver>();
-        if (currentData == null)
-            currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        //if (currentData == null)
+        currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
         UpdateCharacterToSaveData(currentData);
     }
 
