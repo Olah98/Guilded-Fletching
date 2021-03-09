@@ -6,21 +6,27 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Scenes/Digital Prototype 1/MainMenu.unity
+    path: Assets/Scenes/MenuScenes/MainMenu.unity
     guid: 27d36a0e1279d1e4992e47688416b44f
   - enabled: 1
-    path: Assets/Scenes/Digital Prototype 1/HowToPlay.unity
+    path: Assets/Scenes/MenuScenes/HowToPlay.unity
     guid: 778c078b43b0e514e994dccbfbc0a815
   - enabled: 1
-    path: Assets/Scenes/Digital Prototype 1/Digital Enviroment.unity
+    path: Assets/Scenes/Level Blockouts/Digital Enviroment.unity
     guid: 863e59e5814d6dd408407135dd95bea1
   - enabled: 1
     path: Assets/Scenes/MenuScenes/Options.unity
     guid: 9fb15d84e69385c41a2e1b1b26fe8e03
   - enabled: 1
-    path: Assets/Scenes/Digital Prototype 1/LevelSelect.unity
+    path: Assets/Scenes/MenuScenes/LevelSelect.unity
     guid: d2d01042cd2679240b69e4635aa44cce
   - enabled: 1
     path: Assets/Scenes/Testing/MilesGomezTest.unity
     guid: 4ab7502b5e5bbd04894513e80b8c4afd
+  - enabled: 1
+    path: Assets/Scenes/Level Blockouts/Warp_Arrow_Blocked.unity
+    guid: eb144bbad4a90ab44a613a5e41c36e42
+  - enabled: 1
+    path: Assets/Scenes/BrambleTutorial.unity
+    guid: c0317c6aa40a6b5499c6ac23f6cb7c38
   m_configObjects: {}
