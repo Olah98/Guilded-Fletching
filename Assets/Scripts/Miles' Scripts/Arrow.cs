@@ -29,17 +29,25 @@ public class Arrow : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision!");
-        Stuck();
+        if (stuck==false)
+        {
+            Debug.Log("Collision!");
+            Stuck();
+        }
     }
     
     
     public void Stuck()
     {
+        Debug.Log(gameObject.transform.rotation);
+        gameObject.GetComponent<BoxCollider>().enabled = false;
+        Vector3 temp = transform.rotation.eulerAngles;
         stuck = true;
         //rb.constraints = RigidbodyConstraints.FreezeAll;
         rb.isKinematic = true;
         rb.velocity = new Vector3(0, 0, 0);
+        transform.rotation = Quaternion.Euler(temp);
+        Debug.Log(transform.rotation);
         //gameObject.transform.parent = other.transform;
 
         //freezes object

@@ -15,6 +15,7 @@ public class BaseEnemy : MonoBehaviour {
     [Tooltip("Denoted by yellow wire sphere.")]
     public float aggroArea;
     public bool isAggroed;
+    public bool isDead = false;
 
     protected float attackTimer;
     protected static Transform playerTrans;
@@ -25,7 +26,19 @@ public class BaseEnemy : MonoBehaviour {
         playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
-    protected virtual void FixedUpdate() {}
+    protected virtual void FixedUpdate() { 
+
+    }
+
+    private void Update()
+    {
+        if (isDead)
+        {
+            SaveManager.instance.activeSave.unsavedDead.Add(gameObject.name);
+            Destroy(gameObject);
+        }
+    }
+
 
     /// <summary>
     /// Inheritted function that will act differently depending on the enemy.
@@ -44,7 +57,8 @@ public class BaseEnemy : MonoBehaviour {
     /// <param name="damage">Damage value that the enemy will take.</param>
     public void TakeDamage(int damageTaking) {
         health -= damageTaking;
-        if (health < 0) Destroy(gameObject);
+        if (health < 0) {
+            isDead=true; }
     }
 
     /// <summary>

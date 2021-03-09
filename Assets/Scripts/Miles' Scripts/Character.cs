@@ -2,58 +2,108 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 //Author: Miles Gomez
-//Changes made 2/10/2021
+//Changes made 3/4/2021
 
 public class Character : MonoBehaviour
 {
+    [Header ("GameObjects")]
+    CharacterController cc;
     public GameObject cam;
-    public int health;
+    public GameObject arrow;
+    public Transform bowPosition;
+
+    [Header ("Movement")]
     public float speed;
+    public float maxSpeed;
     public float jumpPower;
     public float jumpCD;
-    public float maxSpeed;
-    public float attackCD;
-    public float attackCharge;
-    public Transform bowPosition;
+    public float fallMod;
+    public float coyoteJump;
+    private float coyoteJumpTime;
     public bool isClimbing;
-    public Text chargeText;
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
-    private CharacterController cc;
+
     private bool canJump;
     private float horizontalInput;
     private float verticalInput;
     private float gravity = 9.8f;
     private Vector3 velocity;
-    private bool dead;
-    private Transform camEuler;
-    private RespawnCoordinator rc;
-    private Quiver myQuiver;
 
+    private Transform camEuler;
+    private Quiver myQuiver;
+    private SavedData currentData;
+
+
+    [Header ("Attacking")]
+    public float attackCD;
+    public float chargeRate;
+    public float attackCharge;
+
+    [Header ("Health")]
+    public int maxHp;
+    public int currentHp;
+    public bool dead = false;
+
+
+    [Header ("UI Elements")]
+    public Text chargeText;
+
+    [Header("Testing")]
+    public bool timedJump;
+    public float upTime;
+    private float jumpTime = 0f;
+
+    // delegates
+    public SavedData getCurrentData { get { return currentData; } }
+    public Quiver    getMyQuiver    { get { return myQuiver;    } }
 
     // Start is called before the first frame update
     void Start()
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-      // rc = GameObject.FindGameObjectWithTag("RC").GetComponent<RespawnCoordinator>();
-      // if (rc.lastCheckpoint!=null)
-      // {
-      //     transform.position = rc.lastCheckpoint;
-      // }
+
+
+        if (SaveManager.instance.activeSave.respawnPos!=null &&
+            SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
+        {
+            cc.enabled = false;
+            transform.position = SaveManager.instance.activeSave.respawnPos;
+            cc.enabled = true;
+        }
+
+
         //Sets Character controller
-        
+
         // initialize quiver (StandardArrow equipped first)
+        // initialize values if new game, else grab existing
         myQuiver = GetComponent<Quiver>();
+        if (currentData == null)
+            currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        UpdateCharacterToSaveData(currentData);
     }
 
     // Update is called once per frame
     void Update()
     {
+        #if UNITY_EDITOR
+        //Used for testing, remove at a later date.
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Respawn();
+        }
+        #endif
+        //Checks if dead and respawns.
+        if (dead)
+        {
+            Respawn();
+        }
+
         //Debug.Log(rc.lastCheckpoint);
-        //Debug.Log(cam.transform.eulerAngles.x);
         //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
         if (canJump)
         {
@@ -74,6 +124,8 @@ public class Character : MonoBehaviour
         bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
+        RoofCheck();
+        //Checks To see if the player has touched a roof, will stop upwards movement.
 
 
         if (attackCD > 0)
@@ -88,15 +140,27 @@ public class Character : MonoBehaviour
             //lowers attack cd
         }
 
-        if (isJumpPressed && canJump)
+        if ((isJumpPressed && canJump) || (isJumpPressed && coyoteJumpTime >0f))
         {
-            Jump();
+            if (!canJump && coyoteJumpTime >0f)
+            {
+                velocity.y = 0;
+                Jump();
+            }
+            else
+            {
+                Jump();
+            }
+            
             //Jumps on input
         }
         else if (isJumpPressed && canJump)
         {
             velocity.y = 0;
         }
+
+
+
     }
 
     private void FixedUpdate()
@@ -111,27 +175,43 @@ public class Character : MonoBehaviour
         //Detects WASD movement or Jump
 
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
-        cc.Move(move * speed * Time.deltaTime);
+        if (!dead && cc.enabled == true)
+        {
+            cc.Move(move * speed * Time.deltaTime);
+        }
         //Moves player when WASD is pressed
 
 
-        if (!canJump)
+        if (jumpTime <= 0)
         {
-            //gravity
-            velocity.y -= gravity * Time.deltaTime;
+            if (!canJump)
+            {
+                //gravity
+                velocity.y -= gravity * Time.deltaTime * (1f + fallMod);
+            }
+
+            if (velocity.y < -gravity)
+            {
+                velocity.y = -gravity;
+            }
         }
 
-        if (velocity.y < -9.8f)
-        {
-            velocity.y = -9.8f;
-        }
 
         //responsible for Y axis movement
-        cc.Move(velocity * Time.deltaTime);
+        if (cc.enabled == true)
+        {
+            cc.Move(velocity * Time.deltaTime);
+        }
+
+        //Testing new jump system
+        if (jumpTime >0 && timedJump == true)
+        {
+            jumpTime -= Time.deltaTime;
+        }
 
         if (Input.GetButton("Fire1"))
         {
-            if (attackCD <= 0)
+            if (attackCD <= 0 && !dead)
             {
                 if (attackCharge < 100)
                 {
@@ -144,7 +224,7 @@ public class Character : MonoBehaviour
         }
         else if (attackCharge > 0)
         {
-            if (attackCD <= 0)
+            if (attackCD <= 0 && !dead)
             {
                 // get currently equipped arrow and increment record
                 GameObject arrowEquipped = arrowPrefabs[myQuiver.GetArrowType()];
@@ -163,29 +243,51 @@ public class Character : MonoBehaviour
 
     public void Jump()
     {
-        if (jumpCD <=0)
+        if ((jumpCD <=0 && !dead) || (coyoteJumpTime > 0 && !dead))
         {
             canJump = false;
             //Adds force to jum pwith
-            velocity.y = Mathf.Sqrt(jumpPower * 2f * gravity);
-            jumpCD = 1;
+            if (coyoteJump > 0)
+            {
+                velocity.y = Mathf.Sqrt(jumpPower * gravity *1.2f);
+            }
+            else
+            {
+                velocity.y = Mathf.Sqrt(jumpPower * gravity);
+            }   
+            jumpCD = .5f;
+            coyoteJumpTime = 0f;
+
+            //testing New jump movement
+            if (timedJump)
+            {
+                jumpTime += upTime;
+            }
+
         }
 
 
     }
 
-    public void Die()
-    {
-        dead = true;
-    }
-
     public void Respawn()
     {
+        //Disables player movement.
+        cc.enabled = false;
+        StartCoroutine(RespawnCo());
+    }
 
+    public IEnumerator RespawnCo()
+    {
+        yield return new WaitForSeconds(.5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     public void Interact()
     {
+        if (!dead)
+        {
+
+        }
         //Used to interact with objects in a level
     }
 
@@ -194,32 +296,84 @@ public class Character : MonoBehaviour
         //Checks if the player is on the ground and sets canJump to true, if player is not on the ground, then it is false
 
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, -2.5f, 0f), out hit, 1.4f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.3f))
         {
+            coyoteJumpTime = coyoteJump;
             canJump = true;
         }
         else
         {
+            coyoteJumpTime -= Time.deltaTime * 1;
             canJump = false;
         }
     }
 
+    public void RoofCheck()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out hit, 1.2f))
+        {
+            if (velocity.y > 0f)
+            {
+                velocity.y = 0f;
+            }
+        }
+    }
+
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
+    /// <summary>
+    /// Move the player with the motion of a platform.
+    /// </summary>
+    /// <param name="hit">Platform collider that the player hit.</param>
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (hit.transform.tag == "Stoppable") transform.parent = hit.transform;        
+        else                                  transform.parent = null;
+    }
+
     /// <summary>
     /// Public function that removes health while checking for if the
     /// player has died.
     /// </summary>
     /// <param name="damage">Amount to damage player.</param>
     public void TakeDamage(int damage) {
-        health -= damage;
-        if (health < 1) {
+        currentHp -= damage;
+        if (currentHp < 1) {
             // implement player death
-            health = 0;
+            currentHp = 0;
             dead = true;
         }
     }
-}
 
+    public void Damage(int damage)
+    {
+        currentHp -= damage;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public SavedData UpdateAndGetSaveData() {
+        currentData.playerHealth = currentHp;
+        currentData.s_Quiver = new SerializableQuiver(myQuiver);
+        // future implementations will handle checkpoint system
+        return currentData;
+    }
+
+    /// <summary>
+    /// Take argument data and overwrite Character's save data.
+    /// </summary>
+    /// <param name="data">Data that will be stored</param>
+    /// <returns>Updated save file</returns>
+    public void UpdateCharacterToSaveData(in SavedData data) {
+        currentData = data;
+        currentHp = data.playerHealth;
+        myQuiver.CopySerializedQuiver(data.s_Quiver);
+        // update children
+        GetComponentInChildren<FirstPersonCamera>().SetOptionVals(data);
+    }
+}
 
 public class Attack : MonoBehaviour
 {
