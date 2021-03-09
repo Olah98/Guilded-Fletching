@@ -216,7 +216,7 @@ public class SavedData : ScriptableObject {
     public static IEnumerator CutCurrentPlayTime(SavedData data) {
         // logic check for the timer
         if (startPlayTime == null)
-            Debug.LogError("SavedData: play timer has not yet been set.");
+            Debug.Log("SavedData: play timer has not yet been set.");
         else {
             data.timePlayed += DateTime.Now - (DateTime)startPlayTime;
             startPlayTime = null;
