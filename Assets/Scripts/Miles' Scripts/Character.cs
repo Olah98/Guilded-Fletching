@@ -51,7 +51,7 @@ public class Character : MonoBehaviour
 
     [Header ("UI Elements")]
     public Text chargeText;
-    public Slider chargeSlider;
+    public Slider chargeSlider;//Added by Warren
 
     [Header("Testing")]
     public bool timedJump;
@@ -116,7 +116,7 @@ public class Character : MonoBehaviour
         }
 
         chargeText.text = "charge: " + attackCharge;
-        chargeSlider.GetComponent<Slider>().value = attackCharge;
+        chargeSlider.GetComponent<Slider>().value = attackCharge;//Added by Warren
 
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
