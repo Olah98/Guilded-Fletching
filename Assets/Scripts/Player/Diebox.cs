@@ -18,6 +18,10 @@ public class Diebox : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        other.GetComponent<Character>().Respawn();
+        if (other.tag=="Player")
+        {
+            other.GetComponent<Character>().Respawn();
+        }
+    
     }
 }
