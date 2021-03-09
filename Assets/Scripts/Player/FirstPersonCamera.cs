@@ -27,8 +27,8 @@ public class FirstPersonCamera : MonoBehaviour {
         return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
     } }
     // store option vars
-    private float s_baseFOV;
-    private float s_mouseSensitivity;
+    private float s_baseFOV = 60f;
+    private float s_mouseSensitivity = 1f;
     // consts
     private const float LOWER_ZOOM_BOUNDARY = 20f;
     private const float UPPER_ZOOM_BOUNDARY = 60f;
