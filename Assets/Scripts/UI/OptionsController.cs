@@ -95,7 +95,6 @@ public class OptionsController : MonoBehaviour {
             || options[optionIndex].numStr == null) return;
 
         if (optionIndex == (int)OptionType.MouseSensitivity) {
-            print("ferp: " + (options[1].slider.value * 100f));
             options[1].numStr.text = ((int)(options[1].slider.value * 100f)).ToString();
         }
         else if (optionIndex == (int)OptionType.BaseFOV) {
