@@ -11,7 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+#if UNITY_EDITOR
 [CustomEditor(typeof(PuzzleManager))]
 public class CustomEditorPuzzle : Editor
 {
@@ -41,3 +41,4 @@ public class CustomEditorPuzzle : Editor
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("index"), true);
 	}
 }
+#endif

@@ -9,10 +9,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
-
+#if UNITY_EDITOR
 public class EditorList : MonoBehaviour
 {
     public static void Show(SerializedProperty list)
     {
     }
 }
+#endif

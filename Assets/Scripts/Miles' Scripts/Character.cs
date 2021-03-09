@@ -58,6 +58,8 @@ public class Character : MonoBehaviour
     public float upTime;
     private float jumpTime = 0f;
 
+    private Vector3 platformMovement = Vector3.zero;
+
     // delegates
     public SavedData getCurrentData { get { return currentData; } }
     public Quiver    getMyQuiver    { get { return myQuiver;    } }
@@ -83,8 +85,8 @@ public class Character : MonoBehaviour
         // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
         myQuiver = GetComponent<Quiver>();
-        if (currentData == null)
-            currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        //if (currentData == null)
+        currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
         UpdateCharacterToSaveData(currentData);
     }
 
@@ -179,6 +181,7 @@ public class Character : MonoBehaviour
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
         if (!dead && cc.enabled == true)
         {
+            move += platformMovement;
             cc.Move(move * speed * Time.deltaTime);
         }
         //Moves player when WASD is pressed
@@ -332,8 +335,12 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.transform.tag == "Stoppable") transform.parent = hit.transform;        
-        else                                  transform.parent = null;
+        if (hit.transform.tag == "Stoppable" && transform.position.y - hit.transform.position.y > 0.5f) {
+            platformMovement = (Vector3.down) + hit.transform.GetComponent<MovingPlatform>().GetVelocity;//transform.parent = hit.transform;
+            platformMovement *= hit.transform.GetComponent<MovingPlatform>().speed * Time.fixedDeltaTime;
+        }
+        else
+            platformMovement = Vector3.zero;
     }
 
     /// <summary>
