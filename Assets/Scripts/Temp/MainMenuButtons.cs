@@ -14,7 +14,11 @@ public class MainMenuButtons : MonoBehaviour
         {
             if (SaveManager.instance.activeSave.sceneName != null)
             {
-                cont.GetComponent<Button>().interactable = false;
+                cont.GetComponent<Button>().interactable = true;
+            }
+            else if (SaveManager.instance.activeSave.sceneName==null)
+            {
+                cont.GetComponent<Button>().interactable = true;
             }
         }
     }
