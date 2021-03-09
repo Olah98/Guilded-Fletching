@@ -81,7 +81,6 @@ public class Character : MonoBehaviour
 
         // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
-        //          **** OR HAS THE EXISTING DATA ALREADY BEEN TAKEN CARE OF?****
         myQuiver = GetComponent<Quiver>();
         if (currentData == null)
             currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
@@ -91,11 +90,13 @@ public class Character : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        #if UNITY_EDITOR
         //Used for testing, remove at a later date.
         if (Input.GetKeyDown(KeyCode.U))
         {
             Respawn();
         }
+        #endif
         //Checks if dead and respawns.
         if (dead)
         {
