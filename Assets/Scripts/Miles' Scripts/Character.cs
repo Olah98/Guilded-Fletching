@@ -55,8 +55,6 @@ public class Character : MonoBehaviour
     public float upTime;
     private float jumpTime = 0f;
 
-
-
     // delegates
     public SavedData getCurrentData { get { return currentData; } }
     public Quiver    getMyQuiver    { get { return myQuiver;    } }
@@ -301,10 +299,18 @@ public class Character : MonoBehaviour
         }
     }
 
-
-
-
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
+    /// <summary>
+    /// Move the player with the motion of a platform.
+    /// </summary>
+    /// <param name="hit">Platform collider that the player hit.</param>
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (hit.transform.tag == "Stoppable") {
+            cc.Move(hit.transform.GetComponent<MovingPlatform>().GetVelocity
+                    * Time.fixedUnscaledDeltaTime);
+        }
+    }
+
     /// <summary>
     /// Public function that removes health while checking for if the
     /// player has died.
@@ -319,14 +325,10 @@ public class Character : MonoBehaviour
         }
     }
 
-
-
     public void Damage(int damage)
     {
         currentHp -= damage;
     }
-
-
 
     /// <summary>
     ///
