@@ -33,9 +33,12 @@ public class FirstPersonCamera : MonoBehaviour {
     private const float LOWER_ZOOM_BOUNDARY = 20f;
     private const float UPPER_ZOOM_BOUNDARY = 60f;
 
+    private void Awake() {
+        cam = GetComponent<Camera>();
+    }
+
     private void Start() {
         character = GetComponentInParent<Character>();
-        cam = GetComponent<Camera>();
         bodyTrans = transform.parent;
         interactionHintText.enabled = false;
         s_baseFOV = character.getCurrentData?.baseFOV ?? 60f; 
