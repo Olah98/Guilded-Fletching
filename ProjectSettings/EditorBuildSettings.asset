@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Digital Prototype 1/LevelSelect.unity
     guid: d2d01042cd2679240b69e4635aa44cce
+  - enabled: 1
+    path: Assets/Scenes/Testing/MilesGomezTest.unity
+    guid: 4ab7502b5e5bbd04894513e80b8c4afd
   m_configObjects: {}
