@@ -142,7 +142,16 @@ public class Character : MonoBehaviour
 
         if ((isJumpPressed && canJump) || (isJumpPressed && coyoteJumpTime >0f))
         {
-            Jump();
+            if (!canJump && coyoteJumpTime >0f)
+            {
+                velocity.y = 0;
+                Jump();
+            }
+            else
+            {
+                Jump();
+            }
+            
             //Jumps on input
         }
         else if (isJumpPressed && canJump)
@@ -238,7 +247,14 @@ public class Character : MonoBehaviour
         {
             canJump = false;
             //Adds force to jum pwith
-            velocity.y = Mathf.Sqrt(jumpPower * gravity);
+            if (coyoteJump > 0)
+            {
+                velocity.y = Mathf.Sqrt(jumpPower * gravity *1.2f);
+            }
+            else
+            {
+                velocity.y = Mathf.Sqrt(jumpPower * gravity);
+            }   
             jumpCD = .5f;
             coyoteJumpTime = 0f;
 
@@ -280,7 +296,7 @@ public class Character : MonoBehaviour
         //Checks if the player is on the ground and sets canJump to true, if player is not on the ground, then it is false
 
         RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.4f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.3f))
         {
             coyoteJumpTime = coyoteJump;
             canJump = true;
