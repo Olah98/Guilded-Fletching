@@ -26,5 +26,11 @@ public class MainMenuButtons : MonoBehaviour
         SceneManager.LoadScene("Options");
     }
 
+    public void Continue()
+    {
+        SaveManager.instance.Load();
+        SceneManager.LoadScene(SaveManager.instance.activeSave.sceneName);
+    }
+
 
 }
