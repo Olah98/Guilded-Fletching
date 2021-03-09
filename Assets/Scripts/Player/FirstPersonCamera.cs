@@ -133,7 +133,7 @@ public class FirstPersonCamera : MonoBehaviour {
         }
         else if(interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
         {
-            t.interact();
+            t.load();
         }
         // if this is a item pick-up
             // Do stuff

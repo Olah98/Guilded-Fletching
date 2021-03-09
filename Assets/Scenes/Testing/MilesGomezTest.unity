@@ -2463,6 +2463,16 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 627028563817928312, guid: 01539826dfbab08409d8d94a248fab28,
+        type: 3}
+      propertyPath: fallMod
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 627028563817928312, guid: 01539826dfbab08409d8d94a248fab28,
+        type: 3}
+      propertyPath: coyoteJump
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 627028563817928319, guid: 01539826dfbab08409d8d94a248fab28,
         type: 3}
       propertyPath: m_Name

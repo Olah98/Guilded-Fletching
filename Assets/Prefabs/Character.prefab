@@ -381,7 +381,7 @@ MonoBehaviour:
   maxSpeed: 0
   jumpPower: 2.8
   jumpCD: 0
-  fallMod: 0.4
+  fallMod: 0.5
   coyoteJump: 0.5
   isClimbing: 0
   arrowPrefabs:

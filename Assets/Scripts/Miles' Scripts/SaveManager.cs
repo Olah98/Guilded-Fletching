@@ -36,11 +36,20 @@ public class SaveManager : MonoBehaviour
 
         Load();
     }
+    
     void Start()
     {
-        
+      
     }
-
+    private void OnLevelWasLoaded(int level)
+    {
+        if (SceneManager.GetActiveScene().name == "MainMenu")
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+            Debug.Log("its a me the scene");
+        }
+    }
     // Update is called once per frame
     void Update()
     {

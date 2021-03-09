@@ -6,23 +6,12 @@ using UnityEngine;
 
 public class ThankYou : MonoBehaviour
 {
-    public Text thankText;
+    public string level;
 
-    public string thank;
-
-    
-
-    private void Start()
+    public void load()
     {
-        thankText.text = " ";
-
-        
+        SceneManager.LoadScene(level);
     }
 
-    public void interact()
-    {
-        thankText.text = "Thank you for testing please press Escape to pause and go to the main menu";
-    }
 
-    
 }
