@@ -51,7 +51,7 @@ public class Character : MonoBehaviour
 
     [Header ("UI Elements")]
     public Text chargeText;
-    //
+    public Slider chargeSlider;
 
     [Header("Testing")]
     public bool timedJump;
@@ -116,6 +116,7 @@ public class Character : MonoBehaviour
         }
 
         chargeText.text = "charge: " + attackCharge;
+        chargeSlider.GetComponent<Slider>().value = attackCharge;
 
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
@@ -220,6 +221,10 @@ public class Character : MonoBehaviour
                                             .GetComponent<BaseArrow>().drawSpeed;
                     attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
                     //builds attackcharge as long as you hold the mouse button down.
+                }
+                if (attackCharge > 100)
+                {
+                    attackCharge = 100; //Added by Warren for rounding
                 }
             }
         }
