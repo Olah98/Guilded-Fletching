@@ -33,7 +33,7 @@ public class OptionsController : MonoBehaviour {
 
     private Option[] options = new Option[6];
     private SavedData curData;
-    private int curSaveIndex = -1;
+    //private int curSaveIndex = -1;
     private bool isOptionsMenu { get { 
         return SceneManager.GetActiveScene().name == "Options"; 
     } }

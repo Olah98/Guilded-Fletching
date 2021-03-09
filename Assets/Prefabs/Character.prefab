@@ -2570,7 +2570,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Main Menu
+  m_Text: Back
 --- !u!1 &4049498017242945328
 GameObject:
   m_ObjectHideFlags: 0
@@ -4001,7 +4001,7 @@ GameObject:
   - component: {fileID: 3881351863095299180}
   - component: {fileID: 4774243329679199935}
   m_Layer: 5
-  m_Name: MainMenu_Button
+  m_Name: GoBack_Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4107,9 +4107,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 3963970563414160847}
-        m_MethodName: GoBack
-        m_Mode: 1
+      - m_Target: {fileID: 5527549281939525718}
+        m_MethodName: ToggleOptions
+        m_Mode: 6
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -5153,6 +5153,18 @@ PrefabInstance:
       objectReference: {fileID: 5546766876109594293}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3efe6fd2dcd9974488e354f3c77f2688, type: 3}
+--- !u!114 &5527549281939525718 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5891269495431339809, guid: 3efe6fd2dcd9974488e354f3c77f2688,
+    type: 3}
+  m_PrefabInstance: {fileID: 2122377045882113911}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102bf2bf5e12df744bb0c3fe106bf96a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &1733136558793353525 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 394456570385262146, guid: 3efe6fd2dcd9974488e354f3c77f2688,
