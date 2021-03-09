@@ -95,7 +95,7 @@ public class SavedData : ScriptableObject {
         return (timePlayed == TimeSpan.Zero && saveName == String.Empty);
     } }
 
-    public static int currentSaveSlot = -1;
+    public static int currentSaveSlot = 1;
     public static string getDataPath { get { return dataPath; } }
     
     private static DateTime? startPlayTime;      // nullable
