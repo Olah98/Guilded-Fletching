@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 2251762743997067568}
   - component: {fileID: 2251762743997067580}
   m_Layer: 0
-  m_Name: Diebox
+  m_Name: Killing floor
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

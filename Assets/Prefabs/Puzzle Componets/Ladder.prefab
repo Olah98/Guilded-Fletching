@@ -120,4 +120,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1af0e072fa7e2414d8656fba6c75b380, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbSpeed: 0
+  climbSpeed: 2
