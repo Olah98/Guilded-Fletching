@@ -18,6 +18,9 @@ public class Quiver : MonoBehaviour
     private int[,] loadout = new int[4, 2];
     private int equipped;
 
+    //animation handling
+    private PlayerAnimationController pAnimController;
+
     //enum for checking stats
     enum Ammo : int
     {
@@ -43,6 +46,7 @@ public class Quiver : MonoBehaviour
 
         //Base value
         equipped = (int)Ammo.Standard; //Might add check for non-standard level
+        pAnimController = GetComponent<PlayerAnimationController>();
     }//Start
 
 
@@ -74,6 +78,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Standard, RECORD] +
                         " Standard arrows");
+                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -98,6 +103,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Bramble, RECORD] +
                         " Bramble arrows");
+                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -122,6 +128,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Warp, RECORD] +
                         " Warp arrows");
+                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -146,6 +153,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Airburst, RECORD] +
                         " Airburst arrows");
+                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else

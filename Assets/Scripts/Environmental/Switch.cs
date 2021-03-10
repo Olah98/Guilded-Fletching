@@ -9,6 +9,9 @@ public class Switch : MonoBehaviour {
     [Tooltip("Can be any object that needs a triggered movement.")]
     public Door myDoor; // can be a door or ladder
     public bool isFlipped;
+    [Tooltip("Check if the player is able to interact with this, or it can" +
+            " only be triggered by arrows.")]
+    public bool isInteractable;
 
     void Start() {
         // push this Switch into the Switch List for myDoor

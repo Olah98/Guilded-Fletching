@@ -65,7 +65,8 @@ public class FirstPersonCamera : MonoBehaviour {
     private void Update() {
         // interact with objects
         if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
-            if (hit.transform.tag == "Interactable") {
+            if (hit.transform.tag == "Interactable"
+                && hit.transform.GetComponent<Switch>().isInteractable) {
                 if (Input.GetKeyDown(KeyCode.E)) 
                     InteractWithObject(hit.transform.gameObject);
                 // display hint only under this condition
@@ -128,7 +129,8 @@ public class FirstPersonCamera : MonoBehaviour {
     /// <param name="interactingWith">GameObject the player's interacting with.</param>
     private void InteractWithObject(GameObject interactingWith) {
         // handle if Switch
-        if (interactingWith.TryGetComponent<Switch>(out Switch s)) {
+        if (interactingWith.TryGetComponent<Switch>(out Switch s) 
+            && s.isInteractable) {
             s.HitSwitch();
         }
         else if(interactingWith.TryGetComponent<ThankYou>(out ThankYou t))

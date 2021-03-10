@@ -24,8 +24,8 @@ public enum AnimState {
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
-    public Animator animator;
-
+    private Animator handAnimator;
+    //private Animator bowAnimator; // implement later
     private Character character;
     // animation state strings                           priority
     private const string idleStr    = "Idle";            //low
@@ -39,14 +39,16 @@ public class PlayerAnimationController : MonoBehaviour {
 
     private void Start() {
         character = GetComponent<Character>();
-        animator.SetBool("Idle", true);
+        handAnimator = GetComponent<Animator>();
+        //handAnimator.SetBool("Idle", true);
+        //bowAnimator.SetBool("Idle", true);
     }
 
     /// <summary>
     /// Set an animation to tru based on the parameter enum.
     /// </summary>
     /// <param name="state">Animation state to change to.</param>
-    public void SetAnimationTrue(AnimState state) {
+    public void SetAnimation(AnimState state, bool setTo) {
         string animStr = string.Empty;
         switch (state) {
             case AnimState.Idle:            animStr = idleStr;    break;
@@ -58,7 +60,8 @@ public class PlayerAnimationController : MonoBehaviour {
             case AnimState.FullyDrawn:      animStr = fullStr;    break;
             case AnimState.Shooting:        animStr = shootStr;   break;
         }
-        animator.SetBool(animStr, true);
+        //handAnimator.SetBool(animStr, setTo);
+        print("PlayerAnimating: " + state);
     }
 
     /// <summary>
@@ -98,11 +101,10 @@ public class PlayerAnimationController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Compare two animation states and return the greater priority. If the
+    /// priorities are equal then AnimState.NULL.
     /// </summary>
-    /// <param name="state1"></param>
-    /// <param name="state2"></param>
-    /// <returns></returns>
+    /// <returns>The greater priority enum.</returns>
     public AnimState ComparePriority(AnimState state1, AnimState state2) {
         int s1Num = GetPriority(state1);
         int s2Num = GetPriority(state2);

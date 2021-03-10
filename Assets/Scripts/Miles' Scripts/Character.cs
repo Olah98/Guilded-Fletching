@@ -58,7 +58,7 @@ public class Character : MonoBehaviour
     public float upTime;
     private float jumpTime = 0f;
 
-    private Vector3 platformMovement = Vector3.zero;
+    private PlayerAnimationController pAnimController;
 
     // delegates
     public SavedData getCurrentData { get { return currentData; } }
@@ -69,6 +69,7 @@ public class Character : MonoBehaviour
     {
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
+        pAnimController = GetComponent<PlayerAnimationController>();
 
 
         if (SaveManager.instance.activeSave.respawnPos!=null &&
@@ -181,7 +182,15 @@ public class Character : MonoBehaviour
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
         if (!dead && cc.enabled == true)
         {
-            move += platformMovement;
+            if (attackCharge == 0) {
+                if (move != Vector3.zero)
+                    pAnimController.SetAnimation(AnimState.Walking, true);
+                else
+                    pAnimController.SetAnimation(AnimState.Idle, true);
+            }
+            else if (attackCharge == 100) {
+                pAnimController.SetAnimation(AnimState.FullyDrawn, true);
+            }
             cc.Move(move * speed * Time.deltaTime);
         }
         //Moves player when WASD is pressed
@@ -193,6 +202,7 @@ public class Character : MonoBehaviour
             {
                 //gravity
                 velocity.y -= gravity * Time.deltaTime * (1f + fallMod);
+                            pAnimController.SetAnimation(AnimState.Jumping, true);
             }
 
             if (velocity.y < -gravity)
@@ -224,12 +234,15 @@ public class Character : MonoBehaviour
                                             .GetComponent<BaseArrow>().drawSpeed;
                     attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
                     //builds attackcharge as long as you hold the mouse button down.
+                    pAnimController.SetAnimation(AnimState.DrawingArrow, true);
                 }
                 if (attackCharge > 100)
                 {
                     attackCharge = 100; //Added by Warren for rounding
+                    pAnimController.SetAnimation(AnimState.FullyDrawn, true);
                 }
             }
+
         }
         else if (attackCharge > 0)
         {
@@ -240,6 +253,7 @@ public class Character : MonoBehaviour
                 myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
                 Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
+                pAnimController.SetAnimation(AnimState.Shooting, true);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
@@ -335,12 +349,10 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.transform.tag == "Stoppable" && transform.position.y - hit.transform.position.y > 0.5f) {
-            platformMovement = (Vector3.down) + hit.transform.GetComponent<MovingPlatform>().GetVelocity;//transform.parent = hit.transform;
-            platformMovement *= hit.transform.GetComponent<MovingPlatform>().speed * Time.fixedDeltaTime;
-        }
+        if (hit.transform.tag == "Stoppable")
+            transform.parent = hit.transform;
         else
-            platformMovement = Vector3.zero;
+            transform.parent = null;
     }
 
     /// <summary>
