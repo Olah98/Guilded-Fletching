@@ -335,12 +335,12 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.transform.tag == "Stoppable" && transform.position.y - hit.transform.position.y > 0.5f) {
-            platformMovement = (Vector3.down) + hit.transform.GetComponent<MovingPlatform>().GetVelocity;//transform.parent = hit.transform;
-            platformMovement *= hit.transform.GetComponent<MovingPlatform>().speed * Time.fixedDeltaTime;
+        if (hit.transform.tag == "Stoppable" ) {
+            transform.parent = hit.transform;
+            
         }
         else
-            platformMovement = Vector3.zero;
+            transform.parent = null;
     }
 
     /// <summary>
