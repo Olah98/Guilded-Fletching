@@ -70,6 +70,13 @@ public class FirstPersonCamera : MonoBehaviour {
                     InteractWithObject(hit.transform.gameObject);
                 // display hint only under this condition
                 interactionHintText.enabled = true;
+
+                //By Warren
+                //This works for switches that stay active permanently when flipped
+                //May need updating later?
+                if ((hit.transform.GetComponent("Switch") as Switch) != null) {
+                    interactionHintText.enabled = !hit.transform.GetComponent<Switch>().isFlipped;
+                }
             }
             else interactionHintText.enabled = false;
         }
