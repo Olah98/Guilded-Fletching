@@ -27,24 +27,35 @@ public class ArrowButton : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!myButton.interactable)
+        if (myQuiver.GetComponent<Quiver>().GetArrowTypeAccess(type) == false)
         {
-            if (myQuiver.GetComponent<Quiver>().getEquipped == type)
-            {
-                myButton.interactable = true;
-                myButton.image.sprite = imageOn;
-            }
-        } else
-        {
-            if (myQuiver.GetComponent<Quiver>().getEquipped != type)
-            {
-                myButton.interactable = false;
-                myButton.image.sprite = imageOff;
-            }
+            myButton.image.enabled = false;
+            myText.text = "";
         }
-        if (myButton.interactable)
+        else
         {
-            myText.text = "" + myQuiver.GetComponent<Quiver>().GetArrowTypeShot(type);
+            myButton.image.enabled = true;
+            if (!myButton.interactable)
+            {
+                if (myQuiver.GetComponent<Quiver>().getEquipped == type)
+                {
+                    myButton.interactable = true;
+                    myButton.image.sprite = imageOn;
+                    myButton.image.enabled = true;
+                }
+            }
+            else
+            {
+                if (myQuiver.GetComponent<Quiver>().getEquipped != type)
+                {
+                    myButton.interactable = false;
+                    myButton.image.sprite = imageOff;
+                }
+            }
+            if (myButton.interactable)
+            {
+                myText.text = "" + myQuiver.GetComponent<Quiver>().GetArrowTypeShot(type);
+            }
         }
     }
 }

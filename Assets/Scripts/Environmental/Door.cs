@@ -94,7 +94,10 @@ public class Door : MonoBehaviour {
             change = isOff;
             //m_change = m_isOff;
         }
-        rend.material.SetColor("_Color", change);
-        //rend.material = m_change;
+        if (rend != null)
+        {
+            rend.material.SetColor("_Color", change);
+            //rend.material = m_change;
+        }
     }
 }

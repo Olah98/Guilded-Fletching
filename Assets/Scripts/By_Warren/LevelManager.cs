@@ -19,10 +19,15 @@ public class LevelManager : MonoBehaviour
     private float timerPuzzles;
     private bool runTimer;
     public bool complete;
-    public Text timerLabel;
+    private Quiver myQuiver;
+    private Text timerLabel;
     public PuzzleManager dragPuzzleManagerHere;
-
     public List<PuzzleManager> index = new List<PuzzleManager>();
+    [Header("Try the ammo type, Empty, All, FirstCombo or SecondCombo")]
+    public string loadout;
+    private bool runOnce;
+
+
 
     /*
     * Start
@@ -33,6 +38,7 @@ public class LevelManager : MonoBehaviour
         if (Application.IsPlaying(gameObject))
         {
             // Play logic
+            timerLabel = GameObject.FindWithTag("TimerText").GetComponent<Text>();
             ResetTime();
             StartTimer();
         }
@@ -54,6 +60,13 @@ public class LevelManager : MonoBehaviour
     */
     void Update()
     {
+        if (!runOnce)
+        {
+            //Working around serial object loading with the wrong ACCESS status
+            runOnce = true;
+            myQuiver = GameObject.FindWithTag("Player").GetComponent<Quiver>();
+            myQuiver.Load(loadout);
+        }
         if (runTimer)
         {
             timer += Time.deltaTime;

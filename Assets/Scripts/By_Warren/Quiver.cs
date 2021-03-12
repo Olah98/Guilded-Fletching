@@ -25,9 +25,9 @@ public class Quiver : MonoBehaviour
     }
 
     //Bay for Constants
-    //INACTIVE and ACTIVE track the accesibility of the arrow types
+    //UNREADY and READY track the accesibility of the arrow types
     //ACCESS and RECORD are shortcuts for the loadout array slots
-    public const int INACTIVE = 0, ACTIVE = 1, ACCESS = 0, RECORD = 1;
+    public const int UNREADY = 3, READY = 4, ACCESS = 0, RECORD = 1;
 
     /*
     * Start
@@ -39,8 +39,8 @@ public class Quiver : MonoBehaviour
         //Load("Standard"); //Main Gameplay
         //Load("FirstCombo"); //Standard and Bramble
         //Load("SecondCombo"); //All but Airburst
-        Load("All"); //For testing purposes, grants access to everything
-
+        //Load("All"); //For testing purposes, grants access to everything
+    
         //Base value
         equipped = (int)Ammo.Standard; //Might add check for non-standard level
     }//Start
@@ -66,7 +66,7 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha1)
             || Input.GetKeyDown(KeyCode.Keypad1))
         {
-            if (loadout[(int)Ammo.Standard, ACCESS] == ACTIVE)
+            if (loadout[(int)Ammo.Standard, ACCESS] == READY)
             {
                 if (equipped != (int)Ammo.Standard)
                 {
@@ -90,7 +90,7 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2)
             || Input.GetKeyDown(KeyCode.Keypad2))
         {
-            if (loadout[(int)Ammo.Bramble, ACCESS] == ACTIVE)
+            if (loadout[(int)Ammo.Bramble, ACCESS] == READY)
             {
                 if (equipped != (int)Ammo.Bramble)
                 {
@@ -114,7 +114,7 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha3)
             || Input.GetKeyDown(KeyCode.Keypad3))
         {
-            if (loadout[(int)Ammo.Warp, ACCESS] == ACTIVE)
+            if (loadout[(int)Ammo.Warp, ACCESS] == READY)
             {
                 if (equipped != (int)Ammo.Warp)
                 {
@@ -138,7 +138,7 @@ public class Quiver : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha4)
             || Input.GetKeyDown(KeyCode.Keypad4))
         {
-            if (loadout[(int)Ammo.Airburst, ACCESS] == ACTIVE)
+            if (loadout[(int)Ammo.Airburst, ACCESS] == READY)
             {
                 if (equipped != (int)Ammo.Airburst)
                 {
@@ -167,109 +167,109 @@ public class Quiver : MonoBehaviour
     * Fills out the ACCESS loadout based on called parameters
     * Clears all RECORD. May be modified later to keep track?
     */
-    void Load(string arrows)
+    public void Load(string arrows)
     {
         if (arrows == "Empty")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = UNREADY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = UNREADY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = UNREADY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = UNREADY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(Empty). Quiver is empty");
         }
         else if (arrows == "Standard")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = READY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = UNREADY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = UNREADY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = UNREADY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(Standard). Selected type only.");
         }
         else if (arrows == "Bramble")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = UNREADY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = READY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = UNREADY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = UNREADY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(Bramble). Selected type only.");
         }
         else if (arrows == "Warp")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = UNREADY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = UNREADY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = READY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = UNREADY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(Warp). Selected type only.");
         }
         else if (arrows == "Airburst")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = UNREADY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = UNREADY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = UNREADY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = READY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(Airburst). Selected type only.");
         }
         else if (arrows == "All")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = READY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = READY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = READY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = READY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(All). All four types ready to go.");
         }
         else if (arrows == "FirstCombo")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = READY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = READY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = UNREADY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = UNREADY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(FirstCombo). Standard and Bramble ready to go");
         }
         else if (arrows == "SecondCombo")
         {
             //Initial loadout
-            loadout[(int)Ammo.Standard, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Standard, ACCESS] = READY;
             loadout[(int)Ammo.Standard, RECORD] = 0;
-            loadout[(int)Ammo.Bramble, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Bramble, ACCESS] = READY;
             loadout[(int)Ammo.Bramble, RECORD] = 0;
-            loadout[(int)Ammo.Warp, ACCESS] = ACTIVE;
+            loadout[(int)Ammo.Warp, ACCESS] = READY;
             loadout[(int)Ammo.Warp, RECORD] = 0;
-            loadout[(int)Ammo.Airburst, ACCESS] = INACTIVE;
+            loadout[(int)Ammo.Airburst, ACCESS] = UNREADY;
             loadout[(int)Ammo.Airburst, RECORD] = 0;
             Debug.Log("Load(SecondCombo). Ready to go with all but Airburst");
         }
@@ -307,19 +307,48 @@ public class Quiver : MonoBehaviour
     {
         if (arrows == "Standard")
         {
-            return (loadout[(int)Ammo.Standard, ACCESS] == ACTIVE);
+            return (loadout[(int)Ammo.Standard, ACCESS] == READY);
         }
         else if (arrows == "Bramble")
         {
-            return (loadout[(int)Ammo.Bramble, ACCESS] == ACTIVE);
+            return (loadout[(int)Ammo.Bramble, ACCESS] == READY);
         }
         if (arrows == "Warp")
         {
-            return (loadout[(int)Ammo.Warp, ACCESS] == ACTIVE);
+            return (loadout[(int)Ammo.Warp, ACCESS] == READY);
         }
         if (arrows == "Airburst")
         {
-            return (loadout[(int)Ammo.Airburst, ACCESS] == ACTIVE);
+            return (loadout[(int)Ammo.Airburst, ACCESS] == READY);
+        }
+        else
+        {
+            Debug.Log("Invalid arrow type.");
+            return false;
+        }
+    }//GetArrowTypeAccess
+
+    /*
+* Get Arrow Type Access (Int Overload)
+* Returns true if arrow type is accessible
+*/
+    public bool GetArrowTypeAccess(int arrows)
+    {
+        if (arrows == (int)Ammo.Standard)
+        {
+            return (loadout[(int)Ammo.Standard, ACCESS] == READY);
+        }
+        else if (arrows == (int)Ammo.Bramble)
+        {
+            return (loadout[(int)Ammo.Bramble, ACCESS] == READY);
+        }
+        if (arrows == (int)Ammo.Warp)
+        {
+            return (loadout[(int)Ammo.Warp, ACCESS] == READY);
+        }
+        if (arrows == (int)Ammo.Airburst)
+        {
+            return (loadout[(int)Ammo.Airburst, ACCESS] == READY);
         }
         else
         {
@@ -363,19 +392,19 @@ public class Quiver : MonoBehaviour
     */
     public int GetArrowTypeShot(int arrows)
     {
-        if (arrows == 0)
+        if (arrows == (int)Ammo.Standard)
         {
             return loadout[(int)Ammo.Standard, RECORD];
         }
-        else if (arrows == 1)
+        else if (arrows == (int)Ammo.Bramble)
         {
             return loadout[(int)Ammo.Bramble, RECORD];
         }
-        if (arrows == 2)
+        if (arrows == (int)Ammo.Warp)
         {
             return loadout[(int)Ammo.Warp, RECORD];
         }
-        if (arrows == 3)
+        if (arrows == (int)Ammo.Airburst)
         {
             return loadout[(int)Ammo.Airburst, RECORD];
         }
@@ -393,6 +422,8 @@ public class Quiver : MonoBehaviour
     */
     public bool Fire()
     {
+        //Debug.Log("loadout: " + equipped + ", " + loadout[equipped, ACCESS]);
+        //Load("Standard");
         bool success = false;
         switch (equipped)
         {
@@ -421,7 +452,7 @@ public class Quiver : MonoBehaviour
     */
     bool FireStandard()
     {
-        if (loadout[(int)Ammo.Standard, ACCESS] == ACTIVE)
+        if (loadout[(int)Ammo.Standard, ACCESS] == READY)
         {
             loadout[(int)Ammo.Standard, RECORD]++;
             return true;
@@ -431,7 +462,7 @@ public class Quiver : MonoBehaviour
 
     bool FireBramble()
     {
-        if (loadout[(int)Ammo.Bramble, ACCESS] == ACTIVE)
+        if (loadout[(int)Ammo.Bramble, ACCESS] == READY)
         {
             loadout[(int)Ammo.Bramble, RECORD]++;
             return true;
@@ -441,7 +472,7 @@ public class Quiver : MonoBehaviour
 
     bool FireWarp()
     {
-        if (loadout[(int)Ammo.Warp, ACCESS] == ACTIVE)
+        if (loadout[(int)Ammo.Warp, ACCESS] == READY)
         {
             loadout[(int)Ammo.Warp, RECORD]++;
             return true;
@@ -451,7 +482,7 @@ public class Quiver : MonoBehaviour
 
     bool FireAirburst()
     {
-        if (loadout[(int)Ammo.Airburst, ACCESS] == ACTIVE)
+        if (loadout[(int)Ammo.Airburst, ACCESS] == READY)
         {
             loadout[(int)Ammo.Airburst, RECORD]++;
             return true;
