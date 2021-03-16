@@ -12,6 +12,7 @@ public class Switch : MonoBehaviour {
     [Tooltip("Check if the player is able to interact with this, or it can" +
             " only be triggered by arrows.")]
     public bool isInteractable;
+    public bool triggerByArrow;
 
     void Start() {
         // push this Switch into the Switch List for myDoor
@@ -35,7 +36,7 @@ public class Switch : MonoBehaviour {
     /// </summary>
     /// <param name="other">Object hitting the switch.</param>
     private void OnCollisionEnter(Collision other) {
-        if (other.transform.tag == "Arrow") {
+        if (other.transform.tag == "Arrow" && triggerByArrow) {
             HitSwitch();
         }
     }

@@ -13,11 +13,17 @@ using System.Threading.Tasks;
 using System.Reflection;
 using UnityEngine;
 
+/*
+    TO DO
+        -Rework to save preferences under PlayerPrefs as opposed to using this.
+*/
+
 [CreateAssetMenu(
     fileName = "SavedData", 
     menuName = "Scriptable Objects/SavedData", 
     order = 0)]
 public class SavedData : ScriptableObject {
+    #region wrapperClass
     /* Wrapper for SavedData because BinaryFormatter doesn't like ScriptableObjects */
     [Serializable]
     private class DataWrapper : ISerializable {
@@ -68,6 +74,7 @@ public class SavedData : ScriptableObject {
             }
         }
     }
+    #endregion
     /*
         Variables marked "s_" are serializable variables and must be reworked 
         to be used as their respective MonoBehaviors class.
@@ -96,17 +103,17 @@ public class SavedData : ScriptableObject {
     } }
 
     public static int currentSaveSlot = 1;
-    public static string getDataPath { get { return dataPath; } }
+    public static string getDataPath { get { return _dataPath; } }
     
-    private static DateTime? startPlayTime;      // nullable
-    private const string saveStr = "SAVE_SLOT_"; // concatenate 1, 2, or 3
-    private static string dataPath;
+    private static DateTime? _startPlayTime;      // nullable
+    private const string _saveStr = "SAVE_SLOT_"; // concatenate 1, 2, or 3
+    private static string _dataPath;
 
     private void OnEnable() {
-        dataPath = Application.persistentDataPath;
+        _dataPath = Application.persistentDataPath;
     }
 
-    /* STATIC STORAGE AND RETRIEVAL METHODS */
+    #region dataSerializationAndRetrieval
     /// <summary>
     /// Returns data stored at a given slot.
     /// (w/ error handling during production)
@@ -121,11 +128,11 @@ public class SavedData : ScriptableObject {
 
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        string filePath = dataPath + saveStr + slot + ".dat";
+        string filePath = _dataPath + _saveStr + slot + ".dat";
         FileStream fStream = null;
         // any file errors are due to features being implemented during 
         //  production, this turns the error into a yield, these preprocessor 
-        //  directives won't ship the catch statement
+        //  directives won't build w/ the catch statement
         #if UNITY_EDITOR
         try {
         #endif
@@ -134,6 +141,13 @@ public class SavedData : ScriptableObject {
                 var bf = new BinaryFormatter();
                 var wrapper = (DataWrapper)bf.Deserialize(fStream);
                 fStream.Close();
+                var options = GetStoredOptionsAt(slot);
+                wrapper.data.graphicsQuality  = options.graphicsQuality;
+                wrapper.data.mouseSensitivity = options.mouseSensitivity;
+                wrapper.data.baseFOV          = options.baseFOV;
+                wrapper.data.masterVol        = options.masterVol;
+                wrapper.data.soundFXVol       = options.soundFXVol;
+                wrapper.data.musicVol         = options.musicVol;
                 return wrapper.data;
             }
         #if UNITY_EDITOR                
@@ -158,7 +172,9 @@ public class SavedData : ScriptableObject {
     public static void StoreDataAtSlot(in SavedData data, in int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        var fStream = File.Create(getDataPath + saveStr + slot + ".dat");
+        // store options to player prefs and serialize other data
+        StoreOptionsAt(GetStoredOptionsAt(slot), slot);
+        var fStream = File.Create(getDataPath + _saveStr + slot + ".dat");
         var wrapper = new DataWrapper(data);
         new BinaryFormatter().Serialize(fStream, wrapper);
         fStream.Close();
@@ -172,8 +188,10 @@ public class SavedData : ScriptableObject {
     public static IEnumerator StoreDataAsyncAtSlot(SavedData data, int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
+        // store options to player prefs and serialize other data
+        StoreOptionsAt(GetStoredOptionsAt(slot), slot);
         var wrapper = new DataWrapper(data);
-        var fStream = File.Create(getDataPath + saveStr + ".dat");
+        var fStream = File.Create(getDataPath + _saveStr + ".dat");
         var serialization = Task.Run(() => new BinaryFormatter()
                                 .Serialize(fStream, wrapper));
         while (!serialization.IsCompleted || !serialization.IsFaulted) {
@@ -191,22 +209,32 @@ public class SavedData : ScriptableObject {
     public static void DeleteDataSlot(in int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        string filePath = getDataPath + saveStr + ".dat";
+        string filePath = getDataPath + _saveStr + ".dat";
         if (File.Exists(filePath)) File.Delete(filePath);
         var fStream = File.OpenWrite(filePath);
         var wrapper = new DataWrapper((SavedData)ScriptableObject
                                     .CreateInstance<SavedData>());
         new BinaryFormatter().Serialize(fStream, wrapper);
         fStream.Close();
-    }
 
-    /* PUBLIC FUNCTIONS TO MANIPULATE TIMEPLAYED TIMESPAN VARIABLE */
+        //clear option prefs from this slot
+        string dataSuffix = "_" + slot;
+        PlayerPrefs.DeleteKey("GraphicsQuality"  + dataSuffix);
+        PlayerPrefs.DeleteKey("MouseSensitivity" + dataSuffix);
+        PlayerPrefs.DeleteKey("BaseFOV"          + dataSuffix);
+        PlayerPrefs.DeleteKey("MasterVolume"     + dataSuffix);
+        PlayerPrefs.DeleteKey("SoundFXVolume"    + dataSuffix);
+        PlayerPrefs.DeleteKey("MusicVolume"      + dataSuffix);
+    }
+    #endregion
+
+    #region timer
     /// <summary>
     /// Start timer for this current playthrough, make sure this is called on
     /// loading a save slot.
     /// </summary>
     public static void StartTimer() {
-        if (startPlayTime == null) startPlayTime = DateTime.Now;
+        if (_startPlayTime == null) _startPlayTime = DateTime.Now;
         else Debug.Log("StartTimer: no action taken, timer already running");
     }
 
@@ -215,11 +243,11 @@ public class SavedData : ScriptableObject {
     /// </summary>
     public static IEnumerator CutCurrentPlayTime(SavedData data) {
         // logic check for the timer
-        if (startPlayTime == null)
+        if (_startPlayTime == null)
             Debug.Log("SavedData: play timer has not yet been set.");
         else {
-            data.timePlayed += DateTime.Now - (DateTime)startPlayTime;
-            startPlayTime = null;
+            data.timePlayed += DateTime.Now - (DateTime)_startPlayTime;
+            _startPlayTime = null;
         }
         // store data
         var task = Task.Run(() => StoreDataAtSlot(data, currentSaveSlot));
@@ -231,17 +259,123 @@ public class SavedData : ScriptableObject {
     }
 
     /// <summary>
-    /// Retrieve timePlayed with startPlayTime taken into account.
+    /// Retrieve timePlayed with _startPlayTime taken into account.
     /// </summary>
     /// <returns>Current total time playing.</returns>
     public TimeSpan GetCurrentPlayTime() {
-        if (startPlayTime == null) 
+        if (_startPlayTime == null) 
             return timePlayed;
         else
-            return timePlayed + ((DateTime)startPlayTime - DateTime.Now);
+            return timePlayed + ((DateTime)_startPlayTime - DateTime.Now);
     }
+    #endregion
+    
+    #region options
+    /// <summary>
+    /// Update current scene with option values in this current save data's
+    /// </summary>
+    public void SetGameVolume() {
+        AudioListener.volume = masterVol;
+        var sources = FindObjectsOfType<AudioSource>();
+        foreach (var s in sources) {
+            if (s.tag == "Player")
+                s.volume = musicVol;
+            else
+                s.volume = soundFXVol;
+        }
+    }
+
+    /// <summary>
+    /// Static method of taking OptionsData type and applying them to 
+    /// the current scene.
+    /// </summary>
+    /// <param name="options"></param>
+    public static void SetOptionsInScene(in OptionsData options) {
+        // set audio
+        AudioListener.volume = options.masterVol;
+        var sources = FindObjectsOfType<AudioSource>();
+        foreach (var s in sources) {
+            if (s.tag == "Player")
+                s.volume = options.musicVol;
+            else
+                s.volume = options.soundFXVol;
+        }
+        Camera.main.GetComponent<FirstPersonCamera>().SetOptionVals(options);
+    }
+
+    /// <summary>
+    /// Static method of taking an OptionsData type to store in our currently in use
+    /// data.
+    /// </summary>
+    /// <param name="options"></param>
+    public static void StoreOptionsAt(OptionsData options, in int slot) {
+        string dataSuffix = "_" + slot;
+        PlayerPrefs.SetFloat("GraphicsQuality"  + dataSuffix, options.graphicsQuality);
+        PlayerPrefs.SetFloat("MasterVolume"     + dataSuffix, options.masterVol);
+        PlayerPrefs.SetFloat("MusicVolume"      + dataSuffix, options.musicVol);
+        PlayerPrefs.SetFloat("SoundFXVolume"    + dataSuffix, options.soundFXVol);
+        PlayerPrefs.SetFloat("MouseSensitivity" + dataSuffix, options.mouseSensitivity);
+        PlayerPrefs.SetFloat("BaseFOV"          + dataSuffix, options.baseFOV);
+        PlayerPrefs.Save();
+    }
+
+    /// <summary>
+    /// Based on the OptionsData stored in currentSaveSlot index.
+    /// </summary>
+    /// <returns></returns>
+    [Obsolete]
+    public OptionsData GetStoredOptions() {
+        string dataSuffix = "_" + SavedData.currentSaveSlot;
+        var options = new OptionsData();
+        options.graphicsQuality  = PlayerPrefs.GetFloat("GraphicsQuality"  + dataSuffix, 1.0f);
+        options.masterVol        = PlayerPrefs.GetFloat("MasterVolume"     + dataSuffix, 1.0f);
+        options.musicVol         = PlayerPrefs.GetFloat("MusicVolume"      + dataSuffix, 1.0f);
+        options.soundFXVol       = PlayerPrefs.GetFloat("SoundFXVolume"    + dataSuffix, 1.0f);
+        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 1.0f);
+        options.baseFOV          = PlayerPrefs.GetFloat("BaseFOV"          + dataSuffix, 60f);
+        return options;
+    }
+
+    /// <summary>
+    /// Get options stored at a given save slot index.
+    /// </summary>
+    /// <param name="saveSlot">Index of save slot.</param>
+    /// <returns>Options at a save slot packages as OptionsData class.</returns>
+    public static OptionsData GetStoredOptionsAt(in int saveSlot) {
+        string dataSuffix = "_" + saveSlot;
+        var options = new OptionsData();
+        options.graphicsQuality  = PlayerPrefs.GetFloat("GraphicsQuality"  + dataSuffix, 1.0f);
+        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 1.0f);
+        options.baseFOV          = PlayerPrefs.GetFloat("BaseFOV"          + dataSuffix, 60f);
+        options.masterVol        = PlayerPrefs.GetFloat("MasterVolume"     + dataSuffix, 1.0f);
+        options.soundFXVol       = PlayerPrefs.GetFloat("SoundFXVolume"    + dataSuffix, 1.0f);
+        options.musicVol         = PlayerPrefs.GetFloat("MusicVolume"      + dataSuffix, 1.0f);
+        return options;
+    }    
+    #endregion
 }
 
+//[Serializable]
+public class OptionsData {
+    public float graphicsQuality;
+    public float masterVol;
+    public float musicVol;
+    public float soundFXVol;
+    public float mouseSensitivity;
+    public float baseFOV;
+
+    public OptionsData () {}
+
+    public OptionsData(SavedData data) {
+        this.graphicsQuality  = data.graphicsQuality;
+        this.mouseSensitivity = data.mouseSensitivity;
+        this.baseFOV          = data.baseFOV;
+        this.masterVol        = data.masterVol;
+        this.soundFXVol       = data.soundFXVol;
+        this.musicVol         = data.musicVol;
+    }
+}
+#region serializableVariables
 /// <summary>
 /// Used for serializing a Vector3 because MonoBehaviors can't be serialized.
 /// </summary>
@@ -306,3 +440,4 @@ public class SerializableQuiver {
         equipped = serialize.getEquipped;
     }
 }
+#endregion

@@ -23,22 +23,22 @@ public class LoadGameController : MonoBehaviour {
     [Range(0.1f, 2.0f)]
     public float uiSpeed = 1f;
 
-    private SavedData[] dataArr = new SavedData[3];
-    private TimeSpan timeSpanOfSlot = new TimeSpan(0, 0, 0);
-    private const string currentLevelTextPrefix    = "Current Level: ";
-    private const string timePlayedTextPrefix      = "Time Played: ";
-    private const string totalArrowsShotTextPrefix = "Total Arrows Shot: ";
-    private Scene loadGameScene;
+    private SavedData[] _dataArr = new SavedData[3];
+    private TimeSpan _timeSpanOfSlot = new TimeSpan(0, 0, 0);
+    private const string _currentLevelTextPrefix    = "Current Level: ";
+    private const string _timePlayedTextPrefix      = "Time Played: ";
+    private const string _totalArrowsShotTextPrefix = "Total Arrows Shot: ";
+    private Scene _loadGameScene;
     
     private void Start() {
         for (int i = 0; i < 3; ++i) {
-            dataArr[i] = SavedData.GetDataStoredAt(i + 1);
+            _dataArr[i] = SavedData.GetDataStoredAt(i + 1);
         }
         RefreshSaveNames();
         // hide on intialization
         EnabledShowButtonsOnSelections(false);
         inputFieldGroup.SetActive(false);
-        loadGameScene = SceneManager.GetActiveScene();
+        _loadGameScene = SceneManager.GetActiveScene();
     }
 
     /* PUBLIC BUTTON FUNCTIONS FOR UI */
@@ -57,14 +57,14 @@ public class LoadGameController : MonoBehaviour {
     public void SelectDataSlot(int slot) {
         if (SavedData.currentSaveSlot != -1) return; // prevent double clicks
 
-        var selected = dataArr[slot];
+        var selected = _dataArr[slot];
         SavedData.currentSaveSlot = ++slot;
         //display important stats
-        currentLevelText.text    = currentLevelTextPrefix + selected.currentLevel;
-        timePlayedText.text      = timePlayedTextPrefix + selected.timePlayed.ToString(@"hh\:mm\:ss");
+        currentLevelText.text    = _currentLevelTextPrefix + selected.currentLevel;
+        timePlayedText.text      = _timePlayedTextPrefix + selected.timePlayed.ToString(@"hh\:mm\:ss");
         string numOfArrowsStr    = (selected.isNewInstance) ? "0" :
                                     GetTotalArrowsShot(selected.s_Quiver).ToString();
-        totalArrowsShotText.text = totalArrowsShotTextPrefix + numOfArrowsStr;
+        totalArrowsShotText.text = _totalArrowsShotTextPrefix + numOfArrowsStr;
         StartCoroutine(AnimateShowStatistics(true));
     }
 
@@ -85,7 +85,7 @@ public class LoadGameController : MonoBehaviour {
         // disable this button if setting the saveName
         if (inputFieldGroup.activeInHierarchy) return;
 
-        var load = dataArr[SavedData.currentSaveSlot - 1];
+        var load = _dataArr[SavedData.currentSaveSlot - 1];
         // throw input or load scene
         if (load.saveName == String.Empty && load.timePlayed.Seconds == 0) {
             inputFieldGroup.SetActive(true);
@@ -103,7 +103,7 @@ public class LoadGameController : MonoBehaviour {
         var name = inputFieldGroup.GetComponentInChildren<InputField>().text;
         if (name == String.Empty) return;
         // retrieve current data and migrate it the first level
-        var curData = dataArr[SavedData.currentSaveSlot];
+        var curData = _dataArr[SavedData.currentSaveSlot];
         curData.saveName = name;
         inputFieldGroup.SetActive(false);
         int curLevelIndex = GetCurrentLevelIndex(curData.currentLevel);
@@ -188,14 +188,14 @@ public class LoadGameController : MonoBehaviour {
         for (int i = 0; i < 3; ++i) {
             // only change text if it's an existing sav
             string saveSlotTitle = "#" + (i + 1).ToString() + ": ";
-            dataArr[i] = SavedData.GetDataStoredAt(i + 1);
-            if (dataArr[i].isNewInstance)  {
+            _dataArr[i] = SavedData.GetDataStoredAt(i + 1);
+            if (_dataArr[i].isNewInstance)  {
                 buttons[i].GetComponentInChildren<Text>()
                         .text = "Save Slot #" + (i + 1).ToString();
             }
             else {
                 buttons[i].GetComponentInChildren<Text>()
-                        .text = saveSlotTitle + dataArr[i].saveName;
+                        .text = saveSlotTitle + _dataArr[i].saveName;
             }
         }
     }
@@ -274,6 +274,7 @@ public class LoadGameController : MonoBehaviour {
         float clampAmbient = data.musicVol   * data.masterVol;
 
         var audioSources = GameObject.FindObjectOfType<AudioSource>();
+        
         /*
             TODO
                 -get all audio sources in the scene, categorize and set values to where's appropriate
@@ -286,7 +287,7 @@ public class LoadGameController : MonoBehaviour {
         SavedData.StoreDataAtSlot(curData, SavedData.currentSaveSlot);
         SavedData.StartTimer();
         // finally unload the load scene
-        task = SceneManager.UnloadSceneAsync(loadGameScene);
+        task = SceneManager.UnloadSceneAsync(_loadGameScene);
         while (!task.isDone) {
             print("Unloading load scene...");
             yield return new WaitForEndOfFrame();

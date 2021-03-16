@@ -26,18 +26,6 @@ public class Character : MonoBehaviour
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
-
-    private bool canJump;
-    private float horizontalInput;
-    private float verticalInput;
-    private float gravity = 9.8f;
-    private Vector3 velocity;
-
-    private Transform camEuler;
-    private Quiver myQuiver;
-    private SavedData currentData;
-
-
     [Header ("Attacking")]
     public float attackCD;
     public float chargeRate;
@@ -57,6 +45,16 @@ public class Character : MonoBehaviour
     public bool timedJump;
     public float upTime;
     private float jumpTime = 0f;
+
+    private bool canJump;
+    private float horizontalInput;
+    private float verticalInput;
+    private float gravity = 9.8f;
+    private Vector3 velocity;
+
+    private Transform camEuler;
+    private Quiver myQuiver;
+    private SavedData currentData;
 
     private PlayerAnimationController pAnimController;
 
@@ -79,15 +77,12 @@ public class Character : MonoBehaviour
             transform.position = SaveManager.instance.activeSave.respawnPos;
             cc.enabled = true;
         }
-
-
-        //Sets Character controller
-
         // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
         myQuiver = GetComponent<Quiver>();
-        //if (currentData == null)
-        currentData = (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        // if data comes back null (it shouldn't), create new instance
+        currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
+                ?? (SavedData)ScriptableObject.CreateInstance<SavedData>();
         UpdateCharacterToSaveData(currentData);
     }
 
@@ -163,9 +158,6 @@ public class Character : MonoBehaviour
         {
             velocity.y = 0;
         }
-
-
-
     }
 
     private void FixedUpdate()
@@ -395,8 +387,9 @@ public class Character : MonoBehaviour
         currentData = data;
         currentHp = data.playerHealth;
         myQuiver.CopySerializedQuiver(data.s_Quiver);
-        // update children
-        GetComponentInChildren<FirstPersonCamera>().SetOptionVals(data);
+        var options = SavedData.GetStoredOptionsAt(SavedData.currentSaveSlot);
+        // get saved data's stored options, then apply to scene
+        SavedData.SetOptionsInScene(options);
     }
 }
 

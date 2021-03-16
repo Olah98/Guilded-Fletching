@@ -24,9 +24,9 @@ public enum AnimState {
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
-    private Animator handAnimator;
+    private Animator _handAnimator;
     //private Animator bowAnimator; // implement later
-    private Character character;
+    private Character _character;
     // animation state strings                           priority
     private const string idleStr    = "Idle";            //low
     private const string walkingStr = "Walking";         //mid
@@ -38,9 +38,9 @@ public class PlayerAnimationController : MonoBehaviour {
     private const string shootStr   = "Shooting";        //high
 
     private void Start() {
-        character = GetComponent<Character>();
-        handAnimator = GetComponent<Animator>();
-        //handAnimator.SetBool("Idle", true);
+        _character = GetComponent<Character>();
+        _handAnimator = GetComponent<Animator>();
+        //_handAnimator.SetBool("Idle", true);
         //bowAnimator.SetBool("Idle", true);
     }
 
@@ -60,22 +60,22 @@ public class PlayerAnimationController : MonoBehaviour {
             case AnimState.FullyDrawn:      animStr = fullStr;    break;
             case AnimState.Shooting:        animStr = shootStr;   break;
         }
-        //handAnimator.SetBool(animStr, setTo);
-        print("PlayerAnimating: " + state);
+        //_handAnimator.SetBool(animStr, setTo);
+        //print("PlayerAnimating: " + state);
     }
 
     /// <summary>
     /// Set every animation state as false.
     /// </summary>
     public void SetAllAnimationsFalse() {
-        animator.SetBool(idleStr,    false);
-        animator.SetBool(walkingStr, false);
-        animator.SetBool(jumpingStr, false);
-        animator.SetBool(loadingStr, false);
-        animator.SetBool(switchStr,  false);
-        animator.SetBool(drawingStr, false);
-        animator.SetBool(fullStr,    false);
-        animator.SetBool(shootStr,   false);
+        _handAnimator.SetBool(idleStr,    false);
+        _handAnimator.SetBool(walkingStr, false);
+        _handAnimator.SetBool(jumpingStr, false);
+        _handAnimator.SetBool(loadingStr, false);
+        _handAnimator.SetBool(switchStr,  false);
+        _handAnimator.SetBool(drawingStr, false);
+        _handAnimator.SetBool(fullStr,    false);
+        _handAnimator.SetBool(shootStr,   false);
     }
 
     /// <summary>
