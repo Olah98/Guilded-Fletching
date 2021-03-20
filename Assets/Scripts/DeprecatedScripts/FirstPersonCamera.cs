@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 
-//[System.Obsolete] // deprecate later
+[System.Obsolete]
 public class FirstPersonCamera : MonoBehaviour {
     public Text interactionHintText;
     [Header("Look values for Camera Movement")]
@@ -142,4 +142,5 @@ public class FirstPersonCamera : MonoBehaviour {
         // to prevent "reinteraction"
         interactingWith.tag = "Untagged";
     }
+
 }

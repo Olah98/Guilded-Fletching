@@ -295,12 +295,12 @@ public class SavedData : ScriptableObject {
         AudioListener.volume = options.masterVol;
         var sources = FindObjectsOfType<AudioSource>();
         foreach (var s in sources) {
-            if (s.tag == "Player")
-                s.volume = options.musicVol;
-            else
-                s.volume = options.soundFXVol;
+            s.volume = (s.tag != "Player") ? options.soundFXVol 
+                                           : options.musicVol;
         }
-        Camera.main.GetComponent<FirstPersonCamera>().SetOptionVals(options);
+        
+        GameObject.FindGameObjectWithTag("Player")
+            .GetComponent<Character>().SetOptionVals(options);
     }
 
     /// <summary>
