@@ -420,12 +420,13 @@ MonoBehaviour:
   - {fileID: 1926641923919432315, guid: feef72cda7e1b154ea6af02565530d3c, type: 3}
   - {fileID: 1926641923919432315, guid: b1d6c379958bddb4c98e15067655fb0b, type: 3}
   speed: 5
-  maxSpeed: 0
+  maxSpeed: 5
   jumpPower: 2.8
   jumpCD: 0
   fallMod: 0.5
   coyoteJump: 0.5
   isClimbing: 0
+  minCrouchHeight: 0.5
   attackCD: 0
   chargeRate: 0
   attackCharge: 0

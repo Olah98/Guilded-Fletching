@@ -17,26 +17,32 @@ public class BaseEnemy : MonoBehaviour {
     public bool isAggroed;
     public bool isDead = false;
 
-    protected float attackTimer;
-    protected static Transform playerTrans;
+    protected float _attackTimer;
+    protected Transform _playerTrans;
+
+    private float _storeAggroArea;
+    private Character _character;
 
     protected virtual void Start() {
         isAggroed = false;
-        attackTimer = 0f;
-        playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
+        _attackTimer = 0f;
+        _storeAggroArea = aggroArea;
+        var player = GameObject.FindGameObjectWithTag("Player");
+        _playerTrans = player.transform;
+        _character = player.GetComponent<Character>();
     }
 
     protected virtual void FixedUpdate() { 
 
     }
 
-    private void Update()
-    {
-        if (isDead)
-        {
+    protected void Update() {
+        if (isDead) {
             SaveManager.instance.activeSave.unsavedDead.Add(gameObject.name);
             Destroy(gameObject);
         }
+
+        aggroArea = (_character.isCrouching) ? _storeAggroArea * 0.4f  : _storeAggroArea;
     }
 
 
@@ -66,12 +72,9 @@ public class BaseEnemy : MonoBehaviour {
     /// </summary>
     /// <returns>Bool if enemy is aggroed.</returns>
     protected bool IsPlayerInAggroRange() {
-        if (Vector3.Distance(transform.position, playerTrans.position) <= aggroArea) {
-            isAggroed = true;
-            return true;
-        }
-        isAggroed = false;
-        return false;
+        isAggroed = (Vector3.Distance(transform.position, _playerTrans.position) 
+                        <= aggroArea);
+        return isAggroed;
     }
 
     /// <summary>
@@ -79,7 +82,7 @@ public class BaseEnemy : MonoBehaviour {
     /// </summary>
     /// <returns>Bool if enemy is inside of attack range.</returns>
     protected bool IsPlayerInAttackRange() {
-        return (Vector3.Distance(transform.position, playerTrans.position) 
+        return (Vector3.Distance(transform.position, _playerTrans.position) 
                 <= rangeOfAttack);
     }
 
@@ -88,7 +91,7 @@ public class BaseEnemy : MonoBehaviour {
     /// area of the enemy selected.
     /// </summary>
     private void OnDrawGizmosSelected() {
-        //draw agggro range
+        //draw aggro range
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, aggroArea);
         //draw attack range

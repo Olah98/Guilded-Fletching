@@ -7,30 +7,30 @@ using System.Collections;
 using UnityEngine;
 
 public class MeleeEnemy : BaseEnemy {
-    private float storeSpeed; // altering speed for charging values
-    private float storePlayerSpeed;
+    private float _storeSpeed; // altering speed for charging values
+    private float _storePlayerSpeed;
 
     protected override void Start() {
+        base.Start();
         isAggroed = false;
-        attackTimer = attackFrequency; // initialize an attack to occur
-        playerTrans = GameObject.FindGameObjectWithTag("Player").transform;
-        storePlayerSpeed = playerTrans.GetComponent<Character>().speed;
-        storeSpeed = speed;
+        _attackTimer = attackFrequency; // initialize an attack to occur
+        _storePlayerSpeed = _playerTrans.GetComponent<Character>().speed;
+        _storeSpeed = speed;
     }
 
     protected override void FixedUpdate() {
         // aggro and attack
         if (!IsPlayerInAggroRange()) return;
-        if (IsPlayerInAttackRange() && attackTimer >= attackFrequency) { 
+        if (IsPlayerInAttackRange() && _attackTimer >= attackFrequency) { 
             Attack();
-            attackTimer = 0f;
+            _attackTimer = 0f;
         }
 
         // manage attack timer
-        if (isAggroed) attackTimer += Time.deltaTime;
+        if (isAggroed) _attackTimer += Time.deltaTime;
 
         // movement
-        Vector3 movePos = playerTrans.position - transform.position;
+        Vector3 movePos = _playerTrans.position - transform.position;
         movePos.y = 0f;
         transform.position += movePos.normalized * speed * Time.deltaTime;
         // adjust rotation to always look forward
@@ -42,7 +42,7 @@ public class MeleeEnemy : BaseEnemy {
     /// </summary>
     protected override void Attack() {
         // charge player
-        speed = storePlayerSpeed * 1.25f;
+        speed = _storePlayerSpeed * 1.25f;
         // cooldown
         StartCoroutine("AttackCoolDown");
     }
@@ -54,13 +54,13 @@ public class MeleeEnemy : BaseEnemy {
         yield return new WaitForSeconds(1f);
         // step one
         speed = -speed;
-        attackTimer = 0f;
+        _attackTimer = 0f;
         yield return new WaitForSeconds(0.5f);
         // step two
         speed = 0f;
         yield return new WaitForSeconds(0.25f);
         // leave coroutine
-        speed = storeSpeed;
+        speed = _storeSpeed;
         yield return null;
     }
 }
