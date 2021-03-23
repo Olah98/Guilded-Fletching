@@ -132,7 +132,7 @@ public class Character : MonoBehaviour
         // initialize values if new game, else grab existing
         // if data comes back null (it shouldn't), create new instance
         _myQuiver = GetComponent<Quiver>();
-        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot) 
+        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
                         ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
     }
@@ -551,8 +551,8 @@ public class Character : MonoBehaviour
     private void _Crouching(in bool action) {
         speed = (action) ? maxSpeed * 0.6f : maxSpeed;
         _isCrouching = action;
-        float incrementor = Mathf.Lerp(minCrouchHeight, 
-                                       1.0f, 
+        float incrementor = Mathf.Lerp(minCrouchHeight,
+                                       1.0f,
                                        transform.localScale.y);
         incrementor     = (action) ? -incrementor : incrementor;
         bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
