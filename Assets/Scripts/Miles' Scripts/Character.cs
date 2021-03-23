@@ -549,7 +549,7 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="action">In parameter to enable or disable crouching</param>
     private void _Crouching(in bool action) {
-        if (action) speed = maxSpeed * 0.6f;
+        speed = (action) ? maxSpeed * 0.6f : maxSpeed;
         _isCrouching = action;
         float incrementor = Mathf.Lerp(minCrouchHeight, 
                                        1.0f, 
