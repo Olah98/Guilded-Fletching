@@ -1,7 +1,8 @@
 ﻿/*
 Author: Miles Gomez & Christian Mullins
 Date: 3/15/2021
-Summary:
+Summary: Script containing values of the player, their movement, and camera
+    manipulation in-game.
 */
 using System.Collections;
 using System.Collections.Generic;
@@ -27,9 +28,6 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
-    
-    
-
 
     private bool canJump;
     private float horizontalInput;
@@ -38,11 +36,12 @@ public class Character : MonoBehaviour
     private Vector3 velocity;
 
     private Transform camEuler;
-    private Quiver myQuiver;
     private SavedData currentData;
     private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
     private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
 
+    [Range(0.1f, 0.9f)]
+    public float minCrouchHeight = 0.5f;
     private float _coyoteJumpTime;
 
     [Header ("Attacking")]
@@ -62,7 +61,7 @@ public class Character : MonoBehaviour
     /* BEGIN FIRSTPERSONCAMERA VARIABLES */
     #region Camera_Variables
     [Header("Camera Variables")]
-        public Text interactionHintText;
+    public Text interactionHintText;
     [Header("Look values for Camera Movement")]
     [Range(5f, 15f)]
     [Tooltip("This value is not the same as player mouseSensitivity.")]
@@ -95,21 +94,22 @@ public class Character : MonoBehaviour
     private float _jumpTime = 0f;
     private bool _canJump;
     private Vector3 _velocity;
-
     private Quiver _myQuiver;
+    private bool _isCrouching;
     private SavedData _currentData;
-
     private PlayerAnimationController _pAnimController;
 
     // delegates
+    public bool      isCrouching    { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
-    public Quiver    getMyQuiver    { get { return myQuiver;    } }
-    public int getMyArrowType { get { return myQuiver.GetArrowType(); } }
+    public Quiver    getMyQuiver    { get { return _myQuiver;    } }
+    public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
 
     private void Start()
     {
         // intialize camera based values
         _cam = Camera.main;
+        _isCrouching = false;
         interactionHintText.enabled = false;
         s_baseFOV = getCurrentData?.baseFOV ?? 60f;
         _cam.fieldOfView = s_baseFOV;
@@ -130,10 +130,10 @@ public class Character : MonoBehaviour
         }
         // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
-        _myQuiver = GetComponent<Quiver>();
         // if data comes back null (it shouldn't), create new instance
+        _myQuiver = GetComponent<Quiver>();
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
-                ?? (SavedData)ScriptableObject.CreateInstance<SavedData>();
+                        ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
     }
 
@@ -221,8 +221,8 @@ public class Character : MonoBehaviour
         float yInput = -Input.GetAxis("Mouse Y") * lookSpeed * s_mouseSensitivity;
         Vector3 lookRot = new Vector3 (0f, xInput, 0f);
         // check if this point of looking rotation is valid
-        if (yInput + transform.localEulerAngles.x < lowerBoundary
-            || yInput + transform.localEulerAngles.x > upperBoundary) {
+        if (yInput + _cam.transform.localEulerAngles.x < lowerBoundary
+            || yInput + _cam.transform.localEulerAngles.x > upperBoundary) {
             // up and down looking (must be in local)
             _cam.transform.Rotate(Vector3.right * yInput, Space.Self);
         }
@@ -277,6 +277,8 @@ public class Character : MonoBehaviour
             _jumpTime -= Time.deltaTime;
         }
 
+        _Crouching(Input.GetKey(KeyCode.LeftShift));
+
         if (Input.GetButton("Fire1"))
         {
             if (attackCD <= 0 && !dead)
@@ -309,7 +311,7 @@ public class Character : MonoBehaviour
               //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
                 GameObject projectile;
-                projectile = Attack.Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
+                projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
@@ -317,10 +319,10 @@ public class Character : MonoBehaviour
 
 
                 //added by Warren
-                if (myQuiver.GetArrowType() == 0)
+                if (_myQuiver.GetArrowType() == 0)
                 {
                     TrackArrow(projectile, StandardArrowTracker);
-                } else if (myQuiver.GetArrowType() == 1)
+                } else if (_myQuiver.GetArrowType() == 1)
                 {
                     TrackArrow(projectile, BrambleArrowTracker);
                 }
@@ -459,6 +461,16 @@ public class Character : MonoBehaviour
         }
     }
 
+    public GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+    {
+        GameObject projectile;
+        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
+        //creates force
+        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
+        //grants projectile force based on time spent charging attack
+        return projectile; // added by Warren
+    }
+
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
     /// Move the player with the motion of a platform.
@@ -517,8 +529,6 @@ public class Character : MonoBehaviour
         SavedData.SetOptionsInScene(options);
     }
 
-    //public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
-
     //Written by Warren
     public void TrackArrow(GameObject projectile, List<GameObject> tracker)
     {
@@ -532,31 +542,25 @@ public class Character : MonoBehaviour
             }
         }
     }
-}
-
-public class Attack : MonoBehaviour
-{
-
-
-    public static GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)//, int arrowType)
-    {
-        GameObject projectile;
-        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
-        //creates force
-        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
-        //grants projectile force based on time spent charging attack
-        return projectile;//Added by Warren
-    }
 
     /// <summary>
-    /// Move the player with the motion of a platform.
+    /// Called from FixedUpdate() this scales the player down to crouching size
+    /// while pushing the player down the prevent possible floating.
     /// </summary>
-    /// <param name="hit">Platform collider that the player hit.</param>
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (hit.transform.tag == "Stoppable")
-            transform.parent = hit.transform;
-        else
-            transform.parent = null;
+    /// <param name="action">In parameter to enable or disable crouching</param>
+    private void _Crouching(in bool action) {
+        if (action) speed = maxSpeed * 0.6f;
+        _isCrouching = action;
+        float incrementor = Mathf.Lerp(minCrouchHeight,
+                                       1.0f,
+                                       transform.localScale.y);
+        incrementor     = (action) ? -incrementor : incrementor;
+        bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
+                                      : transform.localScale.y >= 1.0f;
+        if (!isBoundaryHit) {
+            transform.localScale += new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime;
+            // prevent the player from "floating"
+            cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
+        }
     }
 }
