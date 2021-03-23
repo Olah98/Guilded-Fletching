@@ -209,6 +209,15 @@ public class SaveManager : MonoBehaviour
         instance.activeSave.unsavedDead.Clear();
         instance.activeSave.enemyDead.Clear();
     }
+
+    /// <summary>
+    /// (Added by Christian): public static helper that can use FindObjectsOfType<> 
+    /// from a script that doesn't implement the MonoBehavior interface (SavedData).
+    /// </summary>
+    /// <returns>List of all objects in scene that contains an AudioSource</returns>
+    public static AudioSource[] GetAllAudioInScene() {
+        return FindObjectsOfType<AudioSource>();
+    }
 }
 
 

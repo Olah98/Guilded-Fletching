@@ -7,74 +7,12 @@ Summary: Scriptable object type save file that can store, retrieve, and edit
 using System;
 using System.IO;
 using System.Collections;
-using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
-using System.Reflection;
 using UnityEngine;
 
-/*
-    TO DO
-        -Rework to save preferences under PlayerPrefs as opposed to using this.
-*/
-
-[CreateAssetMenu(
-    fileName = "SavedData", 
-    menuName = "Scriptable Objects/SavedData", 
-    order = 0)]
-public class SavedData : ScriptableObject {
-    #region wrapperClass
-    /* Wrapper for SavedData because BinaryFormatter doesn't like ScriptableObjects */
-    [Serializable]
-    private class DataWrapper : ISerializable {
-        public SavedData data;
-
-        /// <summary>
-        /// Empty constructor necessary for compiling
-        /// </summary>
-        public DataWrapper() {}
-
-        /// <summary>
-        /// Initializing constructor to immediately package save data.
-        /// </summary>
-        /// <param name="packing">Save data we're serializing.</param>
-        public DataWrapper(SavedData packing) {
-            data = packing;
-            var context = new StreamingContext(StreamingContextStates.File);
-            var info = new SerializationInfo(typeof(DataWrapper),
-                                             new FormatterConverter());
-            
-            this.GetObjectData(info, context);
-        }
-        /// <summary>
-        /// The special constructor is used to deserialize values. In this case,
-        ///  it recreates the original ScriptableObject.
-        /// </summary>
-        /// <param name="info"></param>
-        /// <param name="context"></param>
-        public DataWrapper(SerializationInfo info, StreamingContext context) {
-            data = (SavedData)ScriptableObject.CreateInstance(typeof(SavedData));
-            if (data == null) return;
-            var fields = data.GetType().GetFields(BindingFlags.Public           | BindingFlags.NonPublic 
-                                                | BindingFlags.FlattenHierarchy | BindingFlags.Instance);
-            foreach (var f in fields) {
-                f.SetValue(data, info.GetValue(f.Name, f.FieldType));
-            }
-        }
-
-        /// <summary>
-        /// Inherritted by ISerializable, with code ripped off some guy on UnityForms.
-        /// </summary>
-        public void GetObjectData(SerializationInfo info, StreamingContext context) {
-            info.AddValue("ScriptableType", data.GetType().AssemblyQualifiedName, typeof(string));
-            var fields = data.GetType().GetFields(BindingFlags.Public           | BindingFlags.NonPublic 
-                                                | BindingFlags.FlattenHierarchy | BindingFlags.Instance);
-            foreach(var f in fields) {
-                info.AddValue(f.Name, f.GetValue(data), f.FieldType);
-            }
-        }
-    }
-    #endregion
+[Serializable]
+public class SavedData {
     /*
         Variables marked "s_" are serializable variables and must be reworked 
         to be used as their respective MonoBehaviors class.
@@ -103,15 +41,9 @@ public class SavedData : ScriptableObject {
     } }
 
     public static int currentSaveSlot = 1;
-    public static string getDataPath { get { return _dataPath; } }
     
     private static DateTime? _startPlayTime;      // nullable
     private const string _saveStr = "SAVE_SLOT_"; // concatenate 1, 2, or 3
-    private static string _dataPath;
-
-    private void OnEnable() {
-        _dataPath = Application.persistentDataPath;
-    }
 
     #region dataSerializationAndRetrieval
     /// <summary>
@@ -123,12 +55,12 @@ public class SavedData : ScriptableObject {
     public static SavedData GetDataStoredAt(in int slot) {
         #if UNITY_EDITOR
             if (slot == -1)
-                return (SavedData)ScriptableObject.CreateInstance<SavedData>();
+                return new SavedData();
         #endif
 
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        string filePath = _dataPath + _saveStr + slot + ".dat";
+        string filePath = Application.persistentDataPath + _saveStr + slot + ".dat";
         FileStream fStream = null;
         // any file errors are due to features being implemented during 
         //  production, this turns the error into a yield, these preprocessor 
@@ -139,16 +71,16 @@ public class SavedData : ScriptableObject {
             if (File.Exists(filePath)) {
                 fStream = File.OpenRead(filePath);
                 var bf = new BinaryFormatter();
-                var wrapper = (DataWrapper)bf.Deserialize(fStream);
+                var data = (SavedData)bf.Deserialize(fStream);
                 fStream.Close();
                 var options = GetStoredOptionsAt(slot);
-                wrapper.data.graphicsQuality  = options.graphicsQuality;
-                wrapper.data.mouseSensitivity = options.mouseSensitivity;
-                wrapper.data.baseFOV          = options.baseFOV;
-                wrapper.data.masterVol        = options.masterVol;
-                wrapper.data.soundFXVol       = options.soundFXVol;
-                wrapper.data.musicVol         = options.musicVol;
-                return wrapper.data;
+                data.graphicsQuality  = options.graphicsQuality;
+                data.mouseSensitivity = options.mouseSensitivity;
+                data.baseFOV          = options.baseFOV;
+                data.masterVol        = options.masterVol;
+                data.soundFXVol       = options.soundFXVol;
+                data.musicVol         = options.musicVol;
+                return data;
             }
         #if UNITY_EDITOR                
         }
@@ -161,7 +93,7 @@ public class SavedData : ScriptableObject {
             DeleteDataSlot(slot);
         }
         #endif
-        return (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        return new SavedData();
     }
 
     /// <summary>
@@ -174,9 +106,9 @@ public class SavedData : ScriptableObject {
 
         // store options to player prefs and serialize other data
         StoreOptionsAt(GetStoredOptionsAt(slot), slot);
-        var fStream = File.Create(getDataPath + _saveStr + slot + ".dat");
-        var wrapper = new DataWrapper(data);
-        new BinaryFormatter().Serialize(fStream, wrapper);
+        var fStream = File.Create(Application.persistentDataPath + _saveStr 
+                                    + slot + ".dat");
+        new BinaryFormatter().Serialize(fStream, data);
         fStream.Close();
     }
 
@@ -190,10 +122,10 @@ public class SavedData : ScriptableObject {
 
         // store options to player prefs and serialize other data
         StoreOptionsAt(GetStoredOptionsAt(slot), slot);
-        var wrapper = new DataWrapper(data);
-        var fStream = File.Create(getDataPath + _saveStr + ".dat");
+        var fStream = File.Create(Application.persistentDataPath 
+                                    + _saveStr + ".dat");
         var serialization = Task.Run(() => new BinaryFormatter()
-                                .Serialize(fStream, wrapper));
+                                .Serialize(fStream, data));
         while (!serialization.IsCompleted || !serialization.IsFaulted) {
             Debug.Log("Storing Data...");
             yield return new WaitForEndOfFrame();
@@ -209,12 +141,10 @@ public class SavedData : ScriptableObject {
     public static void DeleteDataSlot(in int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        string filePath = getDataPath + _saveStr + ".dat";
+        string filePath = Application.persistentDataPath + _saveStr + ".dat";
         if (File.Exists(filePath)) File.Delete(filePath);
         var fStream = File.OpenWrite(filePath);
-        var wrapper = new DataWrapper((SavedData)ScriptableObject
-                                    .CreateInstance<SavedData>());
-        new BinaryFormatter().Serialize(fStream, wrapper);
+        new BinaryFormatter().Serialize(fStream, new SavedData());
         fStream.Close();
 
         //clear option prefs from this slot
@@ -276,7 +206,7 @@ public class SavedData : ScriptableObject {
     /// </summary>
     public void SetGameVolume() {
         AudioListener.volume = masterVol;
-        var sources = FindObjectsOfType<AudioSource>();
+        var sources = SaveManager.GetAllAudioInScene();
         foreach (var s in sources) {
             if (s.tag == "Player")
                 s.volume = musicVol;
@@ -293,7 +223,7 @@ public class SavedData : ScriptableObject {
     public static void SetOptionsInScene(in OptionsData options) {
         // set audio
         AudioListener.volume = options.masterVol;
-        var sources = FindObjectsOfType<AudioSource>();
+        var sources = SaveManager.GetAllAudioInScene();
         foreach (var s in sources) {
             s.volume = (s.tag != "Player") ? options.soundFXVol 
                                            : options.musicVol;
@@ -320,23 +250,6 @@ public class SavedData : ScriptableObject {
     }
 
     /// <summary>
-    /// Based on the OptionsData stored in currentSaveSlot index.
-    /// </summary>
-    /// <returns></returns>
-    [Obsolete]
-    public OptionsData GetStoredOptions() {
-        string dataSuffix = "_" + SavedData.currentSaveSlot;
-        var options = new OptionsData();
-        options.graphicsQuality  = PlayerPrefs.GetFloat("GraphicsQuality"  + dataSuffix, 1.0f);
-        options.masterVol        = PlayerPrefs.GetFloat("MasterVolume"     + dataSuffix, 1.0f);
-        options.musicVol         = PlayerPrefs.GetFloat("MusicVolume"      + dataSuffix, 1.0f);
-        options.soundFXVol       = PlayerPrefs.GetFloat("SoundFXVolume"    + dataSuffix, 1.0f);
-        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 1.0f);
-        options.baseFOV          = PlayerPrefs.GetFloat("BaseFOV"          + dataSuffix, 60f);
-        return options;
-    }
-
-    /// <summary>
     /// Get options stored at a given save slot index.
     /// </summary>
     /// <param name="saveSlot">Index of save slot.</param>
@@ -355,7 +268,6 @@ public class SavedData : ScriptableObject {
     #endregion
 }
 
-//[Serializable]
 public class OptionsData {
     public float graphicsQuality;
     public float masterVol;
@@ -429,6 +341,14 @@ public class SerializableQuiver {
         // second index is how many shot
         loadout = new int[,] { { 1, 0 }, { 1, 0 }, { 1, 0 }, { 1, 0 } };
         equipped = 0;
+    }
+
+    public SerializableQuiver(in int usableArrows) {
+        loadout = new int[,] { { 1, 0 }, { 0, 0 }, { 0, 0 }, { 0, 0 } };
+        equipped = 0;
+        for (int i = 0; i < usableArrows; ++i) {
+            loadout[i, 0] = 1;
+        }
     }
 
     /// <summary>

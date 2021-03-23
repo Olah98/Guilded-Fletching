@@ -249,7 +249,7 @@ public class Character : MonoBehaviour
             else if (attackCharge == 100) {
                 _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
             }
-            cc.Move(move * speed * Time.deltaTime);
+            cc.Move(move.normalized * speed * Time.deltaTime);
         }
         //Moves player when WASD is pressed
 
