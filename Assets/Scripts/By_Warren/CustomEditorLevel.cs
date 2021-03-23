@@ -19,7 +19,7 @@ public class CustomEditorLevel : Editor
 	{
 		serializedObject.Update();
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("complete"));
-		EditorGUILayout.PropertyField(serializedObject.FindProperty("timerLabel"));
+		EditorGUILayout.PropertyField(serializedObject.FindProperty("loadout"));
 		EditorGUILayout.PropertyField(serializedObject.FindProperty("dragPuzzleManagerHere"));
 		serializedObject.ApplyModifiedProperties();
 

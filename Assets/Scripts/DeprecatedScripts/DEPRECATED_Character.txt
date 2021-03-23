@@ -1,0 +1,375 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.SceneManagement;
+//Author: Miles Gomez
+//Changes made 3/4/2021
+
+public class Character : MonoBehaviour
+{
+    [Header ("GameObjects")]
+    CharacterController cc;
+    public GameObject cam;
+    public GameObject arrow;
+    public Transform bowPosition;
+
+    [Header ("Movement")]
+    public float speed;
+    public float maxSpeed;
+    public float jumpPower;
+    public float jumpCD;
+    public float fallMod;
+    public float coyoteJump;
+    private float _coyoteJumpTime;
+    public bool isClimbing;
+    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
+    public GameObject[] arrowPrefabs;
+
+    [Header ("Attacking")]
+    public float attackCD;
+    public float chargeRate;
+    public float attackCharge;
+
+    [Header ("Health")]
+    public int maxHp;
+    public int currentHp;
+    public bool dead = false;
+
+    [Header ("UI Elements")]
+    public Text chargeText;
+    public Slider chargeSlider;//Added by Warren
+
+    [Header("Testing")]
+    public bool timedJump;
+    public float upTime;
+    private float _jumpTime = 0f;
+
+    private bool _canJump;
+    private float _horizontalInput;
+    private float _verticalInput;
+    private Vector3 _velocity;
+
+    private Quiver _myQuiver;
+    private SavedData _currentData;
+
+    private PlayerAnimationController _pAnimController;
+
+    // delegates
+    public SavedData getCurrentData { get { return _currentData; } }
+    public Quiver    getMyQuiver    { get { return _myQuiver;    } }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        isClimbing = false;
+        cc = gameObject.GetComponent<CharacterController>();
+        _pAnimController = GetComponent<PlayerAnimationController>();
+
+        if (SaveManager.instance.activeSave.respawnPos!=null &&
+            SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
+        {
+            cc.enabled = false;
+            transform.position = SaveManager.instance.activeSave.respawnPos;
+            cc.enabled = true;
+        }
+        // initialize quiver (StandardArrow equipped first)
+        // initialize values if new game, else grab existing
+        _myQuiver = GetComponent<Quiver>();
+        // if data comes back null (it shouldn't), create new instance
+        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
+                ?? (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        UpdateCharacterToSaveData(_currentData);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        #if UNITY_EDITOR
+        //Used for testing, remove at a later date.
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Respawn();
+        }
+        #endif
+        //Checks if dead and respawns.
+        if (dead)
+        {
+            Respawn();
+        }
+
+        //Debug.Log(rc.lastCheckpoint);
+        //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
+        if (_canJump)
+        {
+            cc.stepOffset = 0.2f;
+        }
+        if (!_canJump)
+        {
+            cc.stepOffset = 0;
+        }
+
+        chargeText.text = "charge: " + attackCharge;
+        chargeSlider.GetComponent<Slider>().value = attackCharge;//Added by Warren
+
+        // if the player is climbing, movement will be handled by Climber.cs
+        if (isClimbing) return;
+
+        bool isJumpPressed = Input.GetButton("Jump");
+        GroundCheck();
+        //Checks Ground and if jump input has been pressed
+        RoofCheck();
+        //Checks To see if the player has touched a roof, will stop upwards movement.
+        if (attackCD > 0)
+        {
+            attackCD -= 1 * Time.deltaTime;
+            //lowers attack cd
+        }
+
+        if (jumpCD > 0)
+        {
+            jumpCD -= 1 * Time.deltaTime;
+            //lowers attack cd
+        }
+
+        if ((isJumpPressed && _canJump) || (isJumpPressed && _coyoteJumpTime >0f))
+        {
+            if (!_canJump && _coyoteJumpTime >0f)
+            {
+                _velocity.y = 0;
+                Jump();
+            }
+            else
+            {
+                Jump();
+            }
+            //Jumps on input
+        }
+        else if (isJumpPressed && _canJump)
+        {
+            _velocity.y = 0;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        // if the player is climbing, movement will be handled by Climber.cs
+        if (isClimbing) return;
+
+        _horizontalInput = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
+        //Detects WASD movement or Jump
+
+        Vector3 move = transform.right * _horizontalInput + transform.forward * _verticalInput;
+        if (!dead && cc.enabled == true)
+        {
+            if (attackCharge == 0) {
+                if (move != Vector3.zero)
+                    _pAnimController.SetAnimation(AnimState.Walking, true);
+                else
+                    _pAnimController.SetAnimation(AnimState.Idle, true);
+            }
+            else if (attackCharge == 100) {
+                _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
+            }
+            cc.Move(move * speed * Time.deltaTime);
+        }
+        //Moves player when WASD is pressed
+
+        if (_jumpTime <= 0)
+        {
+            if (!_canJump)
+            {
+                _velocity.y += Physics.gravity.y * Time.deltaTime * (1f + fallMod);
+                            _pAnimController.SetAnimation(AnimState.Jumping, true);
+            }
+            if (_velocity.y < Physics.gravity.y) 
+            {
+                _velocity.y = Physics.gravity.y;
+            }
+        }
+
+        //responsible for Y axis movement
+        if (cc.enabled == true)
+        {
+            cc.Move(_velocity * Time.deltaTime);
+        }
+        //Testing new jump system
+        if (_jumpTime >0 && timedJump == true)
+        {
+            _jumpTime -= Time.deltaTime;
+        }
+
+        if (Input.GetButton("Fire1"))
+        {
+            if (attackCD <= 0 && !dead)
+            {
+                if (attackCharge < 100)
+                {
+                    float drawMultiplier = arrowPrefabs[_myQuiver.GetArrowType()]
+                                            .GetComponent<BaseArrow>().drawSpeed;
+                    attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
+                    //builds attackcharge as long as you hold the mouse button down.
+                    _pAnimController.SetAnimation(AnimState.DrawingArrow, true);
+                }
+                if (attackCharge > 100)
+                {
+                    attackCharge = 100; //Added by Warren for rounding
+                    _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
+                }
+            }
+
+        }
+        else if (attackCharge > 0)
+        {
+            if (attackCD <= 0 && !dead)
+            {
+                // get currently equipped arrow and increment record
+                GameObject arrowEquipped = arrowPrefabs[_myQuiver.GetArrowType()];
+                _myQuiver.Fire();
+                //Checks that attack is off CD, shoots upon letting go of the mouse button
+                Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
+                _pAnimController.SetAnimation(AnimState.Shooting, true);
+                attackCD = 1;
+                //Attack cd set  back to 1 second
+                attackCharge = 0;
+                //Bow Chare set back to 0
+            }
+        }
+    }
+
+    public void Jump()
+    {
+        if ((jumpCD <=0 && !dead) || (_coyoteJumpTime > 0 && !dead))
+        {
+            _canJump = false;
+            //Adds force to jum pwith
+            if (coyoteJump > 0)
+            {
+                _velocity.y = Mathf.Sqrt(jumpPower * Physics.gravity.y * 1.2f);
+            }
+            else
+            {
+                _velocity.y = Mathf.Sqrt(jumpPower * Physics.gravity.y);
+            }   
+            jumpCD = .5f;
+            _coyoteJumpTime = 0f;
+
+            //testing New jump movement
+            if (timedJump)
+            {
+                _jumpTime += upTime;
+            }
+        }
+    }
+
+    public void Respawn()
+    {
+        //Disables player movement.
+        cc.enabled = false;
+        StartCoroutine(RespawnCo());
+    }
+
+    public IEnumerator RespawnCo()
+    {
+        yield return new WaitForSeconds(.5f);
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void GroundCheck()
+    {
+        //Checks if the player is on the ground and sets _canJump to true, if player is not on the ground, then it is false
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.3f))
+        {
+            _coyoteJumpTime = coyoteJump;
+            _canJump = true;
+        }
+        else
+        {
+            _coyoteJumpTime -= Time.deltaTime * 1;
+            _canJump = false;
+        }
+    }
+
+    public void RoofCheck()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out hit, 1.2f))
+        {
+            if (_velocity.y > 0f)
+            {
+                _velocity.y = 0f;
+            }
+        }
+    }
+
+    //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
+    /// <summary>
+    /// Move the player with the motion of a platform.
+    /// </summary>
+    /// <param name="hit">Platform collider that the player hit.</param>
+    private void OnControllerColliderHit(ControllerColliderHit hit) {
+        if (hit.transform.tag == "Stoppable")
+            transform.parent = hit.transform;
+        else
+            transform.parent = null;
+    }
+
+    /// <summary>
+    /// Public function that removes health while checking for if the
+    /// player has died.
+    /// </summary>
+    /// <param name="damage">Amount to damage player.</param>
+    public void TakeDamage(int damage) {
+        currentHp -= damage;
+        if (currentHp < 1) {
+            // implement player death
+            currentHp = 0;
+            dead = true;
+        }
+    }
+
+    public void Damage(int damage)
+    {
+        currentHp -= damage;
+    }
+
+    /// <summary>
+    ///
+    /// </summary>
+    /// <param name="data"></param>
+    /// <returns></returns>
+    public SavedData UpdateAndGetSaveData() {
+        _currentData.playerHealth = currentHp;
+        _currentData.s_Quiver = new SerializableQuiver(_myQuiver);
+        // future implementations will handle checkpoint system
+        return _currentData;
+    }
+
+    /// <summary>
+    /// Take argument data and overwrite Character's save data.
+    /// </summary>
+    /// <param name="data">Data that will be stored</param>
+    /// <returns>Updated save file</returns>
+    public void UpdateCharacterToSaveData(in SavedData data) {
+        _currentData = data;
+        currentHp = data.playerHealth;
+        _myQuiver.CopySerializedQuiver(data.s_Quiver);
+        var options = SavedData.GetStoredOptionsAt(SavedData.currentSaveSlot);
+        // get saved data's stored options, then apply to scene
+        SavedData.SetOptionsInScene(options);
+    }
+}
+
+public class Attack : MonoBehaviour
+{
+    public static void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+    {
+        GameObject projectile;
+        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
+        //creates force
+        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
+        //grants projectile force based on time spent charging attack
+    }
+}

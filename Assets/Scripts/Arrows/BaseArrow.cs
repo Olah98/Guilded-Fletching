@@ -58,4 +58,11 @@ public class BaseArrow : MonoBehaviour {
             isLit = true;
         }
     }
+
+    //By Warren
+    void DestroyObjectDelayed()
+    {
+        // Kills the game object in 60 seconds after loading the object
+        Destroy(gameObject, 60);
+    }
 }

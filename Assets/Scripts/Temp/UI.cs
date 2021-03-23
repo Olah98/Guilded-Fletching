@@ -148,6 +148,7 @@ public class UI : MonoBehaviour
     {
         var curData = character.UpdateAndGetSaveData();
         StartCoroutine(SavedData.CutCurrentPlayTime(curData));
+
         //store values!!
         Debug.Log("Quit Game");
         Application.Quit();
@@ -200,8 +201,11 @@ public class UI : MonoBehaviour
     /// </summary>
     /// <param name="showing">Bool to activate Options.</param>
     public void ToggleOptions(bool showing) {
-        var oc = optionMenu.GetComponent<OptionsController>();
-        if (!showing) oc.SaveOptionsToCurrentData();
+        if (!showing) {
+            var oc = optionMenu.GetComponent<OptionsController>();
+            SavedData.SetOptionsInScene(oc.PackControllerOptions());
+            oc.SaveOptionsToCurrentData();
+        }
         optionMenu.SetActive(showing);
         pausePrompt.SetActive(!showing);
     }

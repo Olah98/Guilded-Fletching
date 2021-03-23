@@ -8,10 +8,10 @@ using UnityEngine;
 public class Climber : MonoBehaviour {
     [Range(1f, 5f)]
     public float climbSpeed;
-    private CharacterController controller;
+    private CharacterController _controller;
 
     void Start() {
-        controller = null;
+        _controller = null;
     }
 
     /// <summary>
@@ -22,21 +22,21 @@ public class Climber : MonoBehaviour {
     private void OnTriggerStay(Collider other) {
         // for climbing
         if (other.tag == "Player") {
-            controller = other.GetComponent<CharacterController>();
+            _controller = other.GetComponent<CharacterController>();
             Character character = other.GetComponent<Character>();
             // begin climb
-            if (controller.isGrounded) {
+            if (_controller.isGrounded) {
                 if (IsPlayerFacingLadder(other.transform)) {
                     // override controls in Character.cs
                     character.isClimbing = true;
-                    controller.Move(GetClimbingMovement() * Time.fixedDeltaTime);
+                    _controller.Move(GetClimbingMovement() * Time.fixedDeltaTime);
                 }
                 else character.isClimbing = false;
             }
             // handle mid climb
             else {
                 character.isClimbing = true;
-                controller.Move(GetClimbingMovement() * Time.fixedDeltaTime);
+                _controller.Move(GetClimbingMovement() * Time.fixedDeltaTime);
             }
         }
     }
@@ -51,9 +51,9 @@ public class Climber : MonoBehaviour {
             // if the player is ascending upon exit
             if (Input.GetAxis("Vertical") > 0f) {
                 // give a boost to reach the top
-                controller.Move(Vector3.up * 0.5f);
+                _controller.Move(Vector3.up * 0.5f);
             }
-            controller = null;
+            _controller = null;
             other.GetComponent<Character>().isClimbing = false;
         }
     }
@@ -64,8 +64,8 @@ public class Climber : MonoBehaviour {
     /// </summary>
     /// <returns>Movement from input for climbing.</returns>
     private Vector3 GetClimbingMovement() {
-        Vector3 moveDir = controller.transform.right * Input.GetAxis("Horizontal")
-                        + controller.transform.up * Input.GetAxis("Vertical");
+        Vector3 moveDir = _controller.transform.right * Input.GetAxis("Horizontal")
+                        + _controller.transform.up * Input.GetAxis("Vertical");
         return moveDir * climbSpeed;
     }
 

@@ -109,3 +109,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myDoor: {fileID: 0}
   isFlipped: 0
+  isInteractable: 0
+  triggerByArrow: 1
