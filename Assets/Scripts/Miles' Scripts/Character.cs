@@ -27,8 +27,8 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
-    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
-    public GameObject[] arrowPrefabs;
+    
+    
 
 
     private bool canJump;
@@ -309,7 +309,7 @@ public class Character : MonoBehaviour
               //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
                 GameObject projectile;
-                projectile = Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
+                projectile = Attack.Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
