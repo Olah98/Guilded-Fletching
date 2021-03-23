@@ -1,7 +1,12 @@
 ﻿/*
 Author: Miles Gomez & Christian Mullins
 Date: 3/15/2021
+<<<<<<< Updated upstream
 Summary:
+=======
+Summary: Script containing values of the player, their movement, and camera
+    manipulation in-game.
+>>>>>>> Stashed changes
 */
 using System.Collections;
 using System.Collections.Generic;
@@ -27,6 +32,7 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
+<<<<<<< Updated upstream
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
@@ -43,6 +49,10 @@ public class Character : MonoBehaviour
     private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
     private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
 
+=======
+    [Range(0.1f, 0.9f)]
+    public float minCrouchHeight = 0.5f;
+>>>>>>> Stashed changes
     private float _coyoteJumpTime;
 
     [Header ("Attacking")]
@@ -62,7 +72,7 @@ public class Character : MonoBehaviour
     /* BEGIN FIRSTPERSONCAMERA VARIABLES */
     #region Camera_Variables
     [Header("Camera Variables")]
-        public Text interactionHintText;
+    public Text interactionHintText;
     [Header("Look values for Camera Movement")]
     [Range(5f, 15f)]
     [Tooltip("This value is not the same as player mouseSensitivity.")]
@@ -95,21 +105,22 @@ public class Character : MonoBehaviour
     private float _jumpTime = 0f;
     private bool _canJump;
     private Vector3 _velocity;
-
     private Quiver _myQuiver;
+    private bool _isCrouching;
     private SavedData _currentData;
-
     private PlayerAnimationController _pAnimController;
 
     // delegates
+    public bool      isCrouching    { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
     public Quiver    getMyQuiver    { get { return myQuiver;    } }
-    public int getMyArrowType { get { return myQuiver.GetArrowType(); } }
+    public int       getMyArrowType { get { return myQuiver.GetArrowType(); } }
 
     private void Start()
     {
         // intialize camera based values
         _cam = Camera.main;
+        _isCrouching = false;
         interactionHintText.enabled = false;
         s_baseFOV = getCurrentData?.baseFOV ?? 60f;
         _cam.fieldOfView = s_baseFOV;
@@ -276,6 +287,8 @@ public class Character : MonoBehaviour
         {
             _jumpTime -= Time.deltaTime;
         }
+
+        _Crouching(Input.GetKey(KeyCode.Tab));
 
         if (Input.GetButton("Fire1"))
         {
@@ -459,6 +472,15 @@ public class Character : MonoBehaviour
         }
     }
 
+    public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+    {
+        GameObject projectile;
+        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
+        //creates force
+        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
+        //grants projectile force based on time spent charging attack
+    }
+
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
     /// Move the player with the motion of a platform.
@@ -517,8 +539,6 @@ public class Character : MonoBehaviour
         SavedData.SetOptionsInScene(options);
     }
 
-    //public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
-
     //Written by Warren
     public void TrackArrow(GameObject projectile, List<GameObject> tracker)
     {
@@ -532,12 +552,6 @@ public class Character : MonoBehaviour
             }
         }
     }
-}
-
-public class Attack : MonoBehaviour
-{
-
-
     public static GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)//, int arrowType)
     {
         GameObject projectile;
@@ -558,5 +572,26 @@ public class Attack : MonoBehaviour
             transform.parent = hit.transform;
         else
             transform.parent = null;
+    }
+
+    /// <summary>
+    /// Called from FixedUpdate() this scales the player down to crouching size
+    /// while pushing the player down the prevent possible floating.
+    /// </summary>
+    /// <param name="action">In parameter to enable or disable crouching</param>
+    private void _Crouching(in bool action) {
+        if (action) speed = maxSpeed * 0.6f;
+        _isCrouching = action;
+        float incrementor = Mathf.Lerp(minCrouchHeight, 
+                                       1.0f, 
+                                       transform.localScale.y);
+        incrementor     = (action) ? -incrementor : incrementor;
+        bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
+                                      : transform.localScale.y >= 1.0f;
+        if (!isBoundaryHit) {
+            transform.localScale += new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime;
+            // prevent the player from "floating"
+            cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
+        }
     }
 }

@@ -21,20 +21,20 @@ public class ArcherEnemy : BaseEnemy {
         base.Start();
         startPos = transform.position;
         playerVelocity = Vector3.zero;
-        lastPlayerPos = playerTrans.position;
+        lastPlayerPos = _playerTrans.position;
     }
 
     protected override void FixedUpdate() {
         Vector3 moveDir = Vector3.zero;
 
         playerVelocity = GetCurrentPlayerVelocity();
-        lastPlayerPos = playerTrans.position;
+        lastPlayerPos = _playerTrans.position;
 
         // check for aggro, increment timer, check for attack range
         isAggroed = IsPlayerInAggroRange();
-        if (isAggroed) attackTimer += Time.fixedDeltaTime;
+        if (isAggroed) _attackTimer += Time.fixedDeltaTime;
         if (IsPlayerInAttackRange()) {
-            if (attackTimer >= attackFrequency) {
+            if (_attackTimer >= attackFrequency) {
                 Vector3 targetPos = GetNewShotPosition();
                 moveDir = Vector3.Lerp(transform.position, targetPos, 0.5f) - transform.position;
                 Vector3 shotDir = moveDir;
@@ -49,7 +49,7 @@ public class ArcherEnemy : BaseEnemy {
             // math based on: targetPos - currentPos = desiredDirection
             // move to player or retreat to startPos
             if (isAggroed)
-                moveDir = playerTrans.position - transform.position;
+                moveDir = _playerTrans.position - transform.position;
             // am I at the startPos?
             else if ((startPos - transform.position).magnitude > 1f)
                 moveDir = startPos - transform.position;
@@ -71,10 +71,10 @@ public class ArcherEnemy : BaseEnemy {
         shotGO.transform.parent = null;
         shotGO.transform.up = shotDir;
         // base power off of distance
-        float power = Vector3.Distance(transform.position, playerTrans.position) / 2.75f;
+        float power = Vector3.Distance(transform.position, _playerTrans.position) / 2.75f;
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
         shotGO.GetComponent<Rigidbody>().AddForce(shotDir * power, ForceMode.VelocityChange);
-        attackTimer = 0f;
+        _attackTimer = 0f;
     }
     // for testing only (called from test scripts)
     public void ShootAtTest(Vector3 target) {
@@ -92,9 +92,9 @@ public class ArcherEnemy : BaseEnemy {
     /// </summary>
     /// <returns>Position to shoot at.</returns>
     protected Vector3 GetNewShotPosition() {
-        Vector3 shootAt = playerTrans.position;
+        Vector3 shootAt = _playerTrans.position;
         // apply player velocity (implemented in FixedUpdate)
-        shootAt += playerVelocity * playerTrans.GetComponent<Character>().speed;
+        shootAt += playerVelocity * _playerTrans.GetComponent<Character>().speed;
         // RNG for accuracy
         if (Random.Range(0, 100) >= shotAccuracy) {
             // calculate miss (2 directions, and 2 severity values)
@@ -133,9 +133,9 @@ public class ArcherEnemy : BaseEnemy {
     /// </summary>
     /// <returns>The current player velocity.</returns>
     private Vector3 GetCurrentPlayerVelocity() {
-        Vector3 posChange = playerTrans.position - lastPlayerPos;
+        Vector3 posChange = _playerTrans.position - lastPlayerPos;
         if (posChange.magnitude > 0f) {
-            posChange = (playerTrans.position - lastPlayerPos) / Time.fixedDeltaTime;
+            posChange = (_playerTrans.position - lastPlayerPos) / Time.fixedDeltaTime;
             // clamping value is relatively arbitrary, it just feels best when
             // taking player speed into account in GetNewShotPosition()
             return Vector3.ClampMagnitude(posChange, 0.35f);
