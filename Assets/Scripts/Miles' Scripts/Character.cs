@@ -27,6 +27,22 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
+    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
+    public GameObject[] arrowPrefabs;
+
+
+    private bool canJump;
+    private float horizontalInput;
+    private float verticalInput;
+    private float gravity = 9.8f;
+    private Vector3 velocity;
+
+    private Transform camEuler;
+    private Quiver myQuiver;
+    private SavedData currentData;
+    private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
+    private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
+
     private float _coyoteJumpTime;
 
     [Header ("Attacking")]
@@ -86,8 +102,9 @@ public class Character : MonoBehaviour
     private PlayerAnimationController _pAnimController;
 
     // delegates
-    public SavedData getCurrentData { get { return _currentData; } }
-    public Quiver    getMyQuiver    { get { return _myQuiver;    } }
+    public SavedData getCurrentData { get { return currentData; } }
+    public Quiver    getMyQuiver    { get { return myQuiver;    } }
+    public int getMyArrowType { get { return myQuiver.GetArrowType(); } }
 
     private void Start()
     {
@@ -288,12 +305,25 @@ public class Character : MonoBehaviour
                 GameObject arrowEquipped = arrowPrefabs[_myQuiver.GetArrowType()];
                 _myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-                Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
-                _pAnimController.SetAnimation(AnimState.Shooting, true);
+              // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
+              //  _pAnimController.SetAnimation(AnimState.Shooting, true);
+                //Expanded Fire to include arrow type
+                GameObject projectile;
+                projectile = Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
                 //Bow Chare set back to 0
+
+
+                //added by Warren
+                if (myQuiver.GetArrowType() == 0)
+                {
+                    TrackArrow(projectile, StandardArrowTracker);
+                } else if (myQuiver.GetArrowType() == 1)
+                {
+                    TrackArrow(projectile, BrambleArrowTracker);
+                }
             }
         }
     }
@@ -487,13 +517,35 @@ public class Character : MonoBehaviour
         SavedData.SetOptionsInScene(options);
     }
 
-    public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+    //public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+
+    //Written by Warren
+    public void TrackArrow(GameObject projectile, List<GameObject> tracker)
+    {
+        tracker.Insert(0, projectile);
+        if (tracker.Count > 2)
+        {
+            if (tracker[2] != null)
+            {
+                Destroy(tracker[2]);
+                tracker.RemoveAt(2);
+            }
+        }
+    }
+}
+
+public class Attack : MonoBehaviour
+{
+
+
+    public static GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)//, int arrowType)
     {
         GameObject projectile;
         projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
         //creates force
         projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         //grants projectile force based on time spent charging attack
+        return projectile;//Added by Warren
     }
 
     /// <summary>
