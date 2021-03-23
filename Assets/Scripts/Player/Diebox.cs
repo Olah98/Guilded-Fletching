@@ -22,5 +22,6 @@ public class Diebox : MonoBehaviour
         {
             other.GetComponent<Character>().Respawn();
         }
+
     }
 }
