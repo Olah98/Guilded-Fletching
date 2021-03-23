@@ -191,6 +191,8 @@ public class SaveManager : MonoBehaviour
                     Destroy(killTarget);
                 }
             }
+
+            // set options
            
         }
     }
@@ -206,8 +208,6 @@ public class SaveManager : MonoBehaviour
 
         instance.activeSave.unsavedDead.Clear();
         instance.activeSave.enemyDead.Clear();
-
-
     }
 }
 
@@ -230,5 +230,4 @@ public class SaveData
 
     public List<string> unsavedDead;
     public List<string> enemyDead;
-
 }

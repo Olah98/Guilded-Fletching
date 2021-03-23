@@ -31,54 +31,58 @@ public class OptionsController : MonoBehaviour {
     [Tooltip("Graphics Quality\nMouseSensitivity\nBaseFOV\nMaster\nSoundFX\nAmbient")]
     public GameObject[] optionGroup = new GameObject[6];
 
-    private Option[] options = new Option[6];
-    private SavedData curData;
+    private Option[] _options = new Option[6];
+    private SavedData _curData;
     //private int curSaveIndex = -1;
-    private bool isOptionsMenu { get { 
+    private bool _isOptionsMenu { get { 
         return SceneManager.GetActiveScene().name == "Options"; 
     } }
 
     private void Start() {
-        curData = (isOptionsMenu) 
+        _curData = (_isOptionsMenu) 
                 ? SavedData.GetDataStoredAt(saveSelector.value + 1)
                 : SavedData.GetDataStoredAt(SavedData.currentSaveSlot);
         
         // take optionGroup GameObject, populate options[], and set text
-        options = new Option[optionGroup.Length];
+        _options = new Option[optionGroup.Length];
         for (int i = 0; i < optionGroup.Length; ++i) {
-            options[i].numStr = optionGroup[i].transform.GetChild(1).GetComponent<Text>();
-            options[i].slider = optionGroup[i].GetComponentInChildren<Slider>();
+            _options[i].numStr = optionGroup[i].transform.GetChild(1).GetComponent<Text>();
+            _options[i].slider = optionGroup[i].GetComponentInChildren<Slider>();
         }
         InitializeOptionUI();
     }
 
     private void OnEnable() {
-        if (curData != null) InitializeOptionUI();
+        if (_curData != null) InitializeOptionUI();
     }
-
+    #region UI
     /// <summary>
     /// Immediately set up UI values in the Options in one function.
     /// </summary>
     public void InitializeOptionUI() {
+        //grab options data form the saved data
+        //plug options data into the optionsUI array
+        var curOptionsData = SavedData.GetStoredOptionsAt(SavedData.currentSaveSlot);
         // graphics quality
-        options[0].slider.value = curData.graphicsQuality;
-        options[0].numStr.text  = ((int)curData.graphicsQuality * 100).ToString();
+        _options[0].slider.value = curOptionsData.graphicsQuality;
+        _options[0].numStr.text  = ((int)curOptionsData.graphicsQuality * 100f).ToString();
         // mouse sensitivity
-        curData.mouseSensitivity = Mathf.Clamp(curData.mouseSensitivity, 0.1f, 1.0f);
-        options[1].slider.value = curData.mouseSensitivity;
-        options[1].numStr.text  = ((int)((curData.mouseSensitivity * 100))).ToString();
+        curOptionsData.mouseSensitivity 
+            = Mathf.Clamp(curOptionsData.mouseSensitivity, 0.1f, 1.0f);
+        _options[1].slider.value = curOptionsData.mouseSensitivity;
+        _options[1].numStr.text  = ((int)(curOptionsData.mouseSensitivity * 100f)).ToString();
         // base fov(field of view)
-        options[2].slider.value = curData.baseFOV * 0.005f;
-        options[2].numStr.text  = ((int)curData.baseFOV).ToString();
+        _options[2].slider.value = curOptionsData.baseFOV * 0.005f;
+        _options[2].numStr.text  = ((int)curOptionsData.baseFOV).ToString();
         // master volume
-        options[3].slider.value = curData.masterVol;
-        options[3].numStr.text  = ((int)curData.masterVol * 100).ToString();
+        _options[3].slider.value = curOptionsData.masterVol;
+        _options[3].numStr.text  = ((int)(curOptionsData.masterVol * 100f)).ToString();
         // sound FX volume
-        options[4].slider.value = curData.soundFXVol;
-        options[4].numStr.text  = ((int)curData.soundFXVol * 100).ToString();
+        _options[4].slider.value = curOptionsData.soundFXVol;
+        _options[4].numStr.text  = ((int)(curOptionsData.soundFXVol * 100f)).ToString();
         // ambient/music volume
-        options[5].slider.value = curData.musicVol;
-        options[5].numStr.text  = ((int)curData.musicVol * 100).ToString();
+        _options[5].slider.value = curOptionsData.musicVol;
+        _options[5].numStr.text  = ((int)(curOptionsData.musicVol * 100f)).ToString();
     }
 
     /// <summary>
@@ -95,67 +99,84 @@ public class OptionsController : MonoBehaviour {
     /// <param name="optionIndex">Unity doesn't like enums, so cast to int.</param>
     public void OnSlide_ChangeValueFor(int optionIndex) {
         // guard clause because this function is somehow called on start
-        if (options[optionIndex].slider == null
-            || options[optionIndex].numStr == null) return;
+        if (_options[optionIndex].slider == null
+            || _options[optionIndex].numStr == null) return;
 
         if (optionIndex == (int)OptionType.MouseSensitivity) {
-            options[1].numStr.text = ((int)(options[1].slider.value * 100f)).ToString();
+            _options[1].numStr.text = ((int)(_options[1].slider.value * 100f)).ToString();
         }
         else if (optionIndex == (int)OptionType.BaseFOV) {
             float fovVal = Mathf.Clamp(
-                            options[optionIndex].slider.value * 200,
-                            20f, 
-                            120f);
+                            _options[optionIndex].slider.value * 200, 20f, 120f);
             // adjust value in real time
-            if (!isOptionsMenu) Camera.main.fieldOfView = fovVal;
-            options[optionIndex].numStr.text = ((int)fovVal).ToString();
+            if (!_isOptionsMenu) Camera.main.fieldOfView = fovVal;
+            _options[optionIndex].numStr.text = ((int)fovVal).ToString();
         }
         else {
-            options[optionIndex].numStr.text 
-            = ((int)options[optionIndex].slider.value * 100).ToString();
-        }
-    }
+            _options[optionIndex].numStr.text 
+                = ((int)(_options[optionIndex].slider.value * 100f)).ToString();
 
-    /// <summary>
-    /// Update class value to the currently used SavedData.
-    /// </summary>
-    public void UpdateValuesToSave() {
-        //update to curData
-        options[(int)OptionType.MouseSensitivity].slider.value = curData.mouseSensitivity;
-        options[(int)OptionType.BaseFOV].slider.value          = curData.baseFOV;
-        options[(int)OptionType.MasterVol].slider.value        = curData.masterVol;
-        options[(int)OptionType.SoundFXVol].slider.value       = curData.soundFXVol;
-        options[(int)OptionType.AmbientVol].slider.value       = curData.musicVol;
-        for (int i = 0; i < options.Length; ++i) {
-            options[i].numStr.text = ((int)options[i].slider.value * 100).ToString();
+            // if this is in a game scene and this is the volume index update
+            // volume in real time (volume is indexed as 3+)
+            if (!_isOptionsMenu && optionIndex > 2) {
+                SavedData.SetOptionsInScene(PackControllerOptions());
+            }
         }
     }
+    #endregion
 
     /// <summary>
     /// Set up save slot options to personalize options set up.
     /// </summary>
     public void SaveSlotDropDownSelection() {
-        int saveSlot = (isOptionsMenu) ? saveSelector.value + 1 : SavedData.currentSaveSlot;
-        curData = SavedData.GetDataStoredAt(saveSlot);
-        UpdateValuesToSave();
+        int saveSlot = (_isOptionsMenu) ? saveSelector.value + 1 : SavedData.currentSaveSlot;
+        _curData = SavedData.GetDataStoredAt(saveSlot);
+        _options[(int)OptionType.GraphicsQuality].slider.value  = _curData.graphicsQuality;
+        _options[(int)OptionType.MouseSensitivity].slider.value = _curData.mouseSensitivity;
+        _options[(int)OptionType.BaseFOV].slider.value          = _curData.baseFOV;
+        _options[(int)OptionType.MasterVol].slider.value        = _curData.masterVol;
+        _options[(int)OptionType.SoundFXVol].slider.value       = _curData.soundFXVol;
+        _options[(int)OptionType.AmbientVol].slider.value       = _curData.musicVol;
+        for (int i = 0; i < _options.Length; ++i) {
+            _options[i].numStr.text = ((int)_options[i].slider.value * 100).ToString();
+        }
     }
 
     /// <summary>
     /// Update values to the values of the curently used SavedData slot.
     /// </summary>
     public void SaveOptionsToCurrentData() {
-        curData.graphicsQuality  = options[(int)OptionType.GraphicsQuality].slider.value;
-        curData.mouseSensitivity = options[(int)OptionType.MouseSensitivity].slider.value;
-        curData.baseFOV          = (float)Convert.ToDouble(
-                                    options[(int)OptionType.BaseFOV].numStr.text);
-        curData.masterVol        = options[(int)OptionType.MasterVol].slider.value;
-        curData.soundFXVol       = options[(int)OptionType.SoundFXVol].slider.value;
-        curData.musicVol         = options[(int)OptionType.AmbientVol].slider.value;
+        _curData.graphicsQuality  = _options[(int)OptionType.GraphicsQuality].slider.value;
+        _curData.mouseSensitivity = _options[(int)OptionType.MouseSensitivity].slider.value;
+        _curData.baseFOV          =  (float)Convert.ToDouble(
+                                    _options[(int)OptionType.BaseFOV].numStr.text);
+        _curData.masterVol        = _options[(int)OptionType.MasterVol].slider.value;
+        _curData.soundFXVol       = _options[(int)OptionType.SoundFXVol].slider.value;
+        _curData.musicVol         = _options[(int)OptionType.AmbientVol].slider.value;
         // update values for the player
         Camera.main.transform.GetComponentInParent<Character>()
-            .UpdateCharacterToSaveData(curData);
+            .UpdateCharacterToSaveData(_curData);
+        //update volume in real time
+        var options = new OptionsData(_curData);
+        SavedData.StoreOptionsAt(options, SavedData.currentSaveSlot);
+        SavedData.SetOptionsInScene(options);
     }
 
+    /// <summary>
+    /// Take values of this class and pack as OptionsData.
+    /// </summary>
+    /// <returns>OptionsData form of this controller.</returns>
+    public OptionsData PackControllerOptions() {
+        var data = new OptionsData();
+        data.graphicsQuality  = _options[0].slider.value;
+        data.mouseSensitivity = _options[1].slider.value;
+        data.baseFOV          = _options[2].slider.value;
+        data.masterVol        = _options[3].slider.value;
+        data.soundFXVol       = _options[4].slider.value;
+        data.musicVol         = _options[5].slider.value;
+        return data;
+    }
+    
     /// <summary>
     /// Retrieve option index value in a parameter save data.
     /// </summary>
@@ -173,7 +194,6 @@ public class OptionsController : MonoBehaviour {
         }
         throw new System.IndexOutOfRangeException();
     }
-
 
     public void loadScene(string level)
     {

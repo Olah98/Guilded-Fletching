@@ -1,9 +1,4 @@
-﻿/*
-Author: Miles Gomez & Christian Mullins
-Date: 3/15/2021
-Summary:
-*/
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
@@ -15,9 +10,9 @@ public class Character : MonoBehaviour
 {
     [Header ("GameObjects")]
     CharacterController cc;
+    public GameObject cam;
+    public GameObject arrow;
     public Transform bowPosition;
-    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
-    public GameObject[] arrowPrefabs;
 
     [Header ("Movement")]
     public float speed;
@@ -26,8 +21,10 @@ public class Character : MonoBehaviour
     public float jumpCD;
     public float fallMod;
     public float coyoteJump;
-    public bool isClimbing;
     private float _coyoteJumpTime;
+    public bool isClimbing;
+    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
+    public GameObject[] arrowPrefabs;
 
     [Header ("Attacking")]
     public float attackCD;
@@ -43,41 +40,14 @@ public class Character : MonoBehaviour
     public Text chargeText;
     public Slider chargeSlider;//Added by Warren
 
-    /* BEGIN FIRSTPERSONCAMERA VARIABLES */
-    #region Camera_Variables
-    [Header("Camera Variables")]
-        public Text interactionHintText;
-    [Header("Look values for Camera Movement")]
-    [Range(5f, 15f)]
-    [Tooltip("This value is not the same as player mouseSensitivity.")]
-    public float lookSpeed = 10f;
-    [Tooltip("Lower value = lower look boundary")]
-    public float upperBoundary = 290f;
-    [Tooltip("Lower value = higher look boudary")]
-    public float lowerBoundary = 60f;
-    [Range(LOWER_ZOOM_BOUNDARY, UPPER_ZOOM_BOUNDARY)]
-    [Tooltip("Length in which the player can zoom-in.")]
-    public float maxZoomVal = 40f;
-
-    private Camera _cam;
-    private float _clampedMaxZoom { get {
-        return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
-    } }
-    // store option vars
-    private float s_baseFOV;
-    private float s_mouseSensitivity;
-    // consts
-    private const float LOWER_ZOOM_BOUNDARY = 20f;
-    private const float UPPER_ZOOM_BOUNDARY = 60f;
-    #endregion
-    /* END FIRSTPERSONCAMERA VARIABLES */
-
     [Header("Testing")]
     public bool timedJump;
     public float upTime;
-
     private float _jumpTime = 0f;
+
     private bool _canJump;
+    private float _horizontalInput;
+    private float _verticalInput;
     private Vector3 _velocity;
 
     private Quiver _myQuiver;
@@ -89,17 +59,9 @@ public class Character : MonoBehaviour
     public SavedData getCurrentData { get { return _currentData; } }
     public Quiver    getMyQuiver    { get { return _myQuiver;    } }
 
-    private void Start()
+    // Start is called before the first frame update
+    void Start()
     {
-        // intialize camera based values
-        _cam = Camera.main;
-        interactionHintText.enabled = false;
-        s_baseFOV = getCurrentData?.baseFOV ?? 60f;
-        _cam.fieldOfView = s_baseFOV;
-        // set up mouse for FPS view
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-        // end camera initialization
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
         _pAnimController = GetComponent<PlayerAnimationController>();
@@ -120,40 +82,32 @@ public class Character : MonoBehaviour
         UpdateCharacterToSaveData(_currentData);
     }
 
-    private void Update()
+    // Update is called once per frame
+    void Update()
     {
-        // begin camera based updates
-        // interact with objects
-        if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
-            if (hit.transform.tag == "Interactable"
-                && hit.transform.GetComponent<Switch>().isInteractable) {
-                if (Input.GetKeyDown(KeyCode.E))
-                    InteractWithObject(hit.transform.gameObject);
-                // display hint only under this condition
-                interactionHintText.enabled = true;
-            }
-            else interactionHintText.enabled = false;
-        }
-        else interactionHintText.enabled = false;
-
-        // zoom in/out using RMB
-        if (Input.GetMouseButtonDown(1)) {
-            StartCoroutine("ZoomIn");
-        }
-        else if (Input.GetMouseButtonUp(1) && _cam.fieldOfView < s_baseFOV) {
-            StopCoroutine("ZoomIn");
-            StartCoroutine("ZoomOut");
-        }
-        // end camera based updates
-
         #if UNITY_EDITOR
         //Used for testing, remove at a later date.
-        if (Input.GetKeyDown(KeyCode.U)) Respawn();
+        if (Input.GetKeyDown(KeyCode.U))
+        {
+            Respawn();
+        }
         #endif
         //Checks if dead and respawns.
-        if (dead) Respawn();
+        if (dead)
+        {
+            Respawn();
+        }
 
-        cc.stepOffset = (_canJump) ? 0.2f : 0.0f;
+        //Debug.Log(rc.lastCheckpoint);
+        //transform.rotation = Quaternion.Euler( new Vector3(cam.transform.eulerAngles.x, 0f));
+        if (_canJump)
+        {
+            cc.stepOffset = 0.2f;
+        }
+        if (!_canJump)
+        {
+            cc.stepOffset = 0;
+        }
 
         chargeText.text = "charge: " + attackCharge;
         chargeSlider.GetComponent<Slider>().value = attackCharge;//Added by Warren
@@ -161,6 +115,7 @@ public class Character : MonoBehaviour
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
 
+        bool isJumpPressed = Input.GetButton("Jump");
         GroundCheck();
         //Checks Ground and if jump input has been pressed
         RoofCheck();
@@ -177,10 +132,9 @@ public class Character : MonoBehaviour
             //lowers attack cd
         }
 
-        bool isJumpPressed = Input.GetButton("Jump");
-        if ((isJumpPressed && _canJump) || (isJumpPressed && _coyoteJumpTime > 0f))
+        if ((isJumpPressed && _canJump) || (isJumpPressed && _coyoteJumpTime >0f))
         {
-            if (!_canJump && _coyoteJumpTime > 0f)
+            if (!_canJump && _coyoteJumpTime >0f)
             {
                 _velocity.y = 0;
                 Jump();
@@ -199,28 +153,14 @@ public class Character : MonoBehaviour
 
     private void FixedUpdate()
     {
-        // gather look input appropriately
-        float xInput =  Input.GetAxis("Mouse X") * lookSpeed * s_mouseSensitivity;
-        float yInput = -Input.GetAxis("Mouse Y") * lookSpeed * s_mouseSensitivity;
-        Vector3 lookRot = new Vector3 (0f, xInput, 0f);
-        // check if this point of looking rotation is valid
-        if (yInput + transform.localEulerAngles.x < lowerBoundary
-            || yInput + transform.localEulerAngles.x > upperBoundary) {
-            // up and down looking (must be in local)
-            _cam.transform.Rotate(Vector3.right * yInput, Space.Self);
-        }
-        //left to right looking (must be in world space)
-        transform.Rotate(Vector3.up * xInput, Space.World);
-        // all look based movement above
-
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
 
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
+        _horizontalInput = Input.GetAxis("Horizontal");
+        _verticalInput = Input.GetAxis("Vertical");
         //Detects WASD movement or Jump
 
-        Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
+        Vector3 move = transform.right * _horizontalInput + transform.forward * _verticalInput;
         if (!dead && cc.enabled == true)
         {
             if (attackCharge == 0) {
@@ -243,7 +183,7 @@ public class Character : MonoBehaviour
                 _velocity.y += Physics.gravity.y * Time.deltaTime * (1f + fallMod);
                             _pAnimController.SetAnimation(AnimState.Jumping, true);
             }
-            if (_velocity.y < Physics.gravity.y)
+            if (_velocity.y < Physics.gravity.y) 
             {
                 _velocity.y = Physics.gravity.y;
             }
@@ -255,7 +195,7 @@ public class Character : MonoBehaviour
             cc.Move(_velocity * Time.deltaTime);
         }
         //Testing new jump system
-        if (_jumpTime > 0 && timedJump == true)
+        if (_jumpTime >0 && timedJump == true)
         {
             _jumpTime -= Time.deltaTime;
         }
@@ -288,7 +228,7 @@ public class Character : MonoBehaviour
                 GameObject arrowEquipped = arrowPrefabs[_myQuiver.GetArrowType()];
                 _myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-                Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
+                Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
                 _pAnimController.SetAnimation(AnimState.Shooting, true);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
@@ -298,71 +238,6 @@ public class Character : MonoBehaviour
         }
     }
 
-    #region CameraFunctions
-    /// <summary>
-    /// Public function for settings to be updated to player defined options.
-    /// </summary>
-    /// <param name="data">SavedData that will update settings.</param>
-    public void SetOptionVals(in OptionsData data)
-    {
-        s_baseFOV = data.baseFOV;
-        _cam.fieldOfView = s_baseFOV;
-        s_mouseSensitivity = data.mouseSensitivity;
-    }
-
-    /// <summary>
-    /// Takes the current Main camera and manipulates the Field of View to
-    /// zoom the camera in.
-    /// </summary>
-    private IEnumerator ZoomIn()
-    {
-        // FOV starts at s_baseFOV, ends at s_baseFOV - maxZoomVal
-        while (_cam.fieldOfView > s_baseFOV - maxZoomVal)
-        {
-            --_cam.fieldOfView;
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
-        }
-        yield return null;
-    }
-
-    /// <summary>
-    /// Takes the current Main camera and manipulates the Field of View to zoom
-    ///  the camera back out.
-    /// </summary>
-    private IEnumerator ZoomOut()
-    {
-        // FOV starts at s_baseFOV - maxZoomVal, ends at s_baseFOV
-        while (_cam.fieldOfView < s_baseFOV)
-        {
-            ++_cam.fieldOfView;
-            yield return new WaitForEndOfFrame();
-        }
-        yield return null;
-    }
-
-    /// <summary>
-    /// Determine what kind of object the player is interacting with and
-    /// manipulate it accordingly.
-    /// </summary>
-    /// <param name="interactingWith">GameObject the player's interacting with.</param>
-    private void InteractWithObject(GameObject interactingWith)
-    {
-        // handle if Switch
-        if (interactingWith.TryGetComponent<Switch>(out Switch s)
-            && s.isInteractable)
-        {
-            s.HitSwitch();
-        }
-        else if(interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
-        {
-            t.load();
-        }
-        print("Interacting with: " + interactingWith.name);
-        // to prevent "reinteraction"
-        interactingWith.tag = "Untagged";
-    }
-    #endregion
-
     public void Jump()
     {
         if ((jumpCD <=0 && !dead) || (_coyoteJumpTime > 0 && !dead))
@@ -371,12 +246,12 @@ public class Character : MonoBehaviour
             //Adds force to jum pwith
             if (coyoteJump > 0)
             {
-                _velocity.y = Mathf.Sqrt(jumpPower * -Physics.gravity.y * 1.2f);
+                _velocity.y = Mathf.Sqrt(jumpPower * Physics.gravity.y * 1.2f);
             }
             else
             {
-                _velocity.y = Mathf.Sqrt(jumpPower * -Physics.gravity.y);
-            }
+                _velocity.y = Mathf.Sqrt(jumpPower * Physics.gravity.y);
+            }   
             jumpCD = .5f;
             _coyoteJumpTime = 0f;
 
@@ -435,10 +310,8 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.transform.tag == "Stoppable" ) {
+        if (hit.transform.tag == "Stoppable")
             transform.parent = hit.transform;
-
-        }
         else
             transform.parent = null;
     }
@@ -448,15 +321,18 @@ public class Character : MonoBehaviour
     /// player has died.
     /// </summary>
     /// <param name="damage">Amount to damage player.</param>
-    public void TakeDamage(int damage)
-    {
+    public void TakeDamage(int damage) {
         currentHp -= damage;
-        if (currentHp < 1)
-        {
+        if (currentHp < 1) {
             // implement player death
             currentHp = 0;
             dead = true;
         }
+    }
+
+    public void Damage(int damage)
+    {
+        currentHp -= damage;
     }
 
     /// <summary>
@@ -464,8 +340,7 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="data"></param>
     /// <returns></returns>
-    public SavedData UpdateAndGetSaveData()
-    {
+    public SavedData UpdateAndGetSaveData() {
         _currentData.playerHealth = currentHp;
         _currentData.s_Quiver = new SerializableQuiver(_myQuiver);
         // future implementations will handle checkpoint system
@@ -477,8 +352,7 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="data">Data that will be stored</param>
     /// <returns>Updated save file</returns>
-    public void UpdateCharacterToSaveData(in SavedData data)
-    {
+    public void UpdateCharacterToSaveData(in SavedData data) {
         _currentData = data;
         currentHp = data.playerHealth;
         _myQuiver.CopySerializedQuiver(data.s_Quiver);
@@ -486,25 +360,16 @@ public class Character : MonoBehaviour
         // get saved data's stored options, then apply to scene
         SavedData.SetOptionsInScene(options);
     }
+}
 
-    public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+public class Attack : MonoBehaviour
+{
+    public static void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
     {
         GameObject projectile;
         projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
         //creates force
         projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         //grants projectile force based on time spent charging attack
-    }
-
-    /// <summary>
-    /// Move the player with the motion of a platform.
-    /// </summary>
-    /// <param name="hit">Platform collider that the player hit.</param>
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (hit.transform.tag == "Stoppable")
-            transform.parent = hit.transform;
-        else
-            transform.parent = null;
     }
 }
