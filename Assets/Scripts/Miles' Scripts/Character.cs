@@ -36,7 +36,6 @@ public class Character : MonoBehaviour
     private Vector3 velocity;
 
     private Transform camEuler;
-    private Quiver myQuiver;
     private SavedData currentData;
     private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
     private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
@@ -103,8 +102,8 @@ public class Character : MonoBehaviour
     // delegates
     public bool      isCrouching    { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
-    public Quiver    getMyQuiver    { get { return myQuiver;    } }
-    public int       getMyArrowType { get { return myQuiver.GetArrowType(); } }
+    public Quiver    getMyQuiver    { get { return _myQuiver;    } }
+    public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
 
     private void Start()
     {
@@ -131,8 +130,8 @@ public class Character : MonoBehaviour
         }
         // initialize quiver (StandardArrow equipped first)
         // initialize values if new game, else grab existing
-        _myQuiver = GetComponent<Quiver>();
         // if data comes back null (it shouldn't), create new instance
+        _myQuiver = GetComponent<Quiver>();
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot) 
                         ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
@@ -320,10 +319,10 @@ public class Character : MonoBehaviour
 
 
                 //added by Warren
-                if (myQuiver.GetArrowType() == 0)
+                if (_myQuiver.GetArrowType() == 0)
                 {
                     TrackArrow(projectile, StandardArrowTracker);
-                } else if (myQuiver.GetArrowType() == 1)
+                } else if (_myQuiver.GetArrowType() == 1)
                 {
                     TrackArrow(projectile, BrambleArrowTracker);
                 }
