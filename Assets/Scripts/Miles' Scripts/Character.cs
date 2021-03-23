@@ -32,10 +32,6 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
-<<<<<<< Updated upstream
-    [Header("Arrows: Standard, Bramble, Warp, Airburst")]
-    public GameObject[] arrowPrefabs;
-
 
     private bool canJump;
     private float horizontalInput;
@@ -49,10 +45,8 @@ public class Character : MonoBehaviour
     private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
     private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
 
-=======
     [Range(0.1f, 0.9f)]
     public float minCrouchHeight = 0.5f;
->>>>>>> Stashed changes
     private float _coyoteJumpTime;
 
     [Header ("Attacking")]
