@@ -1,12 +1,8 @@
 ﻿/*
 Author: Miles Gomez & Christian Mullins
 Date: 3/15/2021
-<<<<<<< Updated upstream
-Summary:
-=======
 Summary: Script containing values of the player, their movement, and camera
     manipulation in-game.
->>>>>>> Stashed changes
 */
 using System.Collections;
 using System.Collections.Generic;
