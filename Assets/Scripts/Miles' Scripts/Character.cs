@@ -278,7 +278,7 @@ public class Character : MonoBehaviour
             _jumpTime -= Time.deltaTime;
         }
 
-        _Crouching(Input.GetKey(KeyCode.Tab));
+        _Crouching(Input.GetKey(KeyCode.LeftShift));
 
         if (Input.GetButton("Fire1"))
         {
