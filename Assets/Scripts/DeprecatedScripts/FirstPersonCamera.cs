@@ -35,7 +35,7 @@ public class FirstPersonCamera : MonoBehaviour {
     private const float UPPER_ZOOM_BOUNDARY = 60f;
 
     private void Awake() {
-        cam = GetComponent<Camera>();
+        _cam = GetComponent<Camera>();
     }
 
     private void Start() {

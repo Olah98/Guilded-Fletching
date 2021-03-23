@@ -137,8 +137,8 @@ public class Character : MonoBehaviour
         // initialize values if new game, else grab existing
         _myQuiver = GetComponent<Quiver>();
         // if data comes back null (it shouldn't), create new instance
-        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
-                ?? (SavedData)ScriptableObject.CreateInstance<SavedData>();
+        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot) 
+                        ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
     }
 
@@ -316,7 +316,7 @@ public class Character : MonoBehaviour
               //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
                 GameObject projectile;
-                projectile = Attack.Fire(attackCharge, arrowEquipped, cam.transform, bowPosition);
+                projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
@@ -466,13 +466,14 @@ public class Character : MonoBehaviour
         }
     }
 
-    public void Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
+    public GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
     {
         GameObject projectile;
         projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
         //creates force
         projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         //grants projectile force based on time spent charging attack
+        return projectile; // added by Warren
     }
 
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
@@ -545,27 +546,6 @@ public class Character : MonoBehaviour
                 tracker.RemoveAt(2);
             }
         }
-    }
-    public static GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)//, int arrowType)
-    {
-        GameObject projectile;
-        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
-        //creates force
-        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
-        //grants projectile force based on time spent charging attack
-        return projectile;//Added by Warren
-    }
-
-    /// <summary>
-    /// Move the player with the motion of a platform.
-    /// </summary>
-    /// <param name="hit">Platform collider that the player hit.</param>
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (hit.transform.tag == "Stoppable")
-            transform.parent = hit.transform;
-        else
-            transform.parent = null;
     }
 
     /// <summary>
