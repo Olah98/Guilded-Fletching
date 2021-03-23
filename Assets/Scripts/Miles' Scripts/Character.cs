@@ -221,8 +221,8 @@ public class Character : MonoBehaviour
         float yInput = -Input.GetAxis("Mouse Y") * lookSpeed * s_mouseSensitivity;
         Vector3 lookRot = new Vector3 (0f, xInput, 0f);
         // check if this point of looking rotation is valid
-        if (yInput + transform.localEulerAngles.x < lowerBoundary
-            || yInput + transform.localEulerAngles.x > upperBoundary) {
+        if (yInput + _cam.transform.localEulerAngles.x < lowerBoundary
+            || yInput + _cam.transform.localEulerAngles.x > upperBoundary) {
             // up and down looking (must be in local)
             _cam.transform.Rotate(Vector3.right * yInput, Space.Self);
         }
