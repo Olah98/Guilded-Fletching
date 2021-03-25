@@ -35,6 +35,12 @@ public class BaseArrow : MonoBehaviour {
     protected virtual void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Enemy") {
             other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
+            Debug.Log("Enemy Collision");
+        }
+        if (other.transform.tag == "Player")
+        {
+            other.gameObject.GetComponent<Character>().TakeDamage(damage);
+            Debug.Log("Damage dealt");
         }
         if (!isAbilityUsed) {
             Hit();
