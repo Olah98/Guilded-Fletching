@@ -6,6 +6,7 @@ Summary: The airburst arrow acts similar to how a "bomb" arrow will work in
 */
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 
 public class AirburstArrow : BaseArrow {
     [Header("Airburst Values")]
@@ -16,10 +17,11 @@ public class AirburstArrow : BaseArrow {
     /// <summary>
     /// Inheritted function for bursting instead
     /// </summary>
-    protected override void Hit() {
-        Collider[] hits = {};
+    protected override void  Hit() {
+        Collider[] hits = new Collider[20];
+        // max number of collisions = hits.Length
         int numOfHits = Physics.OverlapSphereNonAlloc(transform.position, 
-                                                burstRadius, hits);
+                                                    burstRadius, hits);
         // take all collisions and handle them all seperately based on their 
         // tags
         for (int i = 0; i < numOfHits; ++i) {
@@ -34,7 +36,7 @@ public class AirburstArrow : BaseArrow {
             Rigidbody hRB = hits[i].attachedRigidbody;
             if (hRB != null) {
                 hRB.AddExplosionForce(burstPower, transform.position, 
-                                      burstRadius, 0.75f, ForceMode.Impulse);
+                                      burstRadius, 5f, ForceMode.VelocityChange);
                 //StartCoroutine(WaitAndPrintVelocity(hits[i].transform));
             }
             if (hits[i].tag == "Enemy")
@@ -58,6 +60,7 @@ public class AirburstArrow : BaseArrow {
         } // end forloop
         Destroy(gameObject);
     }
+    
 
     /// <summary>
     /// Perform damage calculation based on proximity and 
