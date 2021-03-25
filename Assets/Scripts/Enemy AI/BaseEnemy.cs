@@ -16,6 +16,7 @@ public class BaseEnemy : MonoBehaviour {
     public float aggroArea;
     public bool isAggroed;
     public bool isDead = false;
+    public bool isBrambled;
 
     protected float _attackTimer;
     protected Transform _playerTrans;
@@ -25,6 +26,7 @@ public class BaseEnemy : MonoBehaviour {
 
     protected virtual void Start() {
         isAggroed = false;
+        isBrambled = false;
         _attackTimer = 0f;
         _storeAggroArea = aggroArea;
         var player = GameObject.FindGameObjectWithTag("Player");
@@ -72,8 +74,14 @@ public class BaseEnemy : MonoBehaviour {
     /// </summary>
     /// <returns>Bool if enemy is aggroed.</returns>
     protected bool IsPlayerInAggroRange() {
-        isAggroed = (Vector3.Distance(transform.position, _playerTrans.position) 
-                        <= aggroArea);
+        if (!isBrambled)
+        {
+            isAggroed = (Vector3.Distance(transform.position, _playerTrans.position)
+          <= aggroArea);
+        } else
+        {
+            isAggroed = false;
+        }
         return isAggroed;
     }
 

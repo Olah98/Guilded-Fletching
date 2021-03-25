@@ -31,6 +31,14 @@ public class BrambleArrow : BaseArrow {
         if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
             mPlat.isBrambled = true;
         }
+        else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat))
+        {
+            cPlat.isBrambled = true; //may delete when inheritance is applied
+        }
+        else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
+            bEnem.isBrambled = true; //by Warren
+            bEnem.GetComponent<Rigidbody>().isKinematic = true; 
+        }
         // else check for rigidbody (if object run by physics)
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = true;
@@ -43,8 +51,15 @@ public class BrambleArrow : BaseArrow {
     /// Set bound object free and clear Rigidbody variable.
     /// </summary>
     private void UnbindObject() {
-        if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)){
+        if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
             mPlat.isBrambled = false;
+        }
+        else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat))
+        {
+            cPlat.isBrambled = false; //may delete when inheritance is applied
+        } else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
+            bEnem.isBrambled = false; //by Warren
+            bEnem.GetComponent<Rigidbody>().isKinematic = false;
         }
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = false;
