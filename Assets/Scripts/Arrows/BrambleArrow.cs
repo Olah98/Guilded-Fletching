@@ -37,7 +37,6 @@ public class BrambleArrow : BaseArrow {
         }
         else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
             bEnem.isBrambled = true; //by Warren
-            bEnem.GetComponent<Rigidbody>().isKinematic = true; 
         }
         // else check for rigidbody (if object run by physics)
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {

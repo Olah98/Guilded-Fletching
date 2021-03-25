@@ -19,6 +19,7 @@ public class MeleeEnemy : BaseEnemy {
     }
 
     protected override void FixedUpdate() {
+        base.FixedUpdate();
         // aggro and attack
         if (!IsPlayerInAggroRange()) return;
         if (IsPlayerInAttackRange() && _attackTimer >= attackFrequency) { 

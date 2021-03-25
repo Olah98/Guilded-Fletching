@@ -35,7 +35,7 @@ public class BaseEnemy : MonoBehaviour {
     }
 
     protected virtual void FixedUpdate() { 
-
+        if (isBrambled) return;
     }
 
     protected void Update() {
