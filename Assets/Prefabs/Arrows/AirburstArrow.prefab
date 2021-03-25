@@ -129,7 +129,7 @@ MonoBehaviour:
   distance: 0
   isLit: 0
   burstPower: 20
-  burstRadius: 6
+  burstRadius: 10
   canPushPlayer: 0
 --- !u!114 &4983532946320009758
 MonoBehaviour:

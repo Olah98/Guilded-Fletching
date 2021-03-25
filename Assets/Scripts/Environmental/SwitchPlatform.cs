@@ -1,13 +1,13 @@
 ﻿/*
-Author: Christian Mullins
-Date: 02/15/2021
-Summary: Class that interacts with and triggers the Door script class.
+Author: Christian Mullins & Warren Rose II
+Date: 03/23/2021
+Summary: Class that interacts with and triggers the CountingPlatform script class.
 */
 using UnityEngine;
 
-public class Switch : MonoBehaviour {
+public class SwitchPlatform : MonoBehaviour {
     [Tooltip("Can be any object that needs a triggered movement.")]
-    public Door myDoor; // can be a door or ladder
+    public CountingPlatform myPlatform; // can be a platform
     public bool isFlipped;
     [Tooltip("Check if the player is able to interact with this, or it can" +
             " only be triggered by arrows.")]
@@ -29,12 +29,12 @@ public class Switch : MonoBehaviour {
         UpdateColor();
 
 
-        // push this Switch into the Switch List for myDoor
-        myDoor.mySwitches.Add(this);
+        // push this Switch into the Switch List for myPlatform
+        myPlatform.mySwitches.Add(this);
 
         if (!isFlipped)
         {
-            myDoor.UpdateColor(false); //By Warren, updates color
+            myPlatform.UpdateColor(false); //By Warren, updates color
         }
     }
 
@@ -46,9 +46,6 @@ public class Switch : MonoBehaviour {
 
         isFlipped = true;
         UpdateColor();//By Warren
-        if (myDoor.IsAllSwitchesFlipped()) {
-            StartCoroutine(myDoor.SlideOpen());
-        }
     }
 
     /// <summary>
