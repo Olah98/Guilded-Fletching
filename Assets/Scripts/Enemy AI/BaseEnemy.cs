@@ -34,9 +34,7 @@ public class BaseEnemy : MonoBehaviour {
         _character = player.GetComponent<Character>();
     }
 
-    protected virtual void FixedUpdate() { 
-        if (isBrambled) return;
-    }
+    protected virtual void FixedUpdate() {}
 
     protected void Update() {
         if (isDead) {
@@ -65,8 +63,9 @@ public class BaseEnemy : MonoBehaviour {
     /// <param name="damage">Damage value that the enemy will take.</param>
     public void TakeDamage(int damageTaking) {
         health -= damageTaking;
-        if (health < 0) {
-            isDead=true; }
+        if (health < 1) {
+            isDead = true; 
+        }
     }
 
     /// <summary>
@@ -74,14 +73,8 @@ public class BaseEnemy : MonoBehaviour {
     /// </summary>
     /// <returns>Bool if enemy is aggroed.</returns>
     protected bool IsPlayerInAggroRange() {
-        if (!isBrambled)
-        {
-            isAggroed = (Vector3.Distance(transform.position, _playerTrans.position)
+        isAggroed = (Vector3.Distance(transform.position, _playerTrans.position)
           <= aggroArea);
-        } else
-        {
-            isAggroed = false;
-        }
         return isAggroed;
     }
 
