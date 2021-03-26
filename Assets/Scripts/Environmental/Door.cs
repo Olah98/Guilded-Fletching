@@ -7,26 +7,25 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+[System.Serializable]
 public class Door : MonoBehaviour {
-    public float openSpeed;
+    [Range(1f, 50f)]
+    public float openSpeed = 10f;
     [HideInInspector]
     public List<Switch> mySwitches;
-    private Transform slideTo;
 
+    protected Transform _moveTo;
+    protected Mesh _myMesh;
     //By Warren
     //Edit to change whether color or material is being affected.
-    //public Material m_isOn;
-    //public Material m_isOff;
-    private Color isOn = Color.green;
-    private Color isOff = Color.red;
-    private MeshRenderer rend;
+    private Color _isOn = Color.green;
+    private Color _isOff = Color.red;
+    private MeshRenderer _rend;
 
-
-    void Start() {
-        slideTo = transform.GetChild(0);
-       
+    protected virtual void Start() {
+        _moveTo = transform.GetChild(0);
         //By Warren
-        rend = GetComponent<MeshRenderer>();
+        _rend = GetComponent<MeshRenderer>();
         UpdateColor(true);
         IsAllSwitchesFlipped();
     }
@@ -37,8 +36,7 @@ public class Door : MonoBehaviour {
     /// <returns>True if all switches are flipped.</returns>
     public bool IsAllSwitchesFlipped() {
         foreach (var s in mySwitches) {
-            if (!s.isFlipped)
-            {
+            if (!s.isFlipped) {
                 UpdateColor(false);
                 return false;
             }
@@ -50,17 +48,47 @@ public class Door : MonoBehaviour {
     /// <summary>
     /// Coroutine to move the Door outside of using Update().
     /// </summary>
-    public IEnumerator SlideOpen() {
-        // detach slideTo child
-        slideTo.parent = null;
+    public virtual IEnumerator Open() {
+        // detach _moveTo child
+        _moveTo.parent = transform.parent;
         do {
-            Vector3 moveTo = (slideTo.position - transform.position).normalized;
+            Vector3 moveTo = (_moveTo.position - transform.position).normalized;
             transform.Translate(moveTo * openSpeed * Time.deltaTime);
             yield return new WaitForSeconds(Time.deltaTime);
-        } while (!IsPositionApproximateTo(slideTo.position));
-        // re-attach slideTo child
-        slideTo.parent = transform;
+        } while (!_IsPositionApproximateTo(_moveTo.position));
+        // re-attach _moveTo child
+        _moveTo.parent = transform;
         yield return null;
+    }
+
+
+    /// <summary>
+    /// Function to call when changing color or material.
+    /// Edit to change whether color or material is being affected.
+    /// By Warren
+    /// </summary>
+    public void UpdateColor(bool isActive) {
+        Color change;
+        //Material m_change;
+        if (isActive)
+            change = _isOn;
+        else
+            change = _isOff;
+        if (_rend != null)
+            _rend.material.SetColor("_Color", change);
+    }
+
+    /// <summary>
+    /// Draws in editor space to aid in Level Design
+    /// </summary>
+    protected virtual void OnDrawGizmosSelected() {
+        // get and set values of _moveTo
+        _moveTo = transform.GetChild(0);
+        Gizmos.color = Color.red;
+        _myMesh = GetComponent<MeshFilter>().sharedMesh;
+        // draw _moveTo as a wiremesh
+        Gizmos.DrawWireMesh(_myMesh, _moveTo.position, _moveTo.rotation,
+                            transform.lossyScale);
     }
 
     /// <summary>
@@ -68,36 +96,10 @@ public class Door : MonoBehaviour {
     /// </summary>
     /// <param name="compareTo">Destination position.</param>
     /// <returns>True if the distance is almost 0f.</returns>
-    private bool IsPositionApproximateTo(Vector3 compareTo) {
+    protected bool _IsPositionApproximateTo(Vector3 compareTo) {
         if (Vector3.Distance(transform.position, compareTo) < 0.25f) 
             return true;
 
         return false;
-    }
-
-    /// <summary>
-    /// Function to call when changing color or material.
-    /// Edit to change whether color or material is being affected.
-    /// By Warren
-    /// </summary>
-    public void UpdateColor(bool isActive)
-    {
-        Color change;
-        //Material m_change;
-        if (isActive)
-        {
-            change = isOn;
-            //m_change = m_isOn;
-        }
-        else
-        {
-            change = isOff;
-            //m_change = m_isOff;
-        }
-        if (rend != null)
-        {
-            rend.material.SetColor("_Color", change);
-            //rend.material = m_change;
-        }
     }
 }
