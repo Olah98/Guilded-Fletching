@@ -24,58 +24,36 @@ public enum AnimState {
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
-    private Animator _handAnimator;
-    //private Animator bowAnimator; // implement later
+    public Animator handAnimator;
+    public Animator bowAnimator;
+
     private Character _character;
-    // animation state strings                           priority
-    private const string idleStr    = "Idle";            //low
-    private const string walkingStr = "Walking";         //mid
-    private const string jumpingStr = "Jumping";         //high
-    private const string loadingStr = "LoadingArrow";    //mid
-    private const string switchStr  = "SwitchingArrows"; //low
-    private const string drawingStr = "DrawingArrow";    //high
-    private const string fullStr    = "FullyDrawn";      //high
-    private const string shootStr   = "Shooting";        //high
+
+    /*
+        Presently working animations:
+            -Walking
+            -DrawingArrow
+            -FullyDrawn
+            -Shooting
+    */
 
     private void Start() {
         _character = GetComponent<Character>();
-        _handAnimator = GetComponent<Animator>();
-        //_handAnimator.SetBool("Idle", true);
-        //bowAnimator.SetBool("Idle", true);
     }
 
-    /// <summary>
-    /// Set an animation to tru based on the parameter enum.
-    /// </summary>
-    /// <param name="state">Animation state to change to.</param>
-    public void SetAnimation(AnimState state, bool setTo) {
-        string animStr = string.Empty;
-        switch (state) {
-            case AnimState.Idle:            animStr = idleStr;    break;
-            case AnimState.Walking:         animStr = walkingStr; break;
-            case AnimState.Jumping:         animStr = jumpingStr; break;
-            case AnimState.LoadingArrow:    animStr = loadingStr; break;
-            case AnimState.SwitchingArrows: animStr = switchStr;  break;
-            case AnimState.DrawingArrow:    animStr = drawingStr; break;
-            case AnimState.FullyDrawn:      animStr = fullStr;    break;
-            case AnimState.Shooting:        animStr = shootStr;   break;
-        }
-        //_handAnimator.SetBool(animStr, setTo);
-        //print("PlayerAnimating: " + state);
-    }
+    private void Update() {
+        _SetAllFloats("BowCharge", _character.attackCharge);
 
-    /// <summary>
-    /// Set every animation state as false.
-    /// </summary>
-    public void SetAllAnimationsFalse() {
-        _handAnimator.SetBool(idleStr,    false);
-        _handAnimator.SetBool(walkingStr, false);
-        _handAnimator.SetBool(jumpingStr, false);
-        _handAnimator.SetBool(loadingStr, false);
-        _handAnimator.SetBool(switchStr,  false);
-        _handAnimator.SetBool(drawingStr, false);
-        _handAnimator.SetBool(fullStr,    false);
-        _handAnimator.SetBool(shootStr,   false);
+        // set draw animation to sync with charge values
+        if (_character.attackCharge > 0f)
+            _SetAllFloats("DrawSpeed", _character.attackCharge / 100f);
+
+        // set movement based animations
+        _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
+        _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f 
+                                        || Input.GetAxis("Vertical") != 0f);
+        // trigger fire animation
+        if (_character.attackCD == 1f) _SetAllTriggers("Fire");
     }
 
     /// <summary>
@@ -83,7 +61,7 @@ public class PlayerAnimationController : MonoBehaviour {
     /// </summary>
     /// <param name="state">The priority we'd like returned.</param>
     /// <returns>Priority of parameter enum.</returns>
-    public int GetPriority(AnimState state) {
+    public static int GetPriority(AnimState state) {
         switch (state) {
             case AnimState.Idle:
             case AnimState.SwitchingArrows: 
@@ -105,11 +83,26 @@ public class PlayerAnimationController : MonoBehaviour {
     /// priorities are equal then AnimState.NULL.
     /// </summary>
     /// <returns>The greater priority enum.</returns>
-    public AnimState ComparePriority(AnimState state1, AnimState state2) {
+    public static AnimState ComparePriority(AnimState state1, AnimState state2) {
         int s1Num = GetPriority(state1);
         int s2Num = GetPriority(state2);
         if (s1Num == s2Num) return AnimState.NULL;
 
         return (s1Num > s2Num) ? state1 : state2;
+    }
+
+    //functions below aid in cleaning up excessive lines of code due 
+    //to seperate animators
+    private void _SetAllBools(string name, bool value) {
+        bowAnimator.SetBool(name, value);
+        handAnimator.SetBool(name, value);
+    }
+    private void _SetAllFloats(string name, float value) {
+        bowAnimator.SetFloat(name, value);
+        handAnimator.SetFloat(name, value);
+    }
+    private void _SetAllTriggers(string name) {
+        bowAnimator.SetTrigger(name);
+        handAnimator.SetTrigger(name);
     }
 }

@@ -17,6 +17,8 @@ public class Character : MonoBehaviour
     [Header ("GameObjects")]
     CharacterController cc;
     public Transform bowPosition;
+    [Tooltip("Object is found as the child of the right hand.")]
+    public Transform arrowPosition;
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
@@ -28,12 +30,6 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
-
-    private bool canJump;
-    private float horizontalInput;
-    private float verticalInput;
-    private float gravity = 9.8f;
-    private Vector3 velocity;
 
     private Transform camEuler;
     private SavedData currentData;
@@ -97,9 +93,9 @@ public class Character : MonoBehaviour
     private Quiver _myQuiver;
     private bool _isCrouching;
     private SavedData _currentData;
-    private PlayerAnimationController _pAnimController;
+    //private PlayerAnimationController _pAnimController;
 
-    // delegates
+    // properties
     public bool      isCrouching    { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
     public Quiver    getMyQuiver    { get { return _myQuiver;    } }
@@ -119,7 +115,6 @@ public class Character : MonoBehaviour
         // end camera initialization
         isClimbing = false;
         cc = gameObject.GetComponent<CharacterController>();
-        _pAnimController = GetComponent<PlayerAnimationController>();
 
         if (SaveManager.instance.activeSave.respawnPos!=null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
@@ -240,15 +235,6 @@ public class Character : MonoBehaviour
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
         if (!dead && cc.enabled == true)
         {
-            if (attackCharge == 0) {
-                if (move != Vector3.zero)
-                    _pAnimController.SetAnimation(AnimState.Walking, true);
-                else
-                    _pAnimController.SetAnimation(AnimState.Idle, true);
-            }
-            else if (attackCharge == 100) {
-                _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
-            }
             cc.Move(move.normalized * speed * Time.deltaTime);
         }
         //Moves player when WASD is pressed
@@ -258,7 +244,6 @@ public class Character : MonoBehaviour
             if (!_canJump)
             {
                 _velocity.y += Physics.gravity.y * Time.deltaTime * (1f + fallMod);
-                            _pAnimController.SetAnimation(AnimState.Jumping, true);
             }
             if (_velocity.y < Physics.gravity.y)
             {
@@ -288,16 +273,12 @@ public class Character : MonoBehaviour
                     float drawMultiplier = arrowPrefabs[_myQuiver.GetArrowType()]
                                             .GetComponent<BaseArrow>().drawSpeed;
                     attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
-                    //builds attackcharge as long as you hold the mouse button down.
-                    _pAnimController.SetAnimation(AnimState.DrawingArrow, true);
                 }
                 if (attackCharge > 100)
                 {
                     attackCharge = 100; //Added by Warren for rounding
-                    _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
                 }
             }
-
         }
         else if (attackCharge > 0)
         {
@@ -307,8 +288,10 @@ public class Character : MonoBehaviour
                 GameObject arrowEquipped = arrowPrefabs[_myQuiver.GetArrowType()];
                 _myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-              // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
-              //  _pAnimController.SetAnimation(AnimState.Shooting, true);
+                // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
+                
+                // AnimState.Shooting is not yet implemented
+                //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
                 GameObject projectile;
                 projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
