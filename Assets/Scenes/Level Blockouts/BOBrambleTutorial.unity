@@ -17951,6 +17951,11 @@ PrefabInstance:
       propertyPath: loadout
       value: FirstCombo
       objectReference: {fileID: 0}
+    - target: {fileID: 3461990919916133846, guid: 354b2334113cb294e9f1cd04eb6db1ed,
+        type: 3}
+      propertyPath: loadoutName
+      value: FirstCombo
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 354b2334113cb294e9f1cd04eb6db1ed, type: 3}
 --- !u!1 &505326083

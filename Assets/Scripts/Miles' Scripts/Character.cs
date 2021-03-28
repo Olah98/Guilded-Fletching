@@ -98,6 +98,7 @@ public class Character : MonoBehaviour
     private bool _isCrouching;
     private SavedData _currentData;
     private PlayerAnimationController _pAnimController;
+    private bool _runOnce;
 
     // delegates
     public bool      isCrouching    { get { return _isCrouching; } }
@@ -132,6 +133,14 @@ public class Character : MonoBehaviour
         // initialize values if new game, else grab existing
         // if data comes back null (it shouldn't), create new instance
         _myQuiver = GetComponent<Quiver>();
+
+        //LevelManager starter = GameObject.FindWithTag("Save Manager").GetComponent<LevelManager>();
+        //if (starter != null)
+        //{
+        //    _myQuiver.Load(starter.loadoutName);
+        //}
+
+
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
                         ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
@@ -139,6 +148,28 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+        
+        if (!_runOnce)
+        {
+            _runOnce = true;
+            LevelManager starter = GameObject.FindWithTag("Save Manager").GetComponent<LevelManager>();
+            if (starter != null)
+            {
+                _myQuiver.Load(starter.loadoutName);
+                _myQuiver.EquipType(0);//loads standard arrow by default
+            }
+            if (SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
+            {
+                _myQuiver.EquipType(SaveManager.instance.activeSave.equippedType);
+                /*_myQuiver.ReplaceRecords(SaveManager.instance.activeSave.recordStandard,
+                    SaveManager.instance.activeSave.recordBramble,
+                    SaveManager.instance.activeSave.recordWarp,
+                    SaveManager.instance.activeSave.recordAirburst);*/
+                //_myQuiver.ReplaceLoadout(SaveManager.instance.activeSave.loadoutSaved);
+                Debug.Log("Previous quiver recovered");
+            }
+        }
+
         // begin camera based updates
         // interact with objects
         if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {

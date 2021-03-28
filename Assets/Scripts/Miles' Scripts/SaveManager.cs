@@ -18,6 +18,7 @@ public class SaveManager : MonoBehaviour
 
     private GameObject[] switches;
     private GameObject[] enemies;
+    private GameObject player;
     // Start is called before the first frame update
 
     private void Awake()
@@ -150,7 +151,17 @@ public class SaveManager : MonoBehaviour
 
             instance.activeSave.unsavedDead.Clear();
         }
-        
+
+        player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null)
+        {
+            instance.activeSave.equippedType = player.GetComponent<Quiver>().GetArrowType(); //By Warren
+            /*instance.activeSave.recordStandard = player.GetComponent<Quiver>().GetArrowTypeShot(0);
+            instance.activeSave.recordBramble = player.GetComponent<Quiver>().GetArrowTypeShot(1);
+            instance.activeSave.recordAirburst = player.GetComponent<Quiver>().GetArrowTypeShot(2);
+            instance.activeSave.recordWarp = player.GetComponent<Quiver>().GetArrowTypeShot(3);*/
+            //instance.activeSave.loadoutSaved = player.GetComponent<Quiver>().ReportLoadout();
+        }
     }
 
     //Loads the set variables into the scene after the laod.
@@ -193,7 +204,12 @@ public class SaveManager : MonoBehaviour
             }
 
             // set options
-           
+            //player = GameObject.FindGameObjectWithTag("Player");
+            //if (player != null)
+            //{
+            //    player.GetComponent<Quiver>().EquipType(instance.activeSave.equippedType); //By Warren
+            //    instance.activeSave.equippedType = 0;
+            //}
         }
     }
 
@@ -230,4 +246,12 @@ public class SaveData
 
     public List<string> unsavedDead;
     public List<string> enemyDead;
+
+    public int equippedType;
+    /*
+    public int recordStandard;
+    public int recordBramble;
+    public int recordWarp;
+    public int recordAirburst;*/
+    //public int[,] loadoutSaved = new int[4, 2];
 }
