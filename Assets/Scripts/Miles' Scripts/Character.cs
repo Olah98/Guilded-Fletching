@@ -93,6 +93,7 @@ public class Character : MonoBehaviour
     private Quiver _myQuiver;
     private bool _isCrouching;
     private SavedData _currentData;
+    private GameObject _arrowInHand;
     //private PlayerAnimationController _pAnimController;
 
     // properties
@@ -114,7 +115,7 @@ public class Character : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         // end camera initialization
         isClimbing = false;
-        cc = gameObject.GetComponent<CharacterController>();
+        cc = GetComponent<CharacterController>();
 
         if (SaveManager.instance.activeSave.respawnPos!=null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
@@ -127,6 +128,7 @@ public class Character : MonoBehaviour
         // initialize values if new game, else grab existing
         // if data comes back null (it shouldn't), create new instance
         _myQuiver = GetComponent<Quiver>();
+        _SetArrowInHand(arrowPrefabs[getMyArrowType]); // set after quiver
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
                         ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
@@ -449,8 +451,9 @@ public class Character : MonoBehaviour
         GameObject projectile;
         projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
         //creates force
-        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         //grants projectile force based on time spent charging attack
+        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
+        StartCoroutine(_HideArrowForShot());
         return projectile; // added by Warren
     }
 
@@ -546,4 +549,36 @@ public class Character : MonoBehaviour
             cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
         }
     }
+
+    #region ArrowInHand_Handling
+    /// <summary>
+    /// Call _SetArrowInHand publically with some restrictions.
+    /// </summary>
+    /// <param name="index">Index of the prefab arrows array.</param>
+    public void SetArrowInHandByIndex(int index) {
+        _SetArrowInHand(arrowPrefabs[index]);
+    }
+    /// <summary>
+    /// Set the visible arrow in the player's hand to the parameter 
+    /// GameObject given.
+    /// </summary>
+    /// <param name="setArrow">The object being shown in the player's hands.</param>
+    private void _SetArrowInHand(GameObject setArrow) {
+        arrowPosition.GetComponent<MeshFilter>().mesh
+            = setArrow.GetComponent<MeshFilter>().sharedMesh;
+        arrowPosition.GetComponent<MeshRenderer>().material
+            = setArrow.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+    }
+
+    private IEnumerator _HideArrowForShot() {
+        arrowPosition.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1.0f);
+        arrowPosition.gameObject.SetActive(true);
+    }
+
+    private int _GetInHandArrowByIndex() {
+
+        return -1; // for possible errors
+    }
+    #endregion
 }
