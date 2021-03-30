@@ -16,6 +16,7 @@ TagManager:
   - Save Manager
   - EnemyParent
   - TimerText
+  - Burnable
   layers:
   - Default
   - TransparentFX

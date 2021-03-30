@@ -12,7 +12,7 @@ public class BaseArrow : MonoBehaviour {
     [Range(0.1f, 2.0f)]
     public float drawSpeed = 1.0f; // baseline multiplier
     public float distance;
-    public bool isLit;
+    
 
     protected bool isAbilityUsed;
     protected Rigidbody rB;
@@ -55,15 +55,7 @@ public class BaseArrow : MonoBehaviour {
         
     }
 
-    /// <summary>
-    /// Only used for when the arrow hits fire.
-    /// </summary>
-    /// <param name="other">Checking for "Fire" tag.</param>
-    private void OnTriggerEnter(Collider other) {
-        if (other.tag == "Fire") {
-            isLit = true;
-        }
-    }
+    
 
     //By Warren
     void DestroyObjectDelayed()

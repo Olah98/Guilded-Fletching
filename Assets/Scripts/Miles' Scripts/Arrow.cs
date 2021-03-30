@@ -7,6 +7,7 @@ public class Arrow : MonoBehaviour
     public Rigidbody rb;
     private bool stuck = false;
     public float stickTime;
+    public bool isLit;
     // Start is called before the first frame update
 
     void Start()
@@ -32,6 +33,12 @@ public class Arrow : MonoBehaviour
     {
         if (stuck==false)
         {
+
+            if (collision.gameObject.tag=="Burnable" && isLit)
+            {
+                Destroy(collision.gameObject);
+                return;
+            }
             Debug.Log("Collision!");
             Stuck();
         }
@@ -52,6 +59,18 @@ public class Arrow : MonoBehaviour
         //gameObject.transform.parent = other.transform;
 
         //freezes object
+    }
+
+    /// <summary>
+    /// Only used for when the arrow hits fire.
+    /// </summary>
+    /// <param name="other">Checking for "Fire" tag.</param>
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.tag == "Fire")
+        {
+            isLit = true;
+        }
     }
 
 
