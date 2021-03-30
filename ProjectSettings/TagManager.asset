@@ -16,6 +16,8 @@ TagManager:
   - Save Manager
   - EnemyParent
   - TimerText
+  - RC
+  - Level Manager
   layers:
   - Default
   - TransparentFX
@@ -27,7 +29,7 @@ TagManager:
   - 
   - Character
   - Arrow
-  - 
+  - EnemyAttack
   - 
   - 
   - 

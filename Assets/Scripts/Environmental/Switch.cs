@@ -16,7 +16,7 @@ public class Switch : MonoBehaviour {
     [HideInInspector] public Bridge myBridge = null;
     [HideInInspector] public CountingPlatform myPlatform = null;
     
-    public bool isFlipped;
+    public bool isFlipped = false;
     [Tooltip("Check if the player is able to interact with this, or it can" +
             " only be triggered by arrows.")]
     public bool isInteractable;
@@ -106,7 +106,7 @@ public class Switch : MonoBehaviour {
         _rend.material.SetColor("_Color", change);
     }
 }
-
+#if UNITY_EDITOR
 // editor class to hand Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor {
@@ -134,4 +134,20 @@ public class SwitchEditor : Editor {
         }
         serializedObject.ApplyModifiedProperties();
     }
+
+    /// <summary>
+    /// Function to call when switch is reset, such as by a timer running out.
+    /// By Warren
+    /// </summary>
+    /*
+    public void ResetSwitch()
+    {
+        if (!isFlipped) return;
+
+        isFlipped = false;
+        UpdateColor();
+    }
+    */
+
 }
+#endif

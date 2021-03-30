@@ -284,7 +284,7 @@ public class Quiver : MonoBehaviour
         }
         else
         {
-            Debug.Log("Invalid Load(). Try the ammo type, Empty, All, FirstCombo or SecondCombo");
+            Debug.Log("Invalid Load(" + arrows + "). Try the ammo type, Empty, All, FirstCombo or SecondCombo");
         }
     }//Load
 
@@ -498,6 +498,45 @@ public class Quiver : MonoBehaviour
         }
         return false;
     }//End Fire Ammo Type
+
+    /*
+    * Equip Type
+    * Sets arrow to selected type, mainly used when reloading scenes
+    */
+    public void EquipType(int type)
+    {
+        equipped = type;
+    }//EquipArrow
+
+    /*
+    * Report Loadout
+    * Returns entire arrow record
+    */
+    public int[,] ReportLoadout()
+    {
+        return loadout;
+    }//ReportLoadout
+
+    /*
+    * Replace Loadout
+    * Replaces entire arrow history, usually when reloading scenes
+    */
+    public void ReplaceLoadout(int[,] record)
+    {
+        loadout = record;
+    }//ReplaceLoadout
+
+    /*
+    * Replace Records
+    * Replaces every arrow record, usually when reloading scenes
+    */
+    public void ReplaceRecords(int standard, int bramble, int warp, int airburst)
+    {
+        loadout[(int)Ammo.Standard, RECORD] = standard;
+        loadout[(int)Ammo.Bramble, RECORD] = bramble;
+        loadout[(int)Ammo.Warp, RECORD] = warp;
+        loadout[(int)Ammo.Airburst, RECORD] = airburst;
+    }//ReplaceRecords
 
     /* FUNCTION BELOW WRITTEN BY CHRISTIAN */
     /// <summary>

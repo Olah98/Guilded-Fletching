@@ -106,7 +106,7 @@ public class CountingPlatform : MovingPlatform {
         }
         return true;
     }
-    
+
     /// <summary>
     /// Waypoints are checked through trigger system.
     /// </summary>

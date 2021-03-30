@@ -53,10 +53,10 @@ public class SavedData {
     /// <param name="slot">1, 2, or 3 (else error thrown).</param>
     /// <returns>Data stored at the argument slot.</returns>
     public static SavedData GetDataStoredAt(in int slot) {
-        #if UNITY_EDITOR
+        
             if (slot == -1)
                 return new SavedData();
-        #endif
+       
 
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
@@ -65,9 +65,9 @@ public class SavedData {
         // any file errors are due to features being implemented during 
         //  production, this turns the error into a yield, these preprocessor 
         //  directives won't build w/ the catch statement
-        #if UNITY_EDITOR
+       
         try {
-        #endif
+       
             if (File.Exists(filePath)) {
                 fStream = File.OpenRead(filePath);
                 var bf = new BinaryFormatter();
@@ -82,7 +82,7 @@ public class SavedData {
                 data.musicVol         = options.musicVol;
                 return data;
             }
-        #if UNITY_EDITOR                
+                    
         }
         catch (Exception e) {
             // errors should only occur if a save file didn't get saved
@@ -92,7 +92,7 @@ public class SavedData {
             if (fStream != null) fStream.Close();
             DeleteDataSlot(slot);
         }
-        #endif
+       
         return new SavedData();
     }
 

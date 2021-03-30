@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: f82a3f392c47b374f9a5bc92270fe2eb
+<<<<<<< HEAD:Assets/Prefabs/Player/BowAndHands.meta
+guid: 15a5ae36898eb1942a979646408f8eef
+=======
+guid: 718b1685be248454695b455c321d1964
+>>>>>>> Tyler-Huff:Assets/Terrain.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

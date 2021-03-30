@@ -19,8 +19,9 @@ public class MeleeEnemy : BaseEnemy {
     }
 
     protected override void FixedUpdate() {
+        
         // aggro and attack
-        if (!IsPlayerInAggroRange()) return;
+        if (!IsPlayerInAggroRange() || isBrambled) return;
         if (IsPlayerInAttackRange() && _attackTimer >= attackFrequency) { 
             Attack();
             _attackTimer = 0f;

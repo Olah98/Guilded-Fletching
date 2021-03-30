@@ -95,6 +95,8 @@ public class Character : MonoBehaviour
     private SavedData _currentData;
     private GameObject _arrowInHand;
     //private PlayerAnimationController _pAnimController;
+    private PlayerAnimationController _pAnimController;
+    private bool _runOnce;
 
     // properties
     public bool      isCrouching    { get { return _isCrouching; } }
@@ -129,6 +131,14 @@ public class Character : MonoBehaviour
         // if data comes back null (it shouldn't), create new instance
         _myQuiver = GetComponent<Quiver>();
         _SetArrowInHand(arrowPrefabs[getMyArrowType]); // set after quiver
+
+        //LevelManager starter = GameObject.FindWithTag("Save Manager").GetComponent<LevelManager>();
+        //if (starter != null)
+        //{
+        //    _myQuiver.Load(starter.loadoutName);
+        //}
+
+
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
                         ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
@@ -136,16 +146,39 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
+
+        if (!_runOnce)
+        {
+            _runOnce = true;
+            LevelManager starter = GameObject.FindWithTag("Level Manager").GetComponent<LevelManager>();
+            if (starter != null)
+            {
+                _myQuiver.Load(starter.loadoutName);
+                _myQuiver.EquipType(0);//loads standard arrow by default
+            }
+            if (SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
+            {
+                _myQuiver.EquipType(SaveManager.instance.activeSave.equippedType);
+                /*_myQuiver.ReplaceRecords(SaveManager.instance.activeSave.recordStandard,
+                    SaveManager.instance.activeSave.recordBramble,
+                    SaveManager.instance.activeSave.recordWarp,
+                    SaveManager.instance.activeSave.recordAirburst);*/
+                //_myQuiver.ReplaceLoadout(SaveManager.instance.activeSave.loadoutSaved);
+                Debug.Log("Previous quiver recovered");
+            }
+        }
+
         // begin camera based updates
         // interact with objects
         if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
             if (hit.transform.tag == "Interactable"
-                && hit.transform.GetComponent<Switch>().isInteractable) {
+                ){//&& hit.transform.GetComponent<Switch>().isInteractable) {
                 if (Input.GetKeyDown(KeyCode.E))
                     InteractWithObject(hit.transform.gameObject);
                 // display hint only under this condition
                 interactionHintText.enabled = true;
             }
+            
             else interactionHintText.enabled = false;
         }
         else interactionHintText.enabled = false;
@@ -169,7 +202,7 @@ public class Character : MonoBehaviour
 
         cc.stepOffset = (_canJump) ? 0.2f : 0.0f;
 
-        chargeText.text = "charge: " + attackCharge;
+        chargeText.text = "charge: " + Mathf.Floor(attackCharge);
         chargeSlider.GetComponent<Slider>().value = attackCharge;//Added by Warren
 
         // if the player is climbing, movement will be handled by Climber.cs
@@ -291,7 +324,7 @@ public class Character : MonoBehaviour
                 _myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
                 // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
-                
+
                 // AnimState.Shooting is not yet implemented
                 //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
@@ -559,7 +592,7 @@ public class Character : MonoBehaviour
         _SetArrowInHand(arrowPrefabs[index]);
     }
     /// <summary>
-    /// Set the visible arrow in the player's hand to the parameter 
+    /// Set the visible arrow in the player's hand to the parameter
     /// GameObject given.
     /// </summary>
     /// <param name="setArrow">The object being shown in the player's hands.</param>

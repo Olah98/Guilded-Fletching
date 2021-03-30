@@ -24,8 +24,8 @@ public class LevelManager : MonoBehaviour
     public PuzzleManager dragPuzzleManagerHere;
     public List<PuzzleManager> index = new List<PuzzleManager>();
     [Header("Try the ammo type, Empty, All, FirstCombo or SecondCombo")]
-    public string loadout;
-    private bool runOnce;
+    public string loadoutName;
+    //private bool runOnce;
 
 
 
@@ -60,13 +60,13 @@ public class LevelManager : MonoBehaviour
     */
     void Update()
     {
-        if (!runOnce)
-        {
+        //if (!runOnce)
+        //{
             //Working around serial object loading with the wrong ACCESS status
-            runOnce = true;
-            myQuiver = GameObject.FindWithTag("Player").GetComponent<Quiver>();
-            myQuiver.Load(loadout);
-        }
+        //    runOnce = true;
+        //    myQuiver = GameObject.FindWithTag("Player").GetComponent<Quiver>();
+        //    myQuiver.Load(loadout);
+        //}
         if (runTimer)
         {
             timer += Time.deltaTime;

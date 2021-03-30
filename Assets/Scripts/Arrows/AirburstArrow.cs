@@ -6,20 +6,23 @@ Summary: The airburst arrow acts similar to how a "bomb" arrow will work in
 */
 using UnityEngine;
 using System.Collections;
+using System.Threading.Tasks;
 
 public class AirburstArrow : BaseArrow {
     [Header("Airburst Values")]
     public float burstPower;
     public float burstRadius;
     public bool canPushPlayer; // set to false for now
+    private bool _hasDamagedPlayer = false;
 
     /// <summary>
     /// Inheritted function for bursting instead
     /// </summary>
-    protected override void Hit() {
-        Collider[] hits = {};
+    protected override void  Hit() {
+        Collider[] hits = new Collider[20];
+        // max number of collisions = hits.Length
         int numOfHits = Physics.OverlapSphereNonAlloc(transform.position, 
-                                                burstRadius, hits);
+                                                    burstRadius, hits);
         // take all collisions and handle them all seperately based on their 
         // tags
         for (int i = 0; i < numOfHits; ++i) {
@@ -34,11 +37,12 @@ public class AirburstArrow : BaseArrow {
             Rigidbody hRB = hits[i].attachedRigidbody;
             if (hRB != null) {
                 hRB.AddExplosionForce(burstPower, transform.position, 
-                                      burstRadius, 0.75f, ForceMode.Impulse);
+                                      burstRadius, 5f, ForceMode.VelocityChange);
+                //StartCoroutine(WaitAndPrintVelocity(hits[i].transform));
             }
             if (hits[i].tag == "Enemy")
                 hits[i].GetComponent<BaseEnemy>().TakeDamage(damage);
-            if (hits[i].tag == "Player") {
+            if (hits[i].tag == "Player" && !_hasDamagedPlayer) {
                 // handle player collision without RigidBody
                 if (canPushPlayer) {
                     var cc = hits[i].GetComponent<CharacterController>();
@@ -52,11 +56,18 @@ public class AirburstArrow : BaseArrow {
                     hits[i].transform.position += forceDir * burstPower;
                     cc.enabled = true;
                 }
-                hits[i].GetComponent<Character>().TakeDamage(damage);
+                if (!_hasDamagedPlayer)
+                {
+                    hits[i].GetComponent<Character>().TakeDamage(damage);
+                    Debug.Log(hits[i].tag);
+                    _hasDamagedPlayer = true;
+                }
+                
             }
         } // end forloop
         Destroy(gameObject);
     }
+    
 
     /// <summary>
     /// Perform damage calculation based on proximity and 
