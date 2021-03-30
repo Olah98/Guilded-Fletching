@@ -106,7 +106,7 @@ public class Switch : MonoBehaviour {
         _rend.material.SetColor("_Color", change);
     }
 }
-
+#if UNITY_EDITOR
 // editor class to hand Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor {
@@ -148,4 +148,6 @@ public class SwitchEditor : Editor {
         UpdateColor();
     }
     */
+
 }
+#endif

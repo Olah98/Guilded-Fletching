@@ -3180,6 +3180,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: OptionsCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5285834431680521555, guid: 0a68dbf19021a5343a2f6b8d684ebc9d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 2371662540610488566}
+    - target: {fileID: 5285834431680521555, guid: 0a68dbf19021a5343a2f6b8d684ebc9d,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ToggleOptions
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0a68dbf19021a5343a2f6b8d684ebc9d, type: 3}
 --- !u!1 &6411730756684446612 stripped
@@ -3324,6 +3334,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3019759325561491886}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2371662540610488566 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 648942314096712024, guid: c18766b539532824aa5efe4906055daa,
+    type: 3}
+  m_PrefabInstance: {fileID: 3019759325561491886}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 102bf2bf5e12df744bb0c3fe106bf96a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &3019759325637038203
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3468,6 +3490,12 @@ PrefabInstance:
       objectReference: {fileID: 3447259960292279896}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4314d799fb1a69a49b9a206af1eec3c7, type: 3}
+--- !u!224 &5298668361726212661 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6944816528383437390, guid: 4314d799fb1a69a49b9a206af1eec3c7,
+    type: 3}
+  m_PrefabInstance: {fileID: 3019759325637038203}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &455824061437521046 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3439411506776374509, guid: 4314d799fb1a69a49b9a206af1eec3c7,
@@ -3504,9 +3532,3 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!224 &5298668361726212661 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6944816528383437390, guid: 4314d799fb1a69a49b9a206af1eec3c7,
-    type: 3}
-  m_PrefabInstance: {fileID: 3019759325637038203}
-  m_PrefabAsset: {fileID: 0}

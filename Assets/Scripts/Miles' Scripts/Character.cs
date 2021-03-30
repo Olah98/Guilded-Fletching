@@ -150,7 +150,7 @@ public class Character : MonoBehaviour
         if (!_runOnce)
         {
             _runOnce = true;
-            LevelManager starter = GameObject.FindWithTag("Save Manager").GetComponent<LevelManager>();
+            LevelManager starter = GameObject.FindWithTag("Level Manager").GetComponent<LevelManager>();
             if (starter != null)
             {
                 _myQuiver.Load(starter.loadoutName);
@@ -172,12 +172,13 @@ public class Character : MonoBehaviour
         // interact with objects
         if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
             if (hit.transform.tag == "Interactable"
-                && hit.transform.GetComponent<Switch>().isInteractable) {
+                ){//&& hit.transform.GetComponent<Switch>().isInteractable) {
                 if (Input.GetKeyDown(KeyCode.E))
                     InteractWithObject(hit.transform.gameObject);
                 // display hint only under this condition
                 interactionHintText.enabled = true;
             }
+            
             else interactionHintText.enabled = false;
         }
         else interactionHintText.enabled = false;

@@ -16,6 +16,8 @@ TagManager:
   - Save Manager
   - EnemyParent
   - TimerText
+  - RC
+  - Level Manager
   layers:
   - Default
   - TransparentFX
