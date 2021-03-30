@@ -14,7 +14,8 @@ public class BrambleArrow : BaseArrow {
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
     protected override void OnCollisionEnter(Collision other) {
-        if (other.transform.tag == "Stoppable" && !isAbilityUsed) {
+        if ((other.transform.tag == "Stoppable" || other.transform.tag == "Enemy") 
+            && !isAbilityUsed) {
             Bind(other.gameObject);
             isAbilityUsed = true;
         }
@@ -31,6 +32,13 @@ public class BrambleArrow : BaseArrow {
         if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
             mPlat.isBrambled = true;
         }
+        else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat))
+        {
+            cPlat.isBrambled = true; //may delete when inheritance is applied
+        }
+        else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
+            bEnem.isBrambled = true; //by Warren
+        }
         // else check for rigidbody (if object run by physics)
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = true;
@@ -43,8 +51,14 @@ public class BrambleArrow : BaseArrow {
     /// Set bound object free and clear Rigidbody variable.
     /// </summary>
     private void UnbindObject() {
-        if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)){
+        if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
             mPlat.isBrambled = false;
+        }
+        else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat)) {
+            cPlat.isBrambled = false; //may delete when inheritance is applied
+        } 
+        else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
+            bEnem.isBrambled = false; //by Warren
         }
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = false;
