@@ -145,9 +145,10 @@ MonoBehaviour:
   rangeOfAttack: 10
   aggroArea: 11
   isAggroed: 0
+  isDead: 0
   shotAccuracy: 90
-  arrowGO: {fileID: 0}
-  bowTrans: {fileID: 0}
+  arrowGO: {fileID: 2895406901005049204, guid: e3e3cb8c0af09c54b9646225fe14e68f, type: 3}
+  bowTrans: {fileID: 6444446404314253524}
 --- !u!54 &8693990007510423751
 Rigidbody:
   m_ObjectHideFlags: 0

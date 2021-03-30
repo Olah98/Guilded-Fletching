@@ -71,7 +71,7 @@ public class ArcherEnemy : BaseEnemy {
         shotGO.transform.parent = null;
         shotGO.transform.up = shotDir;
         // base power off of distance
-        float power = Vector3.Distance(transform.position, _playerTrans.position) / 2.75f;
+        float power = Vector3.Distance(bowTrans.position, new Vector3(_playerTrans.position.x, _playerTrans.position.y +.5f, _playerTrans.position.z)) / 2.5f;
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
         shotGO.GetComponent<Rigidbody>().AddForce(shotDir * power, ForceMode.VelocityChange);
         _attackTimer = 0f;
