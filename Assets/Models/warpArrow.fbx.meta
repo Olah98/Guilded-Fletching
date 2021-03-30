@@ -1,9 +1,14 @@
 fileFormatVersion: 2
-guid: b695d9d06fff18848be3ad33364d0c75
+guid: c9b023f7bda78444c8a597664612fab3
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: warpArrow
+    second: {fileID: 2100000, guid: 56c22667660c3fb4aa276a25c720e410, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

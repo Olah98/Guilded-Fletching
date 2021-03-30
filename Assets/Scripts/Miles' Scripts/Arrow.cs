@@ -9,9 +9,7 @@ public class Arrow : MonoBehaviour
     // Start is called before the first frame update
 
     void Start()
-    {
-      
-      
+    {  
         transform.rotation = Quaternion.LookRotation(rb.velocity);
         Destroy(gameObject, 30f);
     }
@@ -23,7 +21,6 @@ public class Arrow : MonoBehaviour
         {
             transform.rotation = Quaternion.LookRotation(rb.velocity);
             //Points rotation towards where it is headed.
-           
         }
     }
 
@@ -31,7 +28,7 @@ public class Arrow : MonoBehaviour
     {
         if (stuck==false)
         {
-            Debug.Log("Collision!");
+            //Debug.Log("Collision!");
             Stuck();
         }
     }
@@ -52,6 +49,4 @@ public class Arrow : MonoBehaviour
 
         //freezes object
     }
-
-
 }

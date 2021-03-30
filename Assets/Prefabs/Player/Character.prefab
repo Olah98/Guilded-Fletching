@@ -377,8 +377,8 @@ MonoBehaviour:
   arrowPrefabs:
   - {fileID: 1926641923919432315, guid: 6d11b5fc3bacdec49b4fd9525d787d37, type: 3}
   - {fileID: 1926641923919432315, guid: fdd0fda0e9837ba4b90e44b711d3f6b1, type: 3}
-  - {fileID: 1926641923919432315, guid: feef72cda7e1b154ea6af02565530d3c, type: 3}
-  - {fileID: 1926641923919432315, guid: b1d6c379958bddb4c98e15067655fb0b, type: 3}
+  - {fileID: 4556058476981595684, guid: 4e3f2a35c44c35b428241345edc3b850, type: 3}
+  - {fileID: 7607451868170248108, guid: 17b3393cf84fec242ae806055c596a7b, type: 3}
   speed: 5
   maxSpeed: 5
   jumpPower: 2.8

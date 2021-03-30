@@ -35,7 +35,6 @@ public class AirburstArrow : BaseArrow {
             if (hRB != null) {
                 hRB.AddExplosionForce(burstPower, transform.position, 
                                       burstRadius, 0.75f, ForceMode.Impulse);
-                //StartCoroutine(WaitAndPrintVelocity(hits[i].transform));
             }
             if (hits[i].tag == "Enemy")
                 hits[i].GetComponent<BaseEnemy>().TakeDamage(damage);
