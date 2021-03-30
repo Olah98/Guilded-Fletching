@@ -63,91 +63,79 @@ public class Switch : MonoBehaviour {
         if (myBridge != null && myBridge.IsAllSwitchesFlipped()) {
             StartCoroutine(myBridge.Open());
         }
-        if (myPlatform != null && myPlatform.IsAllSwitchesFlipped()) {
+        /*if (myPlatform != null && myPlatform.IsAllSwitchesFlipped()) {
             myPlatform.UnlockPlatform();
+        }*/
+        if (myPlatform != null) {
+            myPlatform.IsAllSwitchesFlipped();
         }
-    }
-    
-    /// <summary>
-    /// Function to call when switch is reset, such as by a timer running out.
-    /// By Warren
-    /// </summary>
-    public void ResetSwitch()
-    {
-        if (!isFlipped) return;
+}
 
-        isFlipped = false;
-        UpdateColor();
-    }
+/// <summary>
+/// Function to call when switch is reset, such as by a timer running out.
+/// By Warren
+/// </summary>
+public void ResetSwitch()
+{
+if (!isFlipped) return;
 
-    /// <summary>
-    /// Check if an arrow hits the switch, then activate.
-    /// </summary>
-    /// <param name="other">Object hitting the switch.</param>
-    protected void OnCollisionEnter(Collision other) {
-        if (other.transform.tag == "Arrow" && triggerByArrow) {
-            HitSwitch();
-        }
-    }
+isFlipped = false;
+UpdateColor();
+}
 
-    /// <summary>
-    /// Function to call when changing color or material.
-    /// Edit to change whether color or material is being affected.
-    /// By Warren
-    /// </summary>
-    protected void UpdateColor() {
-        Color change;
-        if (isFlipped) {
-            change = _isOn;
-        } 
-        else {
-            change = _isOff;
-        }
-        _rend.material.SetColor("_Color", change);
-    }
+/// <summary>
+/// Check if an arrow hits the switch, then activate.
+/// </summary>
+/// <param name="other">Object hitting the switch.</param>
+protected void OnCollisionEnter(Collision other) {
+if (other.transform.tag == "Arrow" && triggerByArrow) {
+    HitSwitch();
+}
+}
+
+/// <summary>
+/// Function to call when changing color or material.
+/// Edit to change whether color or material is being affected.
+/// By Warren
+/// </summary>
+protected void UpdateColor() {
+Color change;
+if (isFlipped) {
+    change = _isOn;
+} 
+else {
+    change = _isOff;
+}
+_rend.material.SetColor("_Color", change);
+}
 }
 #if UNITY_EDITOR
 // editor class to hand Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor {
-    public SwitchType switchType;
+public SwitchType switchType;
 
-    public override void OnInspectorGUI() {
-        base.OnInspectorGUI();
-        EditorGUILayout.Space();
-        // create enum property
-        switchType = (SwitchType) EditorGUILayout.EnumPopup("SwitchType", switchType);
-        // set display to selected enum
-        switch (switchType) {
-            case SwitchType.DoorOrLadder:
-                EditorGUILayout.PropertyField(
-                    serializedObject.FindProperty("myDoor"));
-                break;
-            case SwitchType.Bridge:
-                EditorGUILayout.PropertyField(
-                    serializedObject.FindProperty("myBridge"));
-                break;
-            case SwitchType.Platform:
-                EditorGUILayout.PropertyField(
-                    serializedObject.FindProperty("myPlatform"));
-                break;
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-
-    /// <summary>
-    /// Function to call when switch is reset, such as by a timer running out.
-    /// By Warren
-    /// </summary>
-    /*
-    public void ResetSwitch()
-    {
-        if (!isFlipped) return;
-
-        isFlipped = false;
-        UpdateColor();
-    }
-    */
-
+public override void OnInspectorGUI() {
+base.OnInspectorGUI();
+EditorGUILayout.Space();
+// create enum property
+switchType = (SwitchType) EditorGUILayout.EnumPopup("SwitchType", switchType);
+// set display to selected enum
+switch (switchType) {
+    case SwitchType.DoorOrLadder:
+        EditorGUILayout.PropertyField(
+            serializedObject.FindProperty("myDoor"));
+        break;
+    case SwitchType.Bridge:
+        EditorGUILayout.PropertyField(
+            serializedObject.FindProperty("myBridge"));
+        break;
+    case SwitchType.Platform:
+        EditorGUILayout.PropertyField(
+            serializedObject.FindProperty("myPlatform"));
+        break;
+}
+serializedObject.ApplyModifiedProperties();
+}
 }
 #endif
