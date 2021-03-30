@@ -17,6 +17,8 @@ public class Character : MonoBehaviour
     [Header ("GameObjects")]
     CharacterController cc;
     public Transform bowPosition;
+    [Tooltip("Object is found as the child of the right hand.")]
+    public Transform arrowPosition;
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
@@ -28,12 +30,6 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
-
-    private bool canJump;
-    private float horizontalInput;
-    private float verticalInput;
-    private float gravity = 9.8f;
-    private Vector3 velocity;
 
     private Transform camEuler;
     private SavedData currentData;
@@ -97,9 +93,10 @@ public class Character : MonoBehaviour
     private Quiver _myQuiver;
     private bool _isCrouching;
     private SavedData _currentData;
-    private PlayerAnimationController _pAnimController;
+    private GameObject _arrowInHand;
+    //private PlayerAnimationController _pAnimController;
 
-    // delegates
+    // properties
     public bool      isCrouching    { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
     public Quiver    getMyQuiver    { get { return _myQuiver;    } }
@@ -118,8 +115,7 @@ public class Character : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         // end camera initialization
         isClimbing = false;
-        cc = gameObject.GetComponent<CharacterController>();
-        _pAnimController = GetComponent<PlayerAnimationController>();
+        cc = GetComponent<CharacterController>();
 
         if (SaveManager.instance.activeSave.respawnPos!=null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
@@ -132,6 +128,7 @@ public class Character : MonoBehaviour
         // initialize values if new game, else grab existing
         // if data comes back null (it shouldn't), create new instance
         _myQuiver = GetComponent<Quiver>();
+        _SetArrowInHand(arrowPrefabs[getMyArrowType]); // set after quiver
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot)
                         ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
@@ -240,16 +237,7 @@ public class Character : MonoBehaviour
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
         if (!dead && cc.enabled == true)
         {
-            if (attackCharge == 0) {
-                if (move != Vector3.zero)
-                    _pAnimController.SetAnimation(AnimState.Walking, true);
-                else
-                    _pAnimController.SetAnimation(AnimState.Idle, true);
-            }
-            else if (attackCharge == 100) {
-                _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
-            }
-            cc.Move(move * speed * Time.deltaTime);
+            cc.Move(move.normalized * speed * Time.deltaTime);
         }
         //Moves player when WASD is pressed
 
@@ -258,7 +246,6 @@ public class Character : MonoBehaviour
             if (!_canJump)
             {
                 _velocity.y += Physics.gravity.y * Time.deltaTime * (1f + fallMod);
-                            _pAnimController.SetAnimation(AnimState.Jumping, true);
             }
             if (_velocity.y < Physics.gravity.y)
             {
@@ -288,16 +275,12 @@ public class Character : MonoBehaviour
                     float drawMultiplier = arrowPrefabs[_myQuiver.GetArrowType()]
                                             .GetComponent<BaseArrow>().drawSpeed;
                     attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
-                    //builds attackcharge as long as you hold the mouse button down.
-                    _pAnimController.SetAnimation(AnimState.DrawingArrow, true);
                 }
                 if (attackCharge > 100)
                 {
                     attackCharge = 100; //Added by Warren for rounding
-                    _pAnimController.SetAnimation(AnimState.FullyDrawn, true);
                 }
             }
-
         }
         else if (attackCharge > 0)
         {
@@ -307,8 +290,10 @@ public class Character : MonoBehaviour
                 GameObject arrowEquipped = arrowPrefabs[_myQuiver.GetArrowType()];
                 _myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-              // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
-              //  _pAnimController.SetAnimation(AnimState.Shooting, true);
+                // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
+                
+                // AnimState.Shooting is not yet implemented
+                //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
                 GameObject projectile;
                 projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
@@ -466,8 +451,9 @@ public class Character : MonoBehaviour
         GameObject projectile;
         projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
         //creates force
-        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         //grants projectile force based on time spent charging attack
+        projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
+        StartCoroutine(_HideArrowForShot());
         return projectile; // added by Warren
     }
 
@@ -563,4 +549,36 @@ public class Character : MonoBehaviour
             cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
         }
     }
+
+    #region ArrowInHand_Handling
+    /// <summary>
+    /// Call _SetArrowInHand publically with some restrictions.
+    /// </summary>
+    /// <param name="index">Index of the prefab arrows array.</param>
+    public void SetArrowInHandByIndex(int index) {
+        _SetArrowInHand(arrowPrefabs[index]);
+    }
+    /// <summary>
+    /// Set the visible arrow in the player's hand to the parameter 
+    /// GameObject given.
+    /// </summary>
+    /// <param name="setArrow">The object being shown in the player's hands.</param>
+    private void _SetArrowInHand(GameObject setArrow) {
+        arrowPosition.GetComponent<MeshFilter>().mesh
+            = setArrow.GetComponent<MeshFilter>().sharedMesh;
+        arrowPosition.GetComponent<MeshRenderer>().material
+            = setArrow.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+    }
+
+    private IEnumerator _HideArrowForShot() {
+        arrowPosition.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1.0f);
+        arrowPosition.gameObject.SetActive(true);
+    }
+
+    private int _GetInHandArrowByIndex() {
+
+        return -1; // for possible errors
+    }
+    #endregion
 }
