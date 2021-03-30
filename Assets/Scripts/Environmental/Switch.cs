@@ -16,7 +16,7 @@ public class Switch : MonoBehaviour {
     [HideInInspector] public Bridge myBridge = null;
     [HideInInspector] public CountingPlatform myPlatform = null;
     
-    public bool isFlipped;
+    public bool isFlipped = false;
     [Tooltip("Check if the player is able to interact with this, or it can" +
             " only be triggered by arrows.")]
     public bool isInteractable;
@@ -139,6 +139,7 @@ public class SwitchEditor : Editor {
     /// Function to call when switch is reset, such as by a timer running out.
     /// By Warren
     /// </summary>
+    /*
     public void ResetSwitch()
     {
         if (!isFlipped) return;
@@ -146,4 +147,5 @@ public class SwitchEditor : Editor {
         isFlipped = false;
         UpdateColor();
     }
+    */
 }
