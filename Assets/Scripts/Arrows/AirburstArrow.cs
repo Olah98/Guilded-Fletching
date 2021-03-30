@@ -13,6 +13,7 @@ public class AirburstArrow : BaseArrow {
     public float burstPower;
     public float burstRadius;
     public bool canPushPlayer; // set to false for now
+    private bool _hasDamagedPlayer = false;
 
     /// <summary>
     /// Inheritted function for bursting instead
@@ -41,7 +42,7 @@ public class AirburstArrow : BaseArrow {
             }
             if (hits[i].tag == "Enemy")
                 hits[i].GetComponent<BaseEnemy>().TakeDamage(damage);
-            if (hits[i].tag == "Player") {
+            if (hits[i].tag == "Player" && !_hasDamagedPlayer) {
                 // handle player collision without RigidBody
                 if (canPushPlayer) {
                     var cc = hits[i].GetComponent<CharacterController>();
@@ -55,7 +56,13 @@ public class AirburstArrow : BaseArrow {
                     hits[i].transform.position += forceDir * burstPower;
                     cc.enabled = true;
                 }
-                hits[i].GetComponent<Character>().TakeDamage(damage);
+                if (!_hasDamagedPlayer)
+                {
+                    hits[i].GetComponent<Character>().TakeDamage(damage);
+                    Debug.Log(hits[i].tag);
+                    _hasDamagedPlayer = true;
+                }
+                
             }
         } // end forloop
         Destroy(gameObject);
