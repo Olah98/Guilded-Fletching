@@ -6,6 +6,7 @@ public class Arrow : MonoBehaviour
 {
     public Rigidbody rb;
     private bool stuck = false;
+    public float stickTime;
     // Start is called before the first frame update
 
     void Start()
@@ -13,7 +14,7 @@ public class Arrow : MonoBehaviour
       
       
         transform.rotation = Quaternion.LookRotation(rb.velocity);
-        Destroy(gameObject, 30f);
+        Destroy(gameObject, stickTime);
     }
 
     // Update is called once per frame

@@ -58,6 +58,7 @@ public class Switch : MonoBehaviour {
     private void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Arrow" && triggerByArrow) {
             HitSwitch();
+            Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
         }
     }
 
