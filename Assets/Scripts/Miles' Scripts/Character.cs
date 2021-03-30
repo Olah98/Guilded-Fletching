@@ -203,7 +203,7 @@ public class Character : MonoBehaviour
 
         cc.stepOffset = (_canJump) ? 0.2f : 0.0f;
 
-        chargeText.text = "charge: " + attackCharge;
+        chargeText.text = "charge: " + Mathf.Floor(attackCharge);
         chargeSlider.GetComponent<Slider>().value = attackCharge;//Added by Warren
 
         // if the player is climbing, movement will be handled by Climber.cs
