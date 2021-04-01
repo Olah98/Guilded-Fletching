@@ -482,7 +482,8 @@ public class Character : MonoBehaviour
     public GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
     {
         GameObject projectile;
-        projectile = Instantiate(arrow, bowPosition.transform.position, cam.transform.rotation);
+        var outQuat = Quaternion.LookRotation(bowPosition.position - transform.position, transform.up);
+        projectile = Instantiate(arrow, bowPosition.transform.position, outQuat);
         //creates force
         //grants projectile force based on time spent charging attack
         projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
@@ -496,10 +497,8 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.transform.tag == "Stoppable" ) {
+        if (hit.transform.tag == "Stoppable" )
             transform.parent = hit.transform;
-
-        }
         else
             transform.parent = null;
     }
@@ -597,21 +596,34 @@ public class Character : MonoBehaviour
     /// </summary>
     /// <param name="setArrow">The object being shown in the player's hands.</param>
     private void _SetArrowInHand(GameObject setArrow) {
-        arrowPosition.GetComponent<MeshFilter>().mesh
-            = setArrow.GetComponent<MeshFilter>().sharedMesh;
-        arrowPosition.GetComponent<MeshRenderer>().material
-            = setArrow.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+        // check if Warp arrow (GameObject is "built different")
+        var warp = setArrow.GetComponent<WarpArrow>();
+        if (warp == null) {
+            arrowPosition.GetComponent<MeshFilter>().mesh
+                = setArrow.GetComponent<MeshFilter>().sharedMesh;
+            arrowPosition.GetComponent<MeshRenderer>().material
+                = setArrow.GetComponentInChildren<MeshRenderer>().sharedMaterial;
+            // check for children, if so delete objects
+            if (arrowPosition.transform.childCount > 0) {
+                for (int i = 0; i < arrowPosition.transform.childCount; ++i) {
+                    Destroy(arrowPosition.transform.GetChild(i).gameObject);
+                }
+            }
+        }
+        else {
+            var warpChildren = setArrow.GetComponentsInChildren<Transform>();
+            arrowPosition.GetComponent<MeshFilter>().mesh       = null;
+            arrowPosition.GetComponent<MeshRenderer>().material = null;
+            foreach (var c in warpChildren) {
+                Instantiate(c.gameObject, arrowPosition.transform);
+            }
+        }
     }
 
     private IEnumerator _HideArrowForShot() {
         arrowPosition.gameObject.SetActive(false);
         yield return new WaitForSeconds(1.0f);
         arrowPosition.gameObject.SetActive(true);
-    }
-
-    private int _GetInHandArrowByIndex() {
-
-        return -1; // for possible errors
     }
     #endregion
 }

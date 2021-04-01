@@ -10,7 +10,7 @@ public class Arrow : MonoBehaviour
 
     void Start()
     {  
-        transform.rotation = Quaternion.LookRotation(rb.velocity);
+        //transform.rotation = Quaternion.LookRotation(rb.velocity); //OG
         Destroy(gameObject, 30f);
     }
 
@@ -19,7 +19,9 @@ public class Arrow : MonoBehaviour
     {
         if (!stuck)
         {
-            transform.rotation = Quaternion.LookRotation(rb.velocity);
+            // the arrow yields better results using transform.right instead of
+            transform.right = -rb.velocity;
+            //transform.rotation = Quaternion.LookRotation(rb.velocity); //OG
             //Points rotation towards where it is headed.
         }
     }
@@ -28,7 +30,7 @@ public class Arrow : MonoBehaviour
     {
         if (stuck==false)
         {
-            //Debug.Log("Collision!");
+            print("Collision!");
             Stuck();
         }
     }
@@ -36,8 +38,8 @@ public class Arrow : MonoBehaviour
     
     public void Stuck()
     {
-        Debug.Log(gameObject.transform.rotation);
-        gameObject.GetComponent<BoxCollider>().enabled = false;
+        //Debug.Log(transform.rotation);
+        GetComponent<BoxCollider>().enabled = false;
         Vector3 temp = transform.rotation.eulerAngles;
         stuck = true;
         //rb.constraints = RigidbodyConstraints.FreezeAll;

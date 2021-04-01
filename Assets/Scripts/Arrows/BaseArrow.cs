@@ -21,12 +21,12 @@ public class BaseArrow : MonoBehaviour {
         rB = GetComponent<Rigidbody>();
         isAbilityUsed = false;
     }
-
+/*
     private void FixedUpdate() {
         if (!rB.IsSleeping() && !isAbilityUsed)
             transform.up = rB.velocity;
     }
-
+*/
     /// <summary>
     /// Inheritted function that will be implemented differently on each arrow 
     /// type.
