@@ -156,10 +156,10 @@ public class SaveManager : MonoBehaviour
         if (player != null)
         {
             instance.activeSave.equippedType = player.GetComponent<Quiver>().GetArrowType(); //By Warren
-            /*instance.activeSave.recordStandard = player.GetComponent<Quiver>().GetArrowTypeShot(0);
+            instance.activeSave.recordStandard = player.GetComponent<Quiver>().GetArrowTypeShot(0);
             instance.activeSave.recordBramble = player.GetComponent<Quiver>().GetArrowTypeShot(1);
-            instance.activeSave.recordAirburst = player.GetComponent<Quiver>().GetArrowTypeShot(2);
-            instance.activeSave.recordWarp = player.GetComponent<Quiver>().GetArrowTypeShot(3);*/
+            instance.activeSave.recordWarp = player.GetComponent<Quiver>().GetArrowTypeShot(2);
+            instance.activeSave.recordAirburst = player.GetComponent<Quiver>().GetArrowTypeShot(3);
             //instance.activeSave.loadoutSaved = player.GetComponent<Quiver>().ReportLoadout();
         }
     }
@@ -257,10 +257,10 @@ public class SaveData
     public List<string> enemyDead;
 
     public int equippedType;
-    /*
+    
     public int recordStandard;
     public int recordBramble;
     public int recordWarp;
-    public int recordAirburst;*/
+    public int recordAirburst;
     //public int[,] loadoutSaved = new int[4, 2];
 }

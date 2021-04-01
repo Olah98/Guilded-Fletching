@@ -536,6 +536,7 @@ public class Quiver : MonoBehaviour
         loadout[(int)Ammo.Bramble, RECORD] = bramble;
         loadout[(int)Ammo.Warp, RECORD] = warp;
         loadout[(int)Ammo.Airburst, RECORD] = airburst;
+        //Debug.Log(standard + " " + bramble + " " + warp);
     }//ReplaceRecords
 
     /* FUNCTION BELOW WRITTEN BY CHRISTIAN */

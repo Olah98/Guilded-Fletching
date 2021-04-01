@@ -159,10 +159,10 @@ public class Character : MonoBehaviour
             if (SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
             {
                 _myQuiver.EquipType(SaveManager.instance.activeSave.equippedType);
-                /*_myQuiver.ReplaceRecords(SaveManager.instance.activeSave.recordStandard,
+                _myQuiver.ReplaceRecords(SaveManager.instance.activeSave.recordStandard,
                     SaveManager.instance.activeSave.recordBramble,
                     SaveManager.instance.activeSave.recordWarp,
-                    SaveManager.instance.activeSave.recordAirburst);*/
+                    SaveManager.instance.activeSave.recordAirburst);
                 //_myQuiver.ReplaceLoadout(SaveManager.instance.activeSave.loadoutSaved);
                 Debug.Log("Previous quiver recovered");
             }

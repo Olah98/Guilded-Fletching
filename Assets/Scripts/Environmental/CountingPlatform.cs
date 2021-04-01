@@ -18,12 +18,12 @@ public class CountingPlatform : MovingPlatform {
     private Color _isOn = Color.green;
     private Color _isOff = Color.red;
     private MeshRenderer _rend;
-    private bool _lockPlatform = true;
+    //private bool _unlockedPlatform = false;
 
-    protected void Awake()
-    {
-        _curRounds = maxRounds;
-    }
+    //protected void Awake()
+    //{
+    //    _curRounds = maxRounds;
+    //}
 
     protected override void Start()
     {
@@ -38,16 +38,17 @@ public class CountingPlatform : MovingPlatform {
     protected override void FixedUpdate()
     {
         // don't execute unless all of the switches are flipped
-        if (_lockPlatform) return;
+        //if (!_unlockedPlatform) return;
+        if (_curRounds > 0) //by Warren
         base.FixedUpdate();
     }
 
     /// <summary>
     /// Set private variable _lockPlatform to be true publically.
     /// </summary>
-    public void UnlockPlatform() {
-        _lockPlatform = true;
-    }
+    //public void UnlockPlatform() {
+    //    _unlockedPlatform = true;
+    //}
 
 
     /// <summary>
@@ -113,10 +114,9 @@ public class CountingPlatform : MovingPlatform {
     /// <param name="other">Colliding object.</param>
     protected override void OnTriggerEnter(Collider other)
     {
-        base.OnTriggerEnter(other);
         if (other.tag == "Waypoint" && other.transform == curNode.Value)
         {
-            //Debug.Log(curRounds);
+            //Debug.Log(_curRounds);
             if (_curRounds > 0)
             {
                 _curRounds--;
@@ -127,5 +127,6 @@ public class CountingPlatform : MovingPlatform {
                 }
             }
         }
+        base.OnTriggerEnter(other); //moved by Warren
     }
 }
