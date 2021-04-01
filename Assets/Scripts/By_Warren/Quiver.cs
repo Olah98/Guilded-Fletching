@@ -17,9 +17,8 @@ public class Quiver : MonoBehaviour
     //Second segment is the integer values for access status and amount used
     private int[,] loadout = new int[4, 2];
     private int equipped;
-
-    //animation handling
-    private PlayerAnimationController pAnimController;
+    // added by Christian to display proper arrow in the player's hand
+    private Character _character;
 
     //enum for checking stats
     enum Ammo : int
@@ -42,11 +41,13 @@ public class Quiver : MonoBehaviour
         //Load("Standard"); //Main Gameplay
         //Load("FirstCombo"); //Standard and Bramble
         //Load("SecondCombo"); //All but Airburst
-        //Load("All"); //For testing purposes, grants access to everything
-    
+        #if UNITY_EDITOR
+        //this will only compile in the Unity_Editor, this won't ship with a build
+        Load("All"); //For testing purposes, grants access to everything
+        #endif
         //Base value
         equipped = (int)Ammo.Standard; //Might add check for non-standard level
-        pAnimController = GetComponent<PlayerAnimationController>();
+        _character = GetComponent<Character>();
     }//Start
 
 
@@ -75,10 +76,10 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Standard)
                 {
                     equipped = (int)Ammo.Standard;
+                    _character.SetArrowInHandByIndex(0);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Standard, RECORD] +
                         " Standard arrows");
-                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -100,10 +101,10 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Bramble)
                 {
                     equipped = (int)Ammo.Bramble;
+                    _character.SetArrowInHandByIndex(1);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Bramble, RECORD] +
                         " Bramble arrows");
-                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -125,10 +126,10 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Warp)
                 {
                     equipped = (int)Ammo.Warp;
+                    _character.SetArrowInHandByIndex(2);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Warp, RECORD] +
                         " Warp arrows");
-                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -150,10 +151,10 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Airburst)
                 {
                     equipped = (int)Ammo.Airburst;
+                    _character.SetArrowInHandByIndex(3);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Airburst, RECORD] +
                         " Airburst arrows");
-                    pAnimController.SetAnimation(AnimState.SwitchingArrows, true);
                     return; //handles key-mashing
                 }
                 else
@@ -283,7 +284,7 @@ public class Quiver : MonoBehaviour
         }
         else
         {
-            Debug.Log("Invalid Load(). Try the ammo type, Empty, All, FirstCombo or SecondCombo");
+            Debug.Log("Invalid Load(" + arrows + "). Try the ammo type, Empty, All, FirstCombo or SecondCombo");
         }
     }//Load
 
@@ -497,6 +498,45 @@ public class Quiver : MonoBehaviour
         }
         return false;
     }//End Fire Ammo Type
+
+    /*
+    * Equip Type
+    * Sets arrow to selected type, mainly used when reloading scenes
+    */
+    public void EquipType(int type)
+    {
+        equipped = type;
+    }//EquipArrow
+
+    /*
+    * Report Loadout
+    * Returns entire arrow record
+    */
+    public int[,] ReportLoadout()
+    {
+        return loadout;
+    }//ReportLoadout
+
+    /*
+    * Replace Loadout
+    * Replaces entire arrow history, usually when reloading scenes
+    */
+    public void ReplaceLoadout(int[,] record)
+    {
+        loadout = record;
+    }//ReplaceLoadout
+
+    /*
+    * Replace Records
+    * Replaces every arrow record, usually when reloading scenes
+    */
+    public void ReplaceRecords(int standard, int bramble, int warp, int airburst)
+    {
+        loadout[(int)Ammo.Standard, RECORD] = standard;
+        loadout[(int)Ammo.Bramble, RECORD] = bramble;
+        loadout[(int)Ammo.Warp, RECORD] = warp;
+        loadout[(int)Ammo.Airburst, RECORD] = airburst;
+    }//ReplaceRecords
 
     /* FUNCTION BELOW WRITTEN BY CHRISTIAN */
     /// <summary>

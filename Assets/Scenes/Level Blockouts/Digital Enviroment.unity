@@ -6212,6 +6212,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myDoor: {fileID: 3185255189561978221}
   isFlipped: 1
+  isInteractable: 0
+  triggerByArrow: 0
 --- !u!136 &77034890
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -54072,6 +54074,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character
       objectReference: {fileID: 0}
+    - target: {fileID: 8404529157600748999, guid: 01539826dfbab08409d8d94a248fab28,
+        type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 01539826dfbab08409d8d94a248fab28, type: 3}
 --- !u!1 &887992419
@@ -89163,6 +89170,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3461990919916133846, guid: 354b2334113cb294e9f1cd04eb6db1ed,
+        type: 3}
+      propertyPath: loadoutName
+      value: All
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 354b2334113cb294e9f1cd04eb6db1ed, type: 3}
 --- !u!1 &1515329772
@@ -121074,6 +121086,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myDoor: {fileID: 1862254568}
   isFlipped: 0
+  isInteractable: 0
+  triggerByArrow: 0
 --- !u!136 &2016323801
 CapsuleCollider:
   m_ObjectHideFlags: 0
