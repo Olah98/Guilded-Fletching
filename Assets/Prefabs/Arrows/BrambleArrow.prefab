@@ -143,6 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: -4004642369045121068}
+  stickTime: 30
 --- !u!1001 &6047016772755979453
 PrefabInstance:
   m_ObjectHideFlags: 0
