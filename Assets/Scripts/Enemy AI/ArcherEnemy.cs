@@ -25,6 +25,7 @@ public class ArcherEnemy : BaseEnemy {
     }
 
     protected override void FixedUpdate() {
+        if (isBrambled) return;
         Vector3 moveDir = Vector3.zero;
 
         playerVelocity = GetCurrentPlayerVelocity();

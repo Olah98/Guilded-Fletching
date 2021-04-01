@@ -30,7 +30,7 @@ public class SwitchPlatform : MonoBehaviour {
 
 
         // push this Switch into the Switch List for myPlatform
-        myPlatform.mySwitches.Add(this);
+       // myPlatform.mySwitches.Add(this);
 
         if (!isFlipped)
         {
