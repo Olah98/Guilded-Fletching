@@ -15,7 +15,9 @@ public class Switch : MonoBehaviour {
     [HideInInspector] public Door myDoor = null;
     [HideInInspector] public Bridge myBridge = null;
     [HideInInspector] public CountingPlatform myPlatform = null;
-    
+
+
+    public bool isTimedByArrow;
     public bool isFlipped = false;
     [Tooltip("Check if the player is able to interact with this, or it can" +
             " only be triggered by arrows.")]
@@ -87,7 +89,11 @@ public class Switch : MonoBehaviour {
     protected void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Arrow" && triggerByArrow) {
             HitSwitch();
-            Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
+            if (isTimedByArrow)
+            {
+                Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
+            }
+            
         }
     }
 
