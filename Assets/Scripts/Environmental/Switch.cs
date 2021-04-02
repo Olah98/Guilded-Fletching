@@ -18,7 +18,6 @@ public class Switch : MonoBehaviour
     [HideInInspector] public Bridge myBridge = null;
     [HideInInspector] public CountingPlatform myPlatform = null;
 
-
     public bool isTimedByArrow;
     public bool isFlipped = false;
     [Tooltip("Check if the player is able to interact with this, or it can" +
@@ -78,10 +77,6 @@ public class Switch : MonoBehaviour
         }
     }
 
-    /// <summary>
-    /// Function to call when switch is reset, such as by a timer running out.
-    /// By Warren
-    /// </summary>
     public void ResetSwitch()
     {
         if (!isFlipped) return;
@@ -102,12 +97,10 @@ public class Switch : MonoBehaviour
         if (other.transform.tag == "Arrow" && triggerByArrow)
         {
             HitSwitch();
-            //if (isTimedByArrow)
-            //{
-            //    Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
-            //}
-            // Warren: Hey? Should this be BaseArrow to work with the arrow prefabs?
-            // 'Arrow' as its own script is only in Miles' folder.
+            if (isTimedByArrow)
+            {
+                Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
+            }
         }
     }
 
@@ -130,33 +123,34 @@ public class Switch : MonoBehaviour
         _rend.material.SetColor("_Color", change);
     }
 }
+
 #if UNITY_EDITOR
-// editor class to hand Inspector UI for the Switch class
+// editor class to handle Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor {
-public SwitchType switchType;
+    public SwitchType switchType;
 
-public override void OnInspectorGUI() {
-base.OnInspectorGUI();
-EditorGUILayout.Space();
-// create enum property
-switchType = (SwitchType) EditorGUILayout.EnumPopup("SwitchType", switchType);
-// set display to selected enum
-switch (switchType) {
-    case SwitchType.DoorOrLadder:
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("myDoor"));
-        break;
-    case SwitchType.Bridge:
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("myBridge"));
-        break;
-    case SwitchType.Platform:
-        EditorGUILayout.PropertyField(
-            serializedObject.FindProperty("myPlatform"));
-        break;
-}
-serializedObject.ApplyModifiedProperties();
-}
+    public override void OnInspectorGUI() {
+        base.OnInspectorGUI();
+        EditorGUILayout.Space();
+        // create enum property
+        switchType = (SwitchType) EditorGUILayout.EnumPopup("SwitchType", switchType);
+        // set display to selected enum
+        switch (switchType) {
+            case SwitchType.DoorOrLadder:
+                EditorGUILayout.PropertyField(
+                    serializedObject.FindProperty("myDoor"));
+                break;
+            case SwitchType.Bridge:
+                EditorGUILayout.PropertyField(
+                    serializedObject.FindProperty("myBridge"));
+                break;
+            case SwitchType.Platform:
+                EditorGUILayout.PropertyField(
+                    serializedObject.FindProperty("myPlatform"));
+                break;
+        }
+        serializedObject.ApplyModifiedProperties();
+    }
 }
 #endif
