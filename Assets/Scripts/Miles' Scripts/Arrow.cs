@@ -13,7 +13,6 @@ public class Arrow : MonoBehaviour
     void Start()
     {
         transform.rotation = Quaternion.LookRotation(rb.velocity);
-        Destroy(gameObject, stickTime);
     }
 
     // Update is called once per frame
@@ -58,6 +57,8 @@ public class Arrow : MonoBehaviour
         //gameObject.transform.parent = other.transform;
 
         //freezes object
+
+        Destroy(gameObject, stickTime); //Moved By Warren
     }
 
     /// <summary>
