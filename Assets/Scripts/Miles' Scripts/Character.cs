@@ -14,7 +14,7 @@ using UnityEngine.SceneManagement;
 
 public class Character : MonoBehaviour
 {
-    [Header ("GameObjects")]
+    [Header("GameObjects")]
     CharacterController cc;
     public Transform bowPosition;
     [Tooltip("Object is found as the child of the right hand.")]
@@ -22,7 +22,7 @@ public class Character : MonoBehaviour
     [Header("Arrows: Standard, Bramble, Warp, Airburst")]
     public GameObject[] arrowPrefabs;
 
-    [Header ("Movement")]
+    [Header("Movement")]
     public float speed;
     public float maxSpeed;
     public float jumpPower;
@@ -40,17 +40,17 @@ public class Character : MonoBehaviour
     public float minCrouchHeight = 0.5f;
     private float _coyoteJumpTime;
 
-    [Header ("Attacking")]
+    [Header("Attacking")]
     public float attackCD;
     public float chargeRate;
     public float attackCharge;
 
-    [Header ("Health")]
+    [Header("Health")]
     public int maxHp;
     public int currentHp;
     public bool dead = false;
 
-    [Header ("UI Elements")]
+    [Header("UI Elements")]
     public Text chargeText;
     public Slider chargeSlider;//Added by Warren
 
@@ -71,9 +71,13 @@ public class Character : MonoBehaviour
     public float maxZoomVal = 40f;
 
     private Camera _cam;
-    private float _clampedMaxZoom { get {
-        return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
-    } }
+    private float _clampedMaxZoom
+    {
+        get
+        {
+            return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
+        }
+    }
     // store option vars
     private float s_baseFOV;
     private float s_mouseSensitivity;
@@ -99,10 +103,10 @@ public class Character : MonoBehaviour
     private bool _runOnce;
 
     // properties
-    public bool      isCrouching    { get { return _isCrouching; } }
+    public bool isCrouching { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
-    public Quiver    getMyQuiver    { get { return _myQuiver;    } }
-    public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
+    public Quiver getMyQuiver { get { return _myQuiver; } }
+    public int getMyArrowType { get { return _myQuiver.GetArrowType(); } }
 
     private void Start()
     {
@@ -119,7 +123,7 @@ public class Character : MonoBehaviour
         isClimbing = false;
         cc = GetComponent<CharacterController>();
 
-        if (SaveManager.instance.activeSave.respawnPos!=null &&
+        if (SaveManager.instance.activeSave.respawnPos != null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
         {
             cc.enabled = false;
@@ -170,33 +174,50 @@ public class Character : MonoBehaviour
 
         // begin camera based updates
         // interact with objects
-        if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f)) {
-            if (hit.transform.tag == "Interactable"
-                ){//&& hit.transform.GetComponent<Switch>().isInteractable) {
-                if (Input.GetKeyDown(KeyCode.E))
-                    InteractWithObject(hit.transform.gameObject);
-                // display hint only under this condition
-                interactionHintText.enabled = true;
+        if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f))
+        {
+            if (hit.transform.tag == "Interactable")
+            {
+                //Modified by Warren to recognize when switches reset
+                if ((hit.transform.GetComponent("Switch") as Switch) != null)
+                {
+                    if (hit.transform.GetComponent<Switch>().isInteractable)
+                    {
+                        if (Input.GetKeyDown(KeyCode.E))
+                            InteractWithObject(hit.transform.gameObject);
+                        // display hint only under this condition
+                        interactionHintText.enabled = true;
+                    }
+                    else interactionHintText.enabled = false;
+                }
+                else
+                {
+                    if (Input.GetKeyDown(KeyCode.E))
+                        InteractWithObject(hit.transform.gameObject);
+                    // display hint only under this condition
+                    interactionHintText.enabled = true;
+                }
             }
-            
             else interactionHintText.enabled = false;
         }
         else interactionHintText.enabled = false;
 
         // zoom in/out using RMB
-        if (Input.GetMouseButtonDown(1)) {
+        if (Input.GetMouseButtonDown(1))
+        {
             StartCoroutine("ZoomIn");
         }
-        else if (Input.GetMouseButtonUp(1) && _cam.fieldOfView < s_baseFOV) {
+        else if (Input.GetMouseButtonUp(1) && _cam.fieldOfView < s_baseFOV)
+        {
             StopCoroutine("ZoomIn");
             StartCoroutine("ZoomOut");
         }
         // end camera based updates
 
-        #if UNITY_EDITOR
+#if UNITY_EDITOR
         //Used for testing, remove at a later date.
         if (Input.GetKeyDown(KeyCode.U)) Respawn();
-        #endif
+#endif
         //Checks if dead and respawns.
         if (dead) Respawn();
 
@@ -247,12 +268,13 @@ public class Character : MonoBehaviour
     private void FixedUpdate()
     {
         // gather look input appropriately
-        float xInput =  Input.GetAxis("Mouse X") * lookSpeed * s_mouseSensitivity;
+        float xInput = Input.GetAxis("Mouse X") * lookSpeed * s_mouseSensitivity;
         float yInput = -Input.GetAxis("Mouse Y") * lookSpeed * s_mouseSensitivity;
-        Vector3 lookRot = new Vector3 (0f, xInput, 0f);
+        Vector3 lookRot = new Vector3(0f, xInput, 0f);
         // check if this point of looking rotation is valid
         if (yInput + _cam.transform.localEulerAngles.x < lowerBoundary
-            || yInput + _cam.transform.localEulerAngles.x > upperBoundary) {
+            || yInput + _cam.transform.localEulerAngles.x > upperBoundary)
+        {
             // up and down looking (must be in local)
             _cam.transform.Rotate(Vector3.right * yInput, Space.Self);
         }
@@ -340,7 +362,8 @@ public class Character : MonoBehaviour
                 if (_myQuiver.GetArrowType() == 0)
                 {
                     TrackArrow(projectile, StandardArrowTracker);
-                } else if (_myQuiver.GetArrowType() == 1)
+                }
+                else if (_myQuiver.GetArrowType() == 1)
                 {
                     TrackArrow(projectile, BrambleArrowTracker);
                 }
@@ -403,7 +426,7 @@ public class Character : MonoBehaviour
         {
             s.HitSwitch();
         }
-        else if(interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
+        else if (interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
         {
             t.load();
         }
@@ -415,7 +438,7 @@ public class Character : MonoBehaviour
 
     public void Jump()
     {
-        if ((jumpCD <=0 && !dead) || (_coyoteJumpTime > 0 && !dead))
+        if ((jumpCD <= 0 && !dead) || (_coyoteJumpTime > 0 && !dead))
         {
             _canJump = false;
             //Adds force to jum pwith
@@ -496,8 +519,9 @@ public class Character : MonoBehaviour
     /// Move the player with the motion of a platform.
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
-    private void OnControllerColliderHit(ControllerColliderHit hit) {
-        if (hit.transform.tag == "Stoppable" )
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.transform.tag == "Stoppable")
             transform.parent = hit.transform;
         else
             transform.parent = null;
@@ -566,16 +590,18 @@ public class Character : MonoBehaviour
     /// while pushing the player down the prevent possible floating.
     /// </summary>
     /// <param name="action">In parameter to enable or disable crouching</param>
-    private void _Crouching(in bool action) {
+    private void _Crouching(in bool action)
+    {
         speed = (action) ? maxSpeed * 0.6f : maxSpeed;
         _isCrouching = action;
         float incrementor = Mathf.Lerp(minCrouchHeight,
                                        1.0f,
                                        transform.localScale.y);
-        incrementor     = (action) ? -incrementor : incrementor;
+        incrementor = (action) ? -incrementor : incrementor;
         bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
                                       : transform.localScale.y >= 1.0f;
-        if (!isBoundaryHit) {
+        if (!isBoundaryHit)
+        {
             transform.localScale += new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime;
             // prevent the player from "floating"
             cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
@@ -587,7 +613,8 @@ public class Character : MonoBehaviour
     /// Call _SetArrowInHand publically with some restrictions.
     /// </summary>
     /// <param name="index">Index of the prefab arrows array.</param>
-    public void SetArrowInHandByIndex(int index) {
+    public void SetArrowInHandByIndex(int index)
+    {
         _SetArrowInHand(arrowPrefabs[index]);
     }
     /// <summary>
@@ -595,32 +622,39 @@ public class Character : MonoBehaviour
     /// GameObject given.
     /// </summary>
     /// <param name="setArrow">The object being shown in the player's hands.</param>
-    private void _SetArrowInHand(GameObject setArrow) {
+    private void _SetArrowInHand(GameObject setArrow)
+    {
         // check if Warp arrow (GameObject is "built different")
         var warp = setArrow.GetComponent<WarpArrow>();
-        if (warp == null) {
+        if (warp == null)
+        {
             arrowPosition.GetComponent<MeshFilter>().mesh
                 = setArrow.GetComponent<MeshFilter>().sharedMesh;
             arrowPosition.GetComponent<MeshRenderer>().material
                 = setArrow.GetComponentInChildren<MeshRenderer>().sharedMaterial;
             // check for children, if so delete objects
-            if (arrowPosition.transform.childCount > 0) {
-                for (int i = 0; i < arrowPosition.transform.childCount; ++i) {
+            if (arrowPosition.transform.childCount > 0)
+            {
+                for (int i = 0; i < arrowPosition.transform.childCount; ++i)
+                {
                     Destroy(arrowPosition.transform.GetChild(i).gameObject);
                 }
             }
         }
-        else {
+        else
+        {
             var warpChildren = setArrow.GetComponentsInChildren<Transform>();
-            arrowPosition.GetComponent<MeshFilter>().mesh       = null;
+            arrowPosition.GetComponent<MeshFilter>().mesh = null;
             arrowPosition.GetComponent<MeshRenderer>().material = null;
-            foreach (var c in warpChildren) {
+            foreach (var c in warpChildren)
+            {
                 Instantiate(c.gameObject, arrowPosition.transform);
             }
         }
     }
 
-    private IEnumerator _HideArrowForShot() {
+    private IEnumerator _HideArrowForShot()
+    {
         arrowPosition.gameObject.SetActive(false);
         yield return new WaitForSeconds(1.0f);
         arrowPosition.gameObject.SetActive(true);

@@ -8,7 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class TimedDoor : Door {
+public class TimedDoor : Door
+{
     public int YieldSeconds;
     private Vector3 _startpos;
 

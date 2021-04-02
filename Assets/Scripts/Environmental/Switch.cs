@@ -6,12 +6,14 @@ Summary: Class that interacts with and triggers the Door script class.
 using UnityEngine;
 using UnityEditor;
 
-public enum SwitchType {
+public enum SwitchType
+{
     DoorOrLadder, Bridge, Platform
 }
 
 [System.Serializable]
-public class Switch : MonoBehaviour {
+public class Switch : MonoBehaviour
+{
     [HideInInspector] public Door myDoor = null;
     [HideInInspector] public Bridge myBridge = null;
     [HideInInspector] public CountingPlatform myPlatform = null;
@@ -30,7 +32,8 @@ public class Switch : MonoBehaviour {
     private Color _isOff = Color.red;
     private MeshRenderer _rend;
 
-    private void Start() {
+    private void Start()
+    {
 
         //By Warren
         _rend = GetComponent<MeshRenderer>();
@@ -43,7 +46,8 @@ public class Switch : MonoBehaviour {
         myPlatform?.mySwitches.Add(this);
 
 
-        if (!isFlipped) {
+        if (!isFlipped)
+        {
             myDoor?.UpdateColor(false); //By Warren, updates color
             myBridge?.UpdateColor(false);
             myPlatform?.UpdateColor(false);
@@ -53,77 +57,78 @@ public class Switch : MonoBehaviour {
     /// <summary>
     /// Function to call when switch is hit by an arrow or interacting with.
     /// </summary>
-    public virtual void HitSwitch() {
+    public virtual void HitSwitch()
+    {
         if (isFlipped) return;
 
         isFlipped = true;
         UpdateColor();//By Warren
         // handle what is
-        if (myDoor != null && myDoor.IsAllSwitchesFlipped()) {
+        if (myDoor != null && myDoor.IsAllSwitchesFlipped())
+        {
             StartCoroutine(myDoor.Open());
         }
-        if (myBridge != null && myBridge.IsAllSwitchesFlipped()) {
+        if (myBridge != null && myBridge.IsAllSwitchesFlipped())
+        {
             StartCoroutine(myBridge.Open());
         }
-        /*if (myPlatform != null && myPlatform.IsAllSwitchesFlipped()) {
-            myPlatform.UnlockPlatform();
-        }*/
-        if (myPlatform != null) {
+        if (myPlatform != null)
+        {
             myPlatform.IsAllSwitchesFlipped();
         }
-}
+    }
 
-/// <summary>
-/// Function to call when switch is reset, such as by a timer running out.
-/// By Warren
-/// </summary>
-public void ResetSwitch()
-{
-if (!isFlipped) return;
+    /// <summary>
+    /// Function to call when switch is reset, such as by a timer running out.
+    /// By Warren
+    /// </summary>
+    public void ResetSwitch()
+    {
+        if (!isFlipped) return;
+        isFlipped = false;
+        UpdateColor();
+        if (this.tag == "Untagged")
+        {
+            this.tag = "Interactable"; //By Warren
+        }
+    }
 
     /// <summary>
     /// Check if an arrow hits the switch, then activate.
     /// </summary>
     /// <param name="other">Object hitting the switch.</param>
-    //protected void OnCollisionEnter(Collision other) {
-//        if (other.transform.tag == "Arrow" && triggerByArrow) {
-  //          HitSwitch();
-  //          if (isTimedByArrow)
-  //          {
-  //              Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
-  //          }
+    protected void OnCollisionEnter(Collision other)
+    {
+        if (other.transform.tag == "Arrow" && triggerByArrow)
+        {
+            HitSwitch();
+            //if (isTimedByArrow)
+            //{
+            //    Invoke("ResetSwitch", other.gameObject.GetComponent<Arrow>().stickTime);
+            //}
+            // Warren: Hey? Should this be BaseArrow to work with the arrow prefabs?
+            // 'Arrow' as its own script is only in Miles' folder.
+        }
+    }
 
-  //      }
-  //  }
-isFlipped = false;
-UpdateColor();
-}
-
-/// <summary>
-/// Check if an arrow hits the switch, then activate.
-/// </summary>
-/// <param name="other">Object hitting the switch.</param>
-protected void OnCollisionEnter(Collision other) {
-if (other.transform.tag == "Arrow" && triggerByArrow) {
-    HitSwitch();
-}
-}
-
-/// <summary>
-/// Function to call when changing color or material.
-/// Edit to change whether color or material is being affected.
-/// By Warren
-/// </summary>
-protected void UpdateColor() {
-Color change;
-if (isFlipped) {
-    change = _isOn;
-}
-else {
-    change = _isOff;
-}
-_rend.material.SetColor("_Color", change);
-}
+    /// <summary>
+    /// Function to call when changing color or material.
+    /// Edit to change whether color or material is being affected.
+    /// By Warren
+    /// </summary>
+    protected void UpdateColor()
+    {
+        Color change;
+        if (isFlipped)
+        {
+            change = _isOn;
+        }
+        else
+        {
+            change = _isOff;
+        }
+        _rend.material.SetColor("_Color", change);
+    }
 }
 #if UNITY_EDITOR
 // editor class to hand Inspector UI for the Switch class
