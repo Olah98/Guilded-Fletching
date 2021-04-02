@@ -385,7 +385,6 @@ MonoBehaviour:
   damage: 0
   drawSpeed: 1.2
   distance: 0
-  isLit: 0
 --- !u!114 &8968005234809322897
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -399,6 +398,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 8514675489086818363}
+  stickTime: 30
+  isLit: 0
 --- !u!65 &8733352011365230902
 BoxCollider:
   m_ObjectHideFlags: 0
