@@ -77,6 +77,10 @@ public class Switch : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Function to call when switch is reset, such as by a timer running out.
+    /// By Warren
+    /// </summary>
     public void ResetSwitch()
     {
         if (!isFlipped) return;
