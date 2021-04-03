@@ -15,6 +15,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public class OptionsController : MonoBehaviour {
     public struct Option {
@@ -33,6 +35,7 @@ public class OptionsController : MonoBehaviour {
 
     private Option[] _options = new Option[6];
     private SavedData _curData;
+    private GameObject blackScreen; //By Warren
     //private int curSaveIndex = -1;
     private bool _isOptionsMenu { get { 
         return SceneManager.GetActiveScene().name == "Options"; 
@@ -197,6 +200,22 @@ public class OptionsController : MonoBehaviour {
 
     public void loadScene(string level)
     {
+        //SceneManager.LoadScene(level);
+        StartCoroutine(LoadSceneCo(level));//By Warren
+    }
+
+    public IEnumerator Delay()
+    {
+        if (blackScreen != null)
+        {
+            blackScreen.GetComponent<ScreenShift>().Change();
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    public IEnumerator LoadSceneCo(string level)
+    {
+        yield return Delay();
         SceneManager.LoadScene(level);
     }
 }
