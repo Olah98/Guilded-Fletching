@@ -53,6 +53,7 @@ public class Character : MonoBehaviour
     [Header("UI Elements")]
     public Text chargeText;
     public Slider chargeSlider;//Added by Warren
+    private GameObject _blackScreen; //By Warren
 
     /* BEGIN FIRSTPERSONCAMERA VARIABLES */
     #region Camera_Variables
@@ -122,6 +123,7 @@ public class Character : MonoBehaviour
         // end camera initialization
         isClimbing = false;
         cc = GetComponent<CharacterController>();
+        _blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
 
         if (SaveManager.instance.activeSave.respawnPos != null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
@@ -470,8 +472,10 @@ public class Character : MonoBehaviour
 
     public IEnumerator RespawnCo()
     {
-        yield return new WaitForSeconds(.5f);
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //yield return new WaitForSeconds(.5f); //Shortened by Warren to help with screen fade
+        yield return null;
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
     }
 
     public void GroundCheck()
@@ -660,4 +664,28 @@ public class Character : MonoBehaviour
         arrowPosition.gameObject.SetActive(true);
     }
     #endregion
+
+    /* FUNCTIONS ADDED BY WARREN */
+    /*
+    * Delay - By Warren 
+    * Calls a screen shift and waits for the change, if a target is available
+    */
+    public IEnumerator Delay()
+    {
+        if (_blackScreen != null)
+        {
+            _blackScreen.GetComponent<ScreenShift>().Change();
+            yield return new WaitForSeconds(.5f);
+        }
+    }//Delay
+
+    /*
+    * Load Scene Co - By Warren 
+    * Asks for a delay for a screen fade before loading the target level/menu 
+    */
+    public IEnumerator LoadSceneCo(string level)
+    {
+        yield return Delay();
+        SceneManager.LoadScene(level);
+    }//LoadSceneCo
 }

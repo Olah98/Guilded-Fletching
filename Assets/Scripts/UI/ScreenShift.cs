@@ -22,7 +22,11 @@ public class ScreenShift : MonoBehaviour
     public bool goDark;
     public float speed;
 
-    // Start is called before the first frame update
+    /*
+    * Start
+    * Called before the first frame update
+    * Loads stats from the local game objects 
+    */
     void Start()
     {
         _image = GetComponent<Image>();
@@ -32,14 +36,12 @@ public class ScreenShift : MonoBehaviour
         _rectangle = GetComponent<RectTransform>();
         _rectangle.sizeDelta = new Vector2(Screen.width, Screen.height);
         Change();
-    }
+    }//Start
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    /*
+    * Change
+    * Calls fade ins and fade outs based on variables set in the Inspector
+    */
     public void Change()
     {
         if (fadeScreen)
@@ -55,8 +57,12 @@ public class ScreenShift : MonoBehaviour
             StartCoroutine(FadeScreen(goDark));
             goDark = !goDark;
         }
-    }
+    }//Change
 
+    /*
+    * FadeScreen
+    * Starts a process to change the overlay's opacity
+    */
     public IEnumerator FadeScreen(bool becomingSolid)
     {
         Color _localColor = _image.color;
@@ -66,12 +72,13 @@ public class ScreenShift : MonoBehaviour
         {
             while (_localColor.a < _alpha)
             {
-                fadeAmount =_localColor.a + (speed * Time.deltaTime);
+                fadeAmount = _localColor.a + (speed * Time.deltaTime);
                 _localColor = new Color(_red, _green, _blue, fadeAmount);
                 _image.color = _localColor;
                 yield return null;
             }
-        } else
+        }
+        else
         {
             while (_localColor.a > 0)
             {
@@ -81,5 +88,5 @@ public class ScreenShift : MonoBehaviour
                 yield return null;
             }
         }
-    }
-}
+    }//FadeScreen
+}//ScreenShift

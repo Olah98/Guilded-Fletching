@@ -27,7 +27,8 @@ public class UI : MonoBehaviour
 
     public bool PausedStatus { get { return _isPaused; } }
 
-   
+    private GameObject blackScreen; //By Warren
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -48,7 +49,7 @@ public class UI : MonoBehaviour
 
         Time.timeScale = 1;
 
-        
+        blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
     }
 
     // Update is called once per frame
@@ -131,14 +132,16 @@ public class UI : MonoBehaviour
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
         SaveManager.instance.DeleteSave();
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
     }
     
     public void RetryAtCheckpoint()
     {
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
     }
 
     /// <summary>
@@ -151,7 +154,8 @@ public class UI : MonoBehaviour
 
         //store values!!
         Debug.Log("Quit Game");
-        Application.Quit();
+        //Application.Quit();
+        StartCoroutine(ExitGameCo()); //By Warren
     }
 
     /// <summary>
@@ -167,7 +171,8 @@ public class UI : MonoBehaviour
             StartCoroutine(SavedData.CutCurrentPlayTime(curData));
 
             Time.timeScale = 1;
-            SceneManager.LoadScene("MainMenu");
+            //SceneManager.LoadScene("MainMenu");
+            StartCoroutine(LoadSceneCo("MainMenu"));//By Warren
             Debug.Log("Go To Main Menu");
         }
         else
@@ -209,4 +214,37 @@ public class UI : MonoBehaviour
         optionMenu.SetActive(showing);
         pausePrompt.SetActive(!showing);
     }
+
+    /* FUNCTIONS ADDED BY WARREN */
+    /*
+    * Delay - By Warren 
+    * Calls a screen shift and waits for the change, if a target is available
+    */
+    public IEnumerator Delay()
+    {
+        if (blackScreen != null)
+        {
+            blackScreen.GetComponent<ScreenShift>().Change();
+            yield return new WaitForSeconds(1f);
+        }
+    }//Delay
+
+    /*
+    * Load Scene Co - By Warren 
+    * Asks for a delay for a screen fade before loading the target level/menu 
+    */
+    public IEnumerator LoadSceneCo(string level)
+    {
+        yield return Delay();
+        SceneManager.LoadScene(level);
+    }//LoadSceneCo
+    /*
+    * Exit Game Co - By Warren 
+    * Asks for a delay for a screen fade before closing the game
+    */
+    public IEnumerator ExitGameCo()
+    {
+        yield return Delay();
+        Application.Quit();
+    }//ExitGameCo
 }
