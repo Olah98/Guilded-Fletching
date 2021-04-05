@@ -13,6 +13,7 @@ public class UI : MonoBehaviour
     public GameObject optionMenu;
    // public GameObject restartPrompt;
     public GameObject mainMenuPrompt;
+    public GameObject controlsPrompt; //By Warren
     public GameObject quitPrompt;
     public GameObject pauseBG;
    // public GameObject howToPlay;
@@ -119,8 +120,9 @@ public class UI : MonoBehaviour
         Hide(pauseMenu);
         Hide(quitPrompt);
         Hide(mainMenuPrompt);
-       // Hide(restartPrompt);
-       // Hide(optionMenu);
+        Hide(controlsPrompt);
+        // Hide(restartPrompt);
+        // Hide(optionMenu);
         //Hide(howToPlay);
     }
 
@@ -129,19 +131,22 @@ public class UI : MonoBehaviour
     /// </summary>
     public void Restart()
     {
+        
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
         SaveManager.instance.DeleteSave();
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
+        //No fade here, has bugs
     }
-    
+
     public void RetryAtCheckpoint()
     {
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
-        //SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
+        //No fade here, has bugs
     }
 
     /// <summary>

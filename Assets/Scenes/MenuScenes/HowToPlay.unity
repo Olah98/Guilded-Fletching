@@ -258,7 +258,7 @@ GameObject:
   - component: {fileID: 140649769}
   - component: {fileID: 140649768}
   m_Layer: 5
-  m_Name: Image (2)
+  m_Name: WarpIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -908,7 +908,7 @@ GameObject:
   - component: {fileID: 1143595455}
   - component: {fileID: 1143595454}
   m_Layer: 5
-  m_Name: Image
+  m_Name: StandIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1313,7 +1313,7 @@ GameObject:
   - component: {fileID: 1800216850}
   - component: {fileID: 1800216849}
   m_Layer: 5
-  m_Name: Image (1)
+  m_Name: BrambIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
