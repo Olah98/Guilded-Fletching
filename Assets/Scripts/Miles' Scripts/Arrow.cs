@@ -38,7 +38,7 @@ public class Arrow : MonoBehaviour
                 Destroy(collision.gameObject);
                 return;
             }
-            Debug.Log("Collision!");
+            //Debug.Log("Collision!");
             Stuck();
         }
     }
