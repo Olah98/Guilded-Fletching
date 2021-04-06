@@ -23,8 +23,8 @@ public class OptionsController : MonoBehaviour {
     }
     // used to access specific optionGroup[] by index
     public enum OptionType {
-        GraphicsQuality = 0, MouseSensitivity = 1, BaseFOV = 2, 
-        MasterVol = 3,       SoundFXVol = 4,       AmbientVol = 5
+        GraphicsQuality = 0, MouseSensitivity, BaseFOV, 
+        MasterVol,           SoundFXVol,       AmbientVol
     }
     
     public Dropdown saveSelector;
