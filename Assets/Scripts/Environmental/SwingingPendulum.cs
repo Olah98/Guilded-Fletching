@@ -5,32 +5,41 @@ using UnityEngine;
 public class SwingingPendulum : MonoBehaviour
 {
     // Start is called before the first frame update
-    public bool left;
-    public bool right;
-    public float rotationAmount;
-    public GameObject leftCube;
-    public GameObject rightCube;
-    public GameObject centerCube;
-    private float swingAmount;
-    void Start()
+    [Tooltip("Default value is 1")]
+    public float speed;
+    public float startDelay;
+    [Tooltip("Dictates how far a player or enemy is hit.")]
+    public float force;
+    private Animator anim;
+
+    public void Start()
     {
+        anim = gameObject.GetComponent<Animator>();
+        anim.speed = speed;
 
-     
-
+        StartCoroutine(PauseAnimation());
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator PauseAnimation()
     {
-        transform.Rotate(0f, rotationAmount, 0f);
+        anim.enabled = false;
+        yield return new WaitForSeconds(startDelay);
+
+        anim.enabled = true;
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.gameObject == centerCube)
+        Debug.Log("Colliding!");
+        var contact = collision.contacts[0];
+        Vector3 direction = collision.transform.position - contact.point;
+        if (collision.transform.tag == "Player")
         {
-            swingAmount = swingAmount * -1;
+            collision.gameObject.GetComponent<Character>().AddImpact(direction, force);
         }
+
     }
+
+
 
 }
