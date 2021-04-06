@@ -148,14 +148,10 @@ public class OptionsController : MonoBehaviour {
     public void SaveOptionsToCurrentData() {
         _curData.graphicsQuality  = _options[(int)OptionType.GraphicsQuality].slider.value;
         _curData.mouseSensitivity = _options[(int)OptionType.MouseSensitivity].slider.value;
-        _curData.baseFOV          =  (float)Convert.ToDouble(
-                                    _options[(int)OptionType.BaseFOV].numStr.text);
+        _curData.baseFOV          =  (float)Convert.ToDouble(_options[(int)OptionType.BaseFOV].numStr.text);
         _curData.masterVol        = _options[(int)OptionType.MasterVol].slider.value;
         _curData.soundFXVol       = _options[(int)OptionType.SoundFXVol].slider.value;
         _curData.musicVol         = _options[(int)OptionType.AmbientVol].slider.value;
-        // update values for the player
-        Camera.main.transform.GetComponentInParent<Character>()
-            .UpdateCharacterToSaveData(_curData);
         //update volume in real time
         var options = new OptionsData(_curData);
         SavedData.StoreOptionsAt(options, SavedData.currentSaveSlot);
