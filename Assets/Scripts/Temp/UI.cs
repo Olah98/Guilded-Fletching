@@ -86,7 +86,6 @@ public class UI : MonoBehaviour
         Time.timeScale = 0;
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
     }
 
     /// <summary>
@@ -100,6 +99,9 @@ public class UI : MonoBehaviour
         Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+
+        if (optionMenu.activeInHierarchy)
+            ToggleOptions(false);
     }
 
     /// <summary>
