@@ -10,6 +10,7 @@ Summary: Controls options in the Option scene and how it handles data
         -Master Volume
         -Sound FX Volume
         -Ambient(Music) Volume
+        -Fullscreen Toggle //By Warren
 */
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -30,6 +31,7 @@ public class OptionsController : MonoBehaviour {
     }
     
     public Dropdown saveSelector;
+    public Toggle fullScreen;
     [Tooltip("Graphics Quality\nMouseSensitivity\nBaseFOV\nMaster\nSoundFX\nAmbient")]
     public GameObject[] optionGroup = new GameObject[6];
 
@@ -52,6 +54,7 @@ public class OptionsController : MonoBehaviour {
             _options[i].numStr = optionGroup[i].transform.GetChild(1).GetComponent<Text>();
             _options[i].slider = optionGroup[i].GetComponentInChildren<Slider>();
         }
+        fullScreen.GetComponent<Toggle>().isOn = Screen.fullScreen; //By Warren
         InitializeOptionUI();
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
     }
@@ -200,6 +203,15 @@ public class OptionsController : MonoBehaviour {
         //SceneManager.LoadScene(level);
         StartCoroutine(LoadSceneCo(level));//By Warren
     }//loadScene
+
+    /*
+    * On Toggle Fullscreen - By Warren 
+    * Toggles between windowed and fullscreen modes
+    */
+    public void OnToggle_Fullscreen()
+    {
+        Screen.fullScreen = !Screen.fullScreen;
+    }//OnToggle_Fullscreen
 
     /*
     * Delay - By Warren 
