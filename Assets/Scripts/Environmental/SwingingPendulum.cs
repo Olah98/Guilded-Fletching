@@ -10,27 +10,23 @@ public class SwingingPendulum : MonoBehaviour
     public float startDelay;
     [Tooltip("Dictates how far a player or enemy is hit.")]
     public float force;
+    private float forceHolder;
     private Animator anim;
 
     public void Start()
     {
+        forceHolder = force;
         anim = gameObject.GetComponent<Animator>();
         anim.speed = speed;
 
-        StartCoroutine(PauseAnimation());
+        StartCoroutine(PauseAnimation(startDelay));
     }
 
-    IEnumerator PauseAnimation()
-    {
-        anim.enabled = false;
-        yield return new WaitForSeconds(startDelay);
-
-        anim.enabled = true;
-    }
+    
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Colliding!");
+        
         var contact = collision.contacts[0];
         Vector3 direction = collision.transform.position - contact.point;
         if (collision.transform.tag == "Player")
@@ -38,6 +34,25 @@ public class SwingingPendulum : MonoBehaviour
             collision.gameObject.GetComponent<Character>().AddImpact(direction, force);
         }
 
+        if (collision.transform.tag== "Arrow")
+        {
+            Debug.Log(collision.transform.gameObject.name);
+
+            if (collision.gameObject.GetComponent<BrambleArrow>())
+            {
+                StartCoroutine(PauseAnimation(collision.gameObject.GetComponent<BrambleArrow>().bindTime));
+            }
+        }
+
+    }
+
+    IEnumerator PauseAnimation(float pauseTime)
+    {
+        force = 0;
+        anim.enabled = false;
+        yield return new WaitForSeconds(pauseTime);
+        force = forceHolder;
+        anim.enabled = true;
     }
 
 
