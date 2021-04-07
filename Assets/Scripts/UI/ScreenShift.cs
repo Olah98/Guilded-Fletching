@@ -65,6 +65,10 @@ public class ScreenShift : MonoBehaviour
     */
     public IEnumerator FadeScreen(bool becomingSolid)
     {
+        if (becomingSolid)
+        {
+            _image.enabled = true;
+        }
         Color _localColor = _image.color;
         float fadeAmount;
 
@@ -87,6 +91,10 @@ public class ScreenShift : MonoBehaviour
                 _image.color = _localColor;
                 yield return null;
             }
+        }
+        if (!becomingSolid)
+        {
+            _image.enabled = false;
         }
     }//FadeScreen
 }//ScreenShift
