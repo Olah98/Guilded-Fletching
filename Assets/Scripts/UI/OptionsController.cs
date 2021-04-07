@@ -15,6 +15,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public class OptionsController : MonoBehaviour {
     public struct Option {
@@ -34,6 +36,7 @@ public class OptionsController : MonoBehaviour {
     private Option[] _options = new Option[6];
     private SavedData _curData;
     //private int curSaveIndex = -1;
+    private GameObject blackScreen; //By Warren
     private bool _isOptionsMenu { get { 
         return SceneManager.GetActiveScene().name == "Options"; 
     } }
@@ -50,6 +53,7 @@ public class OptionsController : MonoBehaviour {
             _options[i].slider = optionGroup[i].GetComponentInChildren<Slider>();
         }
         InitializeOptionUI();
+        blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
     }
 
     private void OnEnable() {
@@ -193,6 +197,30 @@ public class OptionsController : MonoBehaviour {
 
     public void loadScene(string level)
     {
+        //SceneManager.LoadScene(level);
+        StartCoroutine(LoadSceneCo(level));//By Warren
+    }//loadScene
+
+    /*
+    * Delay - By Warren 
+    * Calls a screen shift and waits for the change, if a target is available
+    */
+    public IEnumerator Delay()
+    {
+        if (blackScreen != null)
+        {
+            blackScreen.GetComponent<ScreenShift>().Change();
+            yield return new WaitForSeconds(1f);
+        }
+    }//Delay
+
+    /*
+    * Load Scene Co - By Warren 
+    * Asks for a delay for a screen fade before loading the target level/menu 
+    */
+    public IEnumerator LoadSceneCo(string level)
+    {
+        yield return Delay();
         SceneManager.LoadScene(level);
-    }
-}
+    }//LoadSceneCo
+}//OptionsController
