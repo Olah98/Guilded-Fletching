@@ -8,6 +8,7 @@ public class SwingingPendulum : MonoBehaviour
     [Tooltip("Default value is 1")]
     public float speed;
     public float startDelay;
+    public int damage;
     [Tooltip("Dictates how far a player or enemy is hit.")]
     public float force;
     private float forceHolder;
@@ -32,6 +33,7 @@ public class SwingingPendulum : MonoBehaviour
         if (collision.transform.tag == "Player")
         {
             collision.gameObject.GetComponent<Character>().AddImpact(direction, force);
+            collision.gameObject.GetComponent<Character>().TakeDamage(damage);
         }
 
         if (collision.transform.tag== "Arrow")
