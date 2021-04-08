@@ -33,6 +33,11 @@ public class AirburstArrow : BaseArrow {
             }
 
             int damage = CalculateDamage(hits[i].transform.position);
+            // check to destroy
+            if (hits[i].TryGetComponent<Blastable>(out var b)) {
+                if (b.isDestroyable) Destroy(hits[i].gameObject);
+                continue;
+            }
             // explosion
             Rigidbody hRB = hits[i].attachedRigidbody;
             if (hRB != null) {

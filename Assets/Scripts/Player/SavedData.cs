@@ -54,10 +54,8 @@ public class SavedData {
     /// <returns>Data stored at the argument slot.</returns>
     public static SavedData GetDataStoredAt(in int slot) {
         
-            if (slot == -1)
-                return new SavedData();
+        if (slot == -1) return new SavedData();
        
-
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
         string filePath = Application.persistentDataPath + _saveStr + slot + ".dat";

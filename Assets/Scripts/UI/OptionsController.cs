@@ -10,11 +10,14 @@ Summary: Controls options in the Option scene and how it handles data
         -Master Volume
         -Sound FX Volume
         -Ambient(Music) Volume
+        -Fullscreen Toggle //By Warren
 */
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 public class OptionsController : MonoBehaviour {
     public struct Option {
@@ -23,17 +26,19 @@ public class OptionsController : MonoBehaviour {
     }
     // used to access specific optionGroup[] by index
     public enum OptionType {
-        GraphicsQuality = 0, MouseSensitivity = 1, BaseFOV = 2, 
-        MasterVol = 3,       SoundFXVol = 4,       AmbientVol = 5
+        GraphicsQuality = 0, MouseSensitivity, BaseFOV, 
+        MasterVol,           SoundFXVol,       AmbientVol
     }
     
     public Dropdown saveSelector;
+    public Toggle fullScreen;
     [Tooltip("Graphics Quality\nMouseSensitivity\nBaseFOV\nMaster\nSoundFX\nAmbient")]
     public GameObject[] optionGroup = new GameObject[6];
 
     private Option[] _options = new Option[6];
     private SavedData _curData;
     //private int curSaveIndex = -1;
+    private GameObject blackScreen; //By Warren
     private bool _isOptionsMenu { get { 
         return SceneManager.GetActiveScene().name == "Options"; 
     } }
@@ -49,7 +54,9 @@ public class OptionsController : MonoBehaviour {
             _options[i].numStr = optionGroup[i].transform.GetChild(1).GetComponent<Text>();
             _options[i].slider = optionGroup[i].GetComponentInChildren<Slider>();
         }
+        fullScreen.GetComponent<Toggle>().isOn = Screen.fullScreen; //By Warren
         InitializeOptionUI();
+        blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
     }
 
     private void OnEnable() {
@@ -148,14 +155,10 @@ public class OptionsController : MonoBehaviour {
     public void SaveOptionsToCurrentData() {
         _curData.graphicsQuality  = _options[(int)OptionType.GraphicsQuality].slider.value;
         _curData.mouseSensitivity = _options[(int)OptionType.MouseSensitivity].slider.value;
-        _curData.baseFOV          =  (float)Convert.ToDouble(
-                                    _options[(int)OptionType.BaseFOV].numStr.text);
+        _curData.baseFOV          =  (float)Convert.ToDouble(_options[(int)OptionType.BaseFOV].numStr.text);
         _curData.masterVol        = _options[(int)OptionType.MasterVol].slider.value;
         _curData.soundFXVol       = _options[(int)OptionType.SoundFXVol].slider.value;
         _curData.musicVol         = _options[(int)OptionType.AmbientVol].slider.value;
-        // update values for the player
-        Camera.main.transform.GetComponentInParent<Character>()
-            .UpdateCharacterToSaveData(_curData);
         //update volume in real time
         var options = new OptionsData(_curData);
         SavedData.StoreOptionsAt(options, SavedData.currentSaveSlot);
@@ -197,6 +200,39 @@ public class OptionsController : MonoBehaviour {
 
     public void loadScene(string level)
     {
+        //SceneManager.LoadScene(level);
+        StartCoroutine(LoadSceneCo(level));//By Warren
+    }//loadScene
+
+    /*
+    * On Toggle Fullscreen - By Warren 
+    * Toggles between windowed and fullscreen modes
+    */
+    public void OnToggle_Fullscreen()
+    {
+        Screen.fullScreen = !Screen.fullScreen;
+    }//OnToggle_Fullscreen
+
+    /*
+    * Delay - By Warren 
+    * Calls a screen shift and waits for the change, if a target is available
+    */
+    public IEnumerator Delay()
+    {
+        if (blackScreen != null)
+        {
+            blackScreen.GetComponent<ScreenShift>().Change();
+            yield return new WaitForSeconds(1f);
+        }
+    }//Delay
+
+    /*
+    * Load Scene Co - By Warren 
+    * Asks for a delay for a screen fade before loading the target level/menu 
+    */
+    public IEnumerator LoadSceneCo(string level)
+    {
+        yield return Delay();
         SceneManager.LoadScene(level);
-    }
-}
+    }//LoadSceneCo
+}//OptionsController
