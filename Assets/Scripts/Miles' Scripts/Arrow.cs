@@ -6,14 +6,12 @@ public class Arrow : MonoBehaviour
 {
     public Rigidbody rb;
     private bool stuck = false;
-    public float stickTime;
+    public float stickTime = 30f;
     public bool isLit;
     // Start is called before the first frame update
 
     void Start()
     {
-
-
         transform.rotation = Quaternion.LookRotation(rb.velocity);
         Destroy(gameObject, stickTime);
     }
@@ -35,12 +33,12 @@ public class Arrow : MonoBehaviour
         if (stuck==false)
         {
 
-            if (collision.gameObject.tag=="Burnable" && isLit)
+            if (collision.gameObject.tag == "Burnable" && isLit)
             {
                 Destroy(collision.gameObject);
                 return;
             }
-            Debug.Log("Collision!");
+            //Debug.Log("Collision!");
             Stuck();
         }
     }

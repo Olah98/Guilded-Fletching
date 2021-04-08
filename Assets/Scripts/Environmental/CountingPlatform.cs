@@ -7,7 +7,8 @@ Summary: Based on combining Door and MovingPlatform. Platform halts after time.
 using UnityEngine;
 using System.Collections.Generic;
 
-public class CountingPlatform : MovingPlatform {
+public class CountingPlatform : MovingPlatform
+{
     [HideInInspector]
     public List<Switch> mySwitches;
     [Header("Waypoints to travel between")]
@@ -40,7 +41,7 @@ public class CountingPlatform : MovingPlatform {
         // don't execute unless all of the switches are flipped
         //if (!_unlockedPlatform) return;
         if (_curRounds > 0) //by Warren
-        base.FixedUpdate();
+            base.FixedUpdate();
     }
 
     /// <summary>
@@ -94,15 +95,19 @@ public class CountingPlatform : MovingPlatform {
     /// Iterate through every Switch to check if they are all flipped.
     /// </summary>
     /// <returns>True if all switches are flipped.</returns>
-    public bool IsAllSwitchesFlipped() {
-        foreach (var s in mySwitches) {
-            if (!s.isFlipped) {
+    public bool IsAllSwitchesFlipped()
+    {
+        foreach (var s in mySwitches)
+        {
+            if (!s.isFlipped)
+            {
                 UpdateColor(false);
                 return false;
             }
         }
         UpdateColor(true);
-        if (_curRounds == 0) {
+        if (_curRounds == 0)
+        {
             _curRounds = maxRounds;
         }
         return true;

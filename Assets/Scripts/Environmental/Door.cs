@@ -8,7 +8,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class Door : MonoBehaviour {
+public class Door : MonoBehaviour
+{
     [Range(1f, 50f)]
     public float openSpeed = 10f;
     [HideInInspector]
@@ -22,7 +23,8 @@ public class Door : MonoBehaviour {
     private Color _isOff = Color.red;
     private MeshRenderer _rend;
 
-    protected virtual void Start() {
+    protected virtual void Start()
+    {
         _moveTo = transform.GetChild(0);
         //By Warren
         _rend = GetComponent<MeshRenderer>();
@@ -34,9 +36,12 @@ public class Door : MonoBehaviour {
     /// Iterate through every Switch to check if they are all flipped.
     /// </summary>
     /// <returns>True if all switches are flipped.</returns>
-    public bool IsAllSwitchesFlipped() {
-        foreach (var s in mySwitches) {
-            if (!s.isFlipped) {
+    public bool IsAllSwitchesFlipped()
+    {
+        foreach (var s in mySwitches)
+        {
+            if (!s.isFlipped)
+            {
                 UpdateColor(false);
                 return false;
             }
@@ -48,10 +53,12 @@ public class Door : MonoBehaviour {
     /// <summary>
     /// Coroutine to move the Door outside of using Update().
     /// </summary>
-    public virtual IEnumerator Open() {
+    public virtual IEnumerator Open()
+    {
         // detach _moveTo child
         _moveTo.parent = transform.parent;
-        do {
+        do
+        {
             Vector3 moveTo = (_moveTo.position - transform.position).normalized;
             transform.Translate(moveTo * openSpeed * Time.deltaTime);
             yield return new WaitForSeconds(Time.deltaTime);
@@ -67,7 +74,8 @@ public class Door : MonoBehaviour {
     /// Edit to change whether color or material is being affected.
     /// By Warren
     /// </summary>
-    public void UpdateColor(bool isActive) {
+    public void UpdateColor(bool isActive)
+    {
         Color change;
         //Material m_change;
         if (isActive)
@@ -81,7 +89,8 @@ public class Door : MonoBehaviour {
     /// <summary>
     /// Draws in editor space to aid in Level Design
     /// </summary>
-    protected virtual void OnDrawGizmosSelected() {
+    protected virtual void OnDrawGizmosSelected()
+    {
         // get and set values of _moveTo
         _moveTo = transform.GetChild(0);
         Gizmos.color = Color.red;
@@ -96,8 +105,9 @@ public class Door : MonoBehaviour {
     /// </summary>
     /// <param name="compareTo">Destination position.</param>
     /// <returns>True if the distance is almost 0f.</returns>
-    protected bool _IsPositionApproximateTo(Vector3 compareTo) {
-        if (Vector3.Distance(transform.position, compareTo) < 0.25f) 
+    protected bool _IsPositionApproximateTo(Vector3 compareTo)
+    {
+        if (Vector3.Distance(transform.position, compareTo) < 0.25f)
             return true;
 
         return false;

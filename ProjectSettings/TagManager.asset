@@ -18,6 +18,7 @@ TagManager:
   - TimerText
   - RC
   - Level Manager
+  - ScreenShift
   layers:
   - Default
   - TransparentFX

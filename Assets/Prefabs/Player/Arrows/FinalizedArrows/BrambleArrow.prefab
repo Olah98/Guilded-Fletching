@@ -127,7 +127,6 @@ MonoBehaviour:
   damage: 5
   drawSpeed: 1
   distance: 0
-  isLit: 0
   bindTime: 3
 --- !u!114 &-3099823741885013466
 MonoBehaviour:
@@ -142,3 +141,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: -793442015070382675}
+  stickTime: 30
+  isLit: 0
