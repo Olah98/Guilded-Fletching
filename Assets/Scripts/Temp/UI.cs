@@ -61,7 +61,6 @@ public class UI : MonoBehaviour
             if (_isPaused)
             {
                 UnPause();
-                
             }
             else
             {
@@ -186,6 +185,7 @@ public class UI : MonoBehaviour
         {
             ShowMenu(pauseMenu);
         }
+
     }
 
     /// <summary>

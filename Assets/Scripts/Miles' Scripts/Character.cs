@@ -33,7 +33,6 @@ public class Character : MonoBehaviour
     private Vector3 impact;
 
     private Transform camEuler;
-    private SavedData currentData;
     private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
     private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
 
@@ -100,15 +99,25 @@ public class Character : MonoBehaviour
     private bool _isCrouching;
     private SavedData _currentData;
     private GameObject _arrowInHand;
-    //private PlayerAnimationController _pAnimController;
     private PlayerAnimationController _pAnimController;
     private bool _runOnce;
 
     // properties
+<<<<<<< Updated upstream
     public bool isCrouching { get { return _isCrouching; } }
     public SavedData getCurrentData { get { return currentData; } }
     public Quiver getMyQuiver { get { return _myQuiver; } }
     public int getMyArrowType { get { return _myQuiver.GetArrowType(); } }
+=======
+    public bool      isCrouching    => _isCrouching;
+    public SavedData getCurrentData => _currentData;
+    public Quiver    getMyQuiver    => _myQuiver;
+    public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
+    public bool      isSquashed     { get {
+        return Physics.SphereCast(new Ray(transform.position, Vector3.up), cc.radius, cc.height/2f)
+            && Physics.SphereCast(new Ray(transform.position, Vector3.down), cc.radius, cc.height/2f);
+    } }
+>>>>>>> Stashed changes
 
     private void Start()
     {
@@ -291,6 +300,14 @@ public class Character : MonoBehaviour
         transform.Rotate(Vector3.up * xInput, Space.World);
         // all look based movement above
 
+        //handle platform "squashing"
+        if (Physics.Raycast(transform.position, Vector3.up, out var hitTop, 1f)
+            && Physics.Raycast(transform.position, Vector3.down, out var hitBot, 1f)
+            && hitTop.transform.TryGetComponent<MovingPlatform>(out var mPlat) && !mPlat.isStopped)
+        {   
+            StartCoroutine(mPlat.CheckForPlayerSquashing(this));
+        }
+
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
 
@@ -356,8 +373,6 @@ public class Character : MonoBehaviour
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
                 // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
 
-                // AnimState.Shooting is not yet implemented
-                //  _pAnimController.SetAnimation(AnimState.Shooting, true);
                 //Expanded Fire to include arrow type
                 GameObject projectile;
                 projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
@@ -378,7 +393,7 @@ public class Character : MonoBehaviour
                 }
             }
         }
-    }
+    } // end FixedUpdate()
 
     #region CameraFunctions
     /// <summary>
@@ -402,7 +417,7 @@ public class Character : MonoBehaviour
         while (_cam.fieldOfView > s_baseFOV - maxZoomVal)
         {
             --_cam.fieldOfView;
-            yield return new WaitForSeconds(Time.fixedDeltaTime);
+            yield return new WaitForFixedUpdate();
         }
         yield return null;
     }
@@ -532,15 +547,21 @@ public class Character : MonoBehaviour
         StartCoroutine(_HideArrowForShot());
         return projectile; // added by Warren
     }
-
+    
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
     /// Move the player with the motion of a platform.
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
+<<<<<<< Updated upstream
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.transform.tag == "Stoppable")
+=======
+    private void OnControllerColliderHit(ControllerColliderHit hit) 
+    {
+        if (hit.transform.tag == "Stoppable" && hit.transform.position.y < transform.position.y) 
+>>>>>>> Stashed changes
             transform.parent = hit.transform;
         else
             transform.parent = null;
@@ -616,7 +637,11 @@ public class Character : MonoBehaviour
         float incrementor = Mathf.Lerp(minCrouchHeight,
                                        1.0f,
                                        transform.localScale.y);
+<<<<<<< Updated upstream
         incrementor = (action) ? -incrementor : incrementor;
+=======
+        incrementor        = (action) ? -incrementor : incrementor;
+>>>>>>> Stashed changes
         bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
                                       : transform.localScale.y >= 1.0f;
         if (!isBoundaryHit)
