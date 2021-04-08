@@ -30,6 +30,7 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
+    private Vector3 impact;
 
     private Transform camEuler;
     private SavedData currentData;
@@ -242,6 +243,12 @@ public class Character : MonoBehaviour
         {
             _velocity.y = 0;
         }
+
+        if (impact.magnitude >0.2)
+        {
+            cc.Move(impact * Time.deltaTime);      
+        }
+        impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
     }
 
     private void FixedUpdate()
@@ -436,6 +443,14 @@ public class Character : MonoBehaviour
                 _jumpTime += upTime;
             }
         }
+    }
+
+    //controls knockback effects
+    public void AddImpact(Vector3 dir, float force)
+    {
+        //dir = dir.normalized;
+        dir = new Vector3(dir.normalized.x, 0.5f, dir.normalized.z);
+        impact += dir * force;
     }
 
     public void Respawn()

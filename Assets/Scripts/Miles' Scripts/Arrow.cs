@@ -35,12 +35,11 @@ public class Arrow : MonoBehaviour
         if (stuck==false)
         {
 
-            if (collision.gameObject.tag=="Burnable" && isLit)
+            if (collision.gameObject.tag == "Burnable" && isLit)
             {
                 Destroy(collision.gameObject);
                 return;
             }
-            Debug.Log("Collision!");
             Stuck();
         }
     }
