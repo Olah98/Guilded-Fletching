@@ -30,16 +30,6 @@ public class MovingPlatform : MonoBehaviour
         foreach (var w in waypoints) w.parent = transform.parent;
     }
 
-<<<<<<< Updated upstream
-    protected virtual void FixedUpdate()
-    {
-        if (!isBrambled)
-        {
-            //move platform
-            Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
-            transform.position += moveTo * speed * Time.fixedDeltaTime;
-        }
-=======
     protected virtual void FixedUpdate() {
         if (isStopped) return;
         //move platform
@@ -55,7 +45,6 @@ public class MovingPlatform : MonoBehaviour
         } while (character.isSquashed);
         isStopped = false;
         yield return null;
->>>>>>> Stashed changes
     }
 
     /// <summary>

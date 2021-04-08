@@ -1,4 +1,4 @@
-﻿/*
+/*
 Author: Miles Gomez & Christian Mullins
 Date: 3/15/2021
 Summary: Script containing values of the player, their movement, and camera
@@ -72,13 +72,9 @@ public class Character : MonoBehaviour
     public float maxZoomVal = 40f;
 
     private Camera _cam;
-    private float _clampedMaxZoom
-    {
-        get
-        {
-            return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
-        }
-    }
+    private float _clampedMaxZoom { get {
+        return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
+    } }
     // store option vars
     private float s_baseFOV;
     private float s_mouseSensitivity;
@@ -103,12 +99,6 @@ public class Character : MonoBehaviour
     private bool _runOnce;
 
     // properties
-<<<<<<< Updated upstream
-    public bool isCrouching { get { return _isCrouching; } }
-    public SavedData getCurrentData { get { return currentData; } }
-    public Quiver getMyQuiver { get { return _myQuiver; } }
-    public int getMyArrowType { get { return _myQuiver.GetArrowType(); } }
-=======
     public bool      isCrouching    => _isCrouching;
     public SavedData getCurrentData => _currentData;
     public Quiver    getMyQuiver    => _myQuiver;
@@ -117,7 +107,6 @@ public class Character : MonoBehaviour
         return Physics.SphereCast(new Ray(transform.position, Vector3.up), cc.radius, cc.height/2f)
             && Physics.SphereCast(new Ray(transform.position, Vector3.down), cc.radius, cc.height/2f);
     } }
->>>>>>> Stashed changes
 
     private void Start()
     {
@@ -553,15 +542,9 @@ public class Character : MonoBehaviour
     /// Move the player with the motion of a platform.
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
-<<<<<<< Updated upstream
-    private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        if (hit.transform.tag == "Stoppable")
-=======
     private void OnControllerColliderHit(ControllerColliderHit hit) 
     {
         if (hit.transform.tag == "Stoppable" && hit.transform.position.y < transform.position.y) 
->>>>>>> Stashed changes
             transform.parent = hit.transform;
         else
             transform.parent = null;
@@ -637,11 +620,7 @@ public class Character : MonoBehaviour
         float incrementor = Mathf.Lerp(minCrouchHeight,
                                        1.0f,
                                        transform.localScale.y);
-<<<<<<< Updated upstream
-        incrementor = (action) ? -incrementor : incrementor;
-=======
         incrementor        = (action) ? -incrementor : incrementor;
->>>>>>> Stashed changes
         bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
                                       : transform.localScale.y >= 1.0f;
         if (!isBoundaryHit)
