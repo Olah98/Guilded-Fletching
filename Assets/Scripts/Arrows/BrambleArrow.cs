@@ -30,11 +30,11 @@ public class BrambleArrow : BaseArrow {
         boundObj = binding;
         // adjust bool if script is found
         if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
-            mPlat.isBrambled = true;
+            mPlat.isStopped = true;
         }
         else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat))
         {
-            cPlat.isBrambled = true; //may delete when inheritance is applied
+            cPlat.isStopped = true; //may delete when inheritance is applied
         }
         else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
             bEnem.isBrambled = true; //by Warren
@@ -52,10 +52,10 @@ public class BrambleArrow : BaseArrow {
     /// </summary>
     private void UnbindObject() {
         if (boundObj.TryGetComponent<MovingPlatform>(out var mPlat)) {
-            mPlat.isBrambled = false;
+            mPlat.isStopped = false;
         }
         else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat)) {
-            cPlat.isBrambled = false; //may delete when inheritance is applied
+            cPlat.isStopped = false; //may delete when inheritance is applied
         } 
         else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
             bEnem.isBrambled = false; //by Warren
