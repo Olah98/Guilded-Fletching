@@ -19,6 +19,7 @@ TagManager:
   - RC
   - Level Manager
   - ScreenShift
+  - Burnable
   layers:
   - Default
   - TransparentFX
