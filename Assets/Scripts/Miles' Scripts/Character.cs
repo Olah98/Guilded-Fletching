@@ -30,8 +30,8 @@ public class Character : MonoBehaviour
     public float fallMod;
     public float coyoteJump;
     public bool isClimbing;
-    private Vector3 impact;
 
+    private Vector3 _impact;
     private Transform camEuler;
     private List<GameObject> StandardArrowTracker = new List<GameObject>(); //Added by Warren
     private List<GameObject> BrambleArrowTracker = new List<GameObject>(); //Added by Warren
@@ -104,8 +104,7 @@ public class Character : MonoBehaviour
     public Quiver    getMyQuiver    => _myQuiver;
     public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
     public bool      isSquashed     { get {
-        return Physics.SphereCast(new Ray(transform.position, Vector3.up), cc.radius, cc.height/2f)
-            && Physics.SphereCast(new Ray(transform.position, Vector3.down), cc.radius, cc.height/2f);
+        return Physics.Raycast(transform.position, Vector3.up, 1.2f);
     } }
 
     private void Start()
@@ -151,7 +150,6 @@ public class Character : MonoBehaviour
 
     private void Update()
     {
-
         if (!_runOnce)
         {
             _runOnce = true;
@@ -232,7 +230,6 @@ public class Character : MonoBehaviour
 
         GroundCheck();
         //Checks Ground and if jump input has been pressed
-        RoofCheck();
         //Checks To see if the player has touched a roof, will stop upwards movement.
         if (attackCD > 0)
         {
@@ -252,12 +249,8 @@ public class Character : MonoBehaviour
             if (!_canJump && _coyoteJumpTime > 0f)
             {
                 _velocity.y = 0;
-                Jump();
             }
-            else
-            {
-                Jump();
-            }
+            Jump();
             //Jumps on input
         }
         else if (isJumpPressed && _canJump)
@@ -265,12 +258,12 @@ public class Character : MonoBehaviour
             _velocity.y = 0;
         }
 
-        if (impact.magnitude >0.2)
+        if (_impact.magnitude > 0.2)
         {
-            cc.Move(impact * Time.deltaTime);      
+            cc.Move(_impact * Time.deltaTime);
         }
-        impact = Vector3.Lerp(impact, Vector3.zero, 5 * Time.deltaTime);
-    }
+        _impact = Vector3.Lerp(_impact, Vector3.zero, 5 * Time.deltaTime);
+    } // end Update()
 
     private void FixedUpdate()
     {
@@ -287,16 +280,15 @@ public class Character : MonoBehaviour
         }
         //left to right looking (must be in world space)
         transform.Rotate(Vector3.up * xInput, Space.World);
-        // all look based movement above
 
         //handle platform "squashing"
-        if (Physics.Raycast(transform.position, Vector3.up, out var hitTop, 1f)
-            && Physics.Raycast(transform.position, Vector3.down, out var hitBot, 1f)
-            && hitTop.transform.TryGetComponent<MovingPlatform>(out var mPlat) && !mPlat.isStopped)
-        {   
+        if (Physics.Raycast(transform.position, Vector3.up, out var hit, 1.2f)
+            && hit.transform.TryGetComponent<MovingPlatform>(out var mPlat) && !mPlat.isStopped)
+        {
             StartCoroutine(mPlat.CheckForPlayerSquashing(this));
         }
 
+        // all look based movement above
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
 
@@ -307,31 +299,31 @@ public class Character : MonoBehaviour
         Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
         if (!dead && cc.enabled == true)
         {
-            cc.Move(move.normalized * speed * Time.deltaTime);
+            cc.Move(move.normalized * speed * Time.fixedDeltaTime);
         }
         //Moves player when WASD is pressed
 
         if (_jumpTime <= 0)
         {
-            if (!_canJump)
-            {
-                _velocity.y += Physics.gravity.y * Time.deltaTime * (1f + fallMod);
-            }
             if (_velocity.y < Physics.gravity.y)
             {
                 _velocity.y = Physics.gravity.y;
             }
+            else if (!_canJump)
+            {
+                _velocity.y += Physics.gravity.y * Time.fixedDeltaTime * (1f + fallMod);
+            }
         }
-
+        
         //responsible for Y axis movement
         if (cc.enabled == true)
         {
-            cc.Move(_velocity * Time.deltaTime);
+            cc.Move(_velocity * Time.fixedDeltaTime);
         }
         //Testing new jump system
         if (_jumpTime > 0 && timedJump == true)
         {
-            _jumpTime -= Time.deltaTime;
+            _jumpTime -= Time.fixedDeltaTime;
         }
 
         _Crouching(Input.GetKey(KeyCode.LeftShift));
@@ -406,7 +398,7 @@ public class Character : MonoBehaviour
         while (_cam.fieldOfView > s_baseFOV - maxZoomVal)
         {
             --_cam.fieldOfView;
-            yield return new WaitForFixedUpdate();
+            yield return new WaitForSeconds(Time.deltaTime * 2f);
         }
         yield return null;
     }
@@ -443,7 +435,7 @@ public class Character : MonoBehaviour
         {
             t.load();
         }
-        print("Interacting with: " + interactingWith.name);
+        Debug.Log("Interacting with: " + interactingWith.name);
         // to prevent "reinteraction"
         interactingWith.tag = "Untagged";
     }
@@ -479,7 +471,7 @@ public class Character : MonoBehaviour
     {
         //dir = dir.normalized;
         dir = new Vector3(dir.normalized.x, 0.5f, dir.normalized.z);
-        impact += dir * force;
+        _impact += dir * force;
     }
 
     public void Respawn()
@@ -500,8 +492,7 @@ public class Character : MonoBehaviour
     public void GroundCheck()
     {
         //Checks if the player is on the ground and sets _canJump to true, if player is not on the ground, then it is false
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), out hit, 1.3f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, -1f, 0f), 1.1f))
         {
             _coyoteJumpTime = coyoteJump;
             _canJump = true;
@@ -515,12 +506,12 @@ public class Character : MonoBehaviour
 
     public void RoofCheck()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out hit, 1.2f))
+        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out var hit, 1.2f))
         {
             if (_velocity.y > 0f)
             {
                 _velocity.y = 0f;
+                print("called");
             }
         }
     }
@@ -539,12 +530,13 @@ public class Character : MonoBehaviour
     
     //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
-    /// Move the player with the motion of a platform.
+    /// Move the player with the motion of a platform only if the player is
+    /// above the platform.
     /// </summary>
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) 
     {
-        if (hit.transform.tag == "Stoppable" && hit.transform.position.y < transform.position.y) 
+        if (hit.transform.tag == "Stoppable" && hit.point.y > hit.transform.position.y)
             transform.parent = hit.transform;
         else
             transform.parent = null;

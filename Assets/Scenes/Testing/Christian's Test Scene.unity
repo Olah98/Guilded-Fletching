@@ -68266,17 +68266,17 @@ PrefabInstance:
     - target: {fileID: 2067925301325804324, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 1.24
+      value: 1.41
       objectReference: {fileID: 0}
     - target: {fileID: 2067925301325804324, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 2.64
       objectReference: {fileID: 0}
     - target: {fileID: 2067925301325804324, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: -3.28
+      value: -2.55
       objectReference: {fileID: 0}
     - target: {fileID: 2067925301325804324, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
@@ -68318,12 +68318,22 @@ PrefabInstance:
       propertyPath: m_Name
       value: FinalPlayerPrefab
       objectReference: {fileID: 0}
+    - target: {fileID: 2650700616809865086, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3607723807442274876, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5298668361726212661, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7708338805887994989, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
@@ -109396,7 +109406,7 @@ GameObject:
   - component: {fileID: 2081925391}
   - component: {fileID: 2081925390}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Warpable Target
   m_TagString: Warpable
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -109433,7 +109443,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: b208a150ca3955a4991e1301f4685f3b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -109470,7 +109480,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2081925389}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.74, y: 4.56, z: 5.62}
+  m_LocalPosition: {x: -10.56, y: 4.56, z: 7.56}
   m_LocalScale: {x: 3.0778, y: 11.388061, z: 3.0778}
   m_Children: []
   m_Father: {fileID: 0}
