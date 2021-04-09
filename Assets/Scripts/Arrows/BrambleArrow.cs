@@ -37,7 +37,7 @@ public class BrambleArrow : BaseArrow {
             cPlat.isStopped = true; //may delete when inheritance is applied
         }
         else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
-            bEnem.isBrambled = true; //by Warren
+            StartCoroutine(bEnem.BrambleEnemy(bindTime));
         }
         // else check for rigidbody (if object run by physics)
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
@@ -56,9 +56,6 @@ public class BrambleArrow : BaseArrow {
         }
         else if (boundObj.TryGetComponent<CountingPlatform>(out var cPlat)) {
             cPlat.isStopped = false; //may delete when inheritance is applied
-        } 
-        else if (boundObj.TryGetComponent<BaseEnemy>(out var bEnem)) {
-            bEnem.isBrambled = false; //by Warren
         }
         else if (boundObj.TryGetComponent<Rigidbody>(out var boundRB)) {
             boundRB.isKinematic = false;
