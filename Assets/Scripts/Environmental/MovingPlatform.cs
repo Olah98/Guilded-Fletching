@@ -5,13 +5,14 @@ Summary: Base moving platform script that is being used to demonstrate the Bramb
 */
 
 using UnityEngine;
-using System.Collections.Generic;
+using System.Collections;
 using System.Linq;
+using System.Collections.Generic;
 
 public class MovingPlatform : MonoBehaviour
 {
     public float speed;
-    public bool isBrambled;
+    public bool isStopped; // originally "isBrambled"
 
     protected LinkedList<Transform> movePoints;
     protected LinkedListNode<Transform> curNode;
@@ -24,19 +25,26 @@ public class MovingPlatform : MonoBehaviour
         //only store children with the "Waypoint" tag in a LL
         movePoints = new LinkedList<Transform>(waypoints);
         curNode = movePoints.First;
-        isBrambled = false;
+        isStopped = false;
         //unparent waypoints
         foreach (var w in waypoints) w.parent = transform.parent;
     }
 
-    protected virtual void FixedUpdate()
-    {
-        if (!isBrambled)
-        {
-            //move platform
-            Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
-            transform.position += moveTo * speed * Time.fixedDeltaTime;
-        }
+    protected virtual void FixedUpdate() {
+        if (isStopped) return;
+        //move platform
+        Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
+        transform.position += moveTo * speed * Time.fixedDeltaTime;
+    }
+
+    public IEnumerator CheckForPlayerSquashing(Character character) {
+        isStopped = true;
+        do {
+            print("holding platform");
+            yield return new WaitForFixedUpdate();
+        } while (character.isSquashed);
+        isStopped = false;
+        yield return null;
     }
 
     /// <summary>
