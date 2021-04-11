@@ -58,7 +58,7 @@ public class SavedData {
        
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        string filePath = Application.persistentDataPath + _saveStr + slot + ".dat";
+        string filePath = Application.persistentDataPath + _saveStr + slot.ToString() + ".dat";
         FileStream fStream = null;
         // any file errors are due to features being implemented during 
         //  production, this turns the error into a yield, these preprocessor 
@@ -105,7 +105,7 @@ public class SavedData {
         // store options to player prefs and serialize other data
         StoreOptionsAt(GetStoredOptionsAt(slot), slot);
         var fStream = File.Create(Application.persistentDataPath + _saveStr 
-                                    + slot + ".dat");
+                                    + slot.ToString() + ".dat");
         new BinaryFormatter().Serialize(fStream, data);
         fStream.Close();
     }
@@ -121,7 +121,7 @@ public class SavedData {
         // store options to player prefs and serialize other data
         StoreOptionsAt(GetStoredOptionsAt(slot), slot);
         var fStream = File.Create(Application.persistentDataPath 
-                                    + _saveStr + ".dat");
+                                    + _saveStr + slot.ToString() + ".dat");
         var serialization = Task.Run(() => new BinaryFormatter()
                                 .Serialize(fStream, data));
         while (!serialization.IsCompleted || !serialization.IsFaulted) {
@@ -139,20 +139,21 @@ public class SavedData {
     public static void DeleteDataSlot(in int slot) {
         if (slot < 1 || slot > 3) throw new IndexOutOfRangeException();
 
-        string filePath = Application.persistentDataPath + _saveStr + ".dat";
+        string filePath = Application.persistentDataPath + _saveStr + slot.ToString() + ".dat";
         if (File.Exists(filePath)) File.Delete(filePath);
         var fStream = File.OpenWrite(filePath);
         new BinaryFormatter().Serialize(fStream, new SavedData());
         fStream.Close();
 
         //clear option prefs from this slot
-        string dataSuffix = "_" + slot;
+        string dataSuffix = "_" + slot.ToString();
         PlayerPrefs.DeleteKey("GraphicsQuality"  + dataSuffix);
         PlayerPrefs.DeleteKey("MouseSensitivity" + dataSuffix);
         PlayerPrefs.DeleteKey("BaseFOV"          + dataSuffix);
         PlayerPrefs.DeleteKey("MasterVolume"     + dataSuffix);
         PlayerPrefs.DeleteKey("SoundFXVolume"    + dataSuffix);
         PlayerPrefs.DeleteKey("MusicVolume"      + dataSuffix);
+        PlayerPrefs.Save();
     }
     #endregion
 
@@ -226,9 +227,6 @@ public class SavedData {
             s.volume = (s.tag != "Player") ? options.soundFXVol 
                                            : options.musicVol;
         }
-        
-        GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<Character>().SetOptionVals(options);
     }
 
     /// <summary>
@@ -237,7 +235,7 @@ public class SavedData {
     /// </summary>
     /// <param name="options"></param>
     public static void StoreOptionsAt(OptionsData options, in int slot) {
-        string dataSuffix = "_" + slot;
+        string dataSuffix = "_" + slot.ToString();
         PlayerPrefs.SetFloat("GraphicsQuality"  + dataSuffix, options.graphicsQuality);
         PlayerPrefs.SetFloat("MasterVolume"     + dataSuffix, options.masterVol);
         PlayerPrefs.SetFloat("MusicVolume"      + dataSuffix, options.musicVol);
@@ -253,7 +251,7 @@ public class SavedData {
     /// <param name="saveSlot">Index of save slot.</param>
     /// <returns>Options at a save slot packages as OptionsData class.</returns>
     public static OptionsData GetStoredOptionsAt(in int saveSlot) {
-        string dataSuffix = "_" + saveSlot;
+        string dataSuffix = "_" + saveSlot.ToString();
         var options = new OptionsData();
         options.graphicsQuality  = PlayerPrefs.GetFloat("GraphicsQuality"  + dataSuffix, 1.0f);
         options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 1.0f);
@@ -283,6 +281,20 @@ public class OptionsData {
         this.masterVol        = data.masterVol;
         this.soundFXVol       = data.soundFXVol;
         this.musicVol         = data.musicVol;
+    }
+
+    // for debugging only
+    [System.Obsolete]
+    public void Debug_Print() {
+        Debug.Log("START OPTION DEBUG");
+        Debug.Log("graphicsQuality: " + graphicsQuality);
+        Debug.Log("masterVol: " + masterVol);
+        Debug.Log("musicVol: " + musicVol);
+        Debug.Log("soundFXVol: " + soundFXVol);
+        Debug.Log("mouseSensitivity: " + mouseSensitivity);
+        Debug.Log("baseFOV: " + baseFOV);
+        Debug.Log("END OPTION DEBUG");
+
     }
 }
 #region serializableVariables
