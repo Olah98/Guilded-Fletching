@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  drawSpeed: 1
+  drawSpeed: 2
   distance: 0
 --- !u!114 &5200857228827391603
 MonoBehaviour:
