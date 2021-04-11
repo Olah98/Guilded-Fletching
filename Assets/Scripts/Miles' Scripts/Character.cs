@@ -175,7 +175,7 @@ public class Character : MonoBehaviour
 
         // begin camera based updates
         // interact with objects
-        if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f))
+        if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out var hit, 3.5f))
         {
             if (hit.transform.tag == "Interactable")
             {
