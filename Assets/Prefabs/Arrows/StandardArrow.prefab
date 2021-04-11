@@ -52,7 +52,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1926641923919432315}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 5, y: 5, z: 51.55}
@@ -88,7 +88,6 @@ MonoBehaviour:
   damage: 10
   drawSpeed: 1
   distance: 0
-  isLit: 0
 --- !u!114 &4983532946320009758
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -103,6 +102,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: -4004642369045121068}
   stickTime: 30
+  isLit: 0
 --- !u!1001 &294263154315073462
 PrefabInstance:
   m_ObjectHideFlags: 0

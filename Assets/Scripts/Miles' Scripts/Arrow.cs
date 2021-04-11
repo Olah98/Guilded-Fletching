@@ -8,10 +8,12 @@ public class Arrow : MonoBehaviour
     private bool stuck = false;
     public float stickTime = 30f;
     public bool isLit;
+    LayerMask mask;
     // Start is called before the first frame update
 
     void Start()
     {
+        mask = LayerMask.GetMask("Character", "Arrow");
         transform.rotation = Quaternion.LookRotation(rb.velocity);
         Destroy(gameObject, stickTime);
     }
@@ -28,36 +30,27 @@ public class Arrow : MonoBehaviour
         }
     }
 
-    void OnCollisionEnter(Collision collision)
+    private void FixedUpdate()
     {
-        if (stuck==false)
+        if (!stuck)
         {
-
-            if (collision.gameObject.tag == "Burnable" && isLit)
-            {
-                Destroy(collision.gameObject);
-                return;
-            }
-            //Debug.Log("Collision!");
-            Stuck();
+            HitDetection();
         }
+        
     }
+
 
 
     public void Stuck()
     {
-        //Debug.Log(transform.rotation);
-        GetComponent<BoxCollider>().enabled = false;
-        Vector3 temp = transform.rotation.eulerAngles;
         stuck = true;
-        //rb.constraints = RigidbodyConstraints.FreezeAll;
-
+       
+        GetComponent<BoxCollider>().enabled = false;
+        rb.useGravity = false;
+        
         rb.velocity = new Vector3(0, 0, 0);
-        transform.rotation = Quaternion.Euler(temp);
-
-        //gameObject.transform.parent = other.transform;
-
-        //freezes object
+        rb.isKinematic = true;
+        rb.freezeRotation = true;
     }
 
     /// <summary>
@@ -69,6 +62,51 @@ public class Arrow : MonoBehaviour
         if (other.tag == "Fire")
         {
             isLit = true;
+        }
+    }
+
+    public void HitDetection()
+    {
+        float raycastDistance;
+        raycastDistance = (Mathf.Abs(rb.velocity.x) + Mathf.Abs(rb.velocity.y) + Mathf.Abs(rb.velocity.z))/46f;
+
+        if (raycastDistance <.5f)
+        {
+            raycastDistance = .5f;
+        }
+
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, transform.right * -1f, out hit, raycastDistance, ~mask))
+        {
+          
+            Stuck();
+            string name = transform.name;
+            Debug.Log(name);
+            transform.position = hit.point;
+
+            if (hit.transform.tag=="Burnable" && isLit)
+            {
+                Destroy(hit.transform.gameObject);
+                return;
+            }
+
+            if (gameObject.GetComponent<AirburstArrow>())
+            {
+                gameObject.GetComponent<AirburstArrow>().Use();
+            }
+            else if (gameObject.GetComponent<BrambleArrow>())
+            {
+                gameObject.GetComponent<BrambleArrow>().Use(hit.transform.gameObject);
+            }
+            else if (gameObject.GetComponent<WarpArrow>())
+            {
+                gameObject.GetComponent<WarpArrow>().Use(hit.transform.gameObject);
+            }
+            else if (gameObject.GetComponent<BaseArrow>())
+            {
+                gameObject.GetComponent<BaseArrow>().Impact(hit.transform.gameObject);
+            }
+         
         }
     }
 
