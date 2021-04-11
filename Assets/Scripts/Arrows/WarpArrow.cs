@@ -16,8 +16,29 @@ public class WarpArrow : BaseArrow {
     /// Check for appropriate collision, if so execute teleportation.
     /// </summary>
     /// <param name="other">The object the arrow is hitting.</param>
+    ///
     protected override void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Warpable") {
+            pTrans = GameObject.FindGameObjectWithTag("Player").transform;
+            /*
+            NOTE:
+                CharacterController overrides direct movement of the Player
+                GameObject, in order to prevent this you MUST disable it, 
+                directly teleport, and THEN reenable the CharacterController.
+            */
+            pTrans.GetComponent<CharacterController>().enabled = false;
+            pTrans.position = GetTeleportPosition(-transform.up + transform.position);
+            pTrans.GetComponent<CharacterController>().enabled = true;
+        }
+        //Warp arrow is fragile and will break on collision
+        Destroy(gameObject);
+    }
+    
+
+    public void Use(GameObject other)
+    {
+        if (other.transform.tag == "Warpable")
+        {
             pTrans = GameObject.FindGameObjectWithTag("Player").transform;
             /*
             NOTE:

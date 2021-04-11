@@ -21,6 +21,22 @@ public class BrambleArrow : BaseArrow {
         }
     }
 
+    public void Use(GameObject other)
+    {
+        Debug.Log("BRAMBLE USING: " + other.name);
+        if ((other.transform.tag == "Stoppable" || other.transform.tag == "Enemy")
+            && !isAbilityUsed)
+        {
+            Bind(other.gameObject);
+            isAbilityUsed = true;
+        }
+
+        if (other.transform.name == "SwingingPendulum")
+        {
+            other.GetComponent<SwingingPendulum>().Bind(bindTime);
+        }
+    }
+
     /// <summary>
     /// Freeze object in space for a limited time.
     /// </summary>

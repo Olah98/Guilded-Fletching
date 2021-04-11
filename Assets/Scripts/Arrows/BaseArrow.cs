@@ -55,6 +55,27 @@ public class BaseArrow : MonoBehaviour {
         
     }
 
+    //Created by Miles Gomez to include Raycast hits
+    public virtual void Impact(GameObject other)
+    {
+        Debug.Log("STRIKING: " + other.transform.name);
+        if (other.transform.tag == "Enemy")
+        {
+            other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
+            Debug.Log("Enemy Collision");
+        }
+        if (other.transform.tag == "Player")
+        {
+            other.gameObject.GetComponent<Character>().TakeDamage(damage);
+            Debug.Log("Damage dealt");
+        }
+        if (!isAbilityUsed)
+        {
+            Hit();
+            isAbilityUsed = true;
+        }
+    }
+
     
 
     //By Warren
