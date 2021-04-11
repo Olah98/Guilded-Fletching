@@ -132,7 +132,7 @@ public class Switch : MonoBehaviour
             r.material.SetColor("_Color", change);
     }
 }
-
+/*
 // editor class to handle Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor
@@ -164,4 +164,4 @@ public class SwitchEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
-
+*/

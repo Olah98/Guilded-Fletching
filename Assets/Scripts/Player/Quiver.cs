@@ -9,9 +9,9 @@ using UnityEngine;
 
 public class Quiver : MonoBehaviour
 {
-    // public delegates added by Christian for serialization
-    public int[,] getLoadout { get { return loadout; } }
-    public int getEquipped   { get { return equipped; } }
+    // public getters added by Christian for serialization
+    public int[,] getLoadout => loadout;
+    public int getEquipped   => equipped;
 
     //First segment is Ammo Type
     //Second segment is the integer values for access status and amount used
@@ -58,7 +58,11 @@ public class Quiver : MonoBehaviour
     */
     void Update()
     {
-        CheckKeyboardInput();
+        //don't accept input if the player has drawn an arrow
+        if (_character.attackCharge < 1) 
+        {
+            CheckKeyboardInput();
+        }
     }//Update
 
     /*

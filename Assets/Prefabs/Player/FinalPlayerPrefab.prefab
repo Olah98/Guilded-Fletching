@@ -3041,6 +3041,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5276452823054393851}
+  - component: {fileID: 4891628624320735718}
+  - component: {fileID: 2421697691656832991}
   m_Layer: 8
   m_Name: BowPosition
   m_TagString: Untagged
@@ -3055,8 +3057,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9034943708206591405}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.051, z: 0.901}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.05099988, z: 0.901}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 5716388084113928623}
@@ -3064,6 +3066,45 @@ Transform:
   m_Father: {fileID: 1367539410430887199}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4891628624320735718
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9034943708206591405}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaac6b3c9cffd894ba8ebf4227a78fc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _isActive: 0
+--- !u!1773428102 &2421697691656832991
+ParentConstraint:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9034943708206591405}
+  m_Enabled: 1
+  m_Weight: 1
+  m_TranslationAtRest: {x: 0, y: 0.051, z: 0.901}
+  m_RotationAtRest: {x: 0, y: 0, z: 0}
+  m_TranslationOffsets:
+  - {x: 0, y: 0.05099988, z: 0.901}
+  m_RotationOffsets:
+  - {x: 0, y: 0, z: 0}
+  m_AffectTranslationX: 1
+  m_AffectTranslationY: 1
+  m_AffectTranslationZ: 1
+  m_AffectRotationX: 1
+  m_AffectRotationY: 1
+  m_AffectRotationZ: 1
+  m_IsContraintActive: 0
+  m_IsLocked: 1
+  m_Sources:
+  - sourceTransform: {fileID: 1367539410430887199}
+    weight: 1
 --- !u!1001 &2241547251700928205
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3329,12 +3370,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c18766b539532824aa5efe4906055daa, type: 3}
---- !u!224 &8381564831279755669 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 6753459718080045115, guid: c18766b539532824aa5efe4906055daa,
-    type: 3}
-  m_PrefabInstance: {fileID: 3019759325561491886}
-  m_PrefabAsset: {fileID: 0}
 --- !u!114 &2371662540610488566 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 648942314096712024, guid: c18766b539532824aa5efe4906055daa,
@@ -3347,6 +3382,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 102bf2bf5e12df744bb0c3fe106bf96a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!224 &8381564831279755669 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 6753459718080045115, guid: c18766b539532824aa5efe4906055daa,
+    type: 3}
+  m_PrefabInstance: {fileID: 3019759325561491886}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &3019759325637038203
 PrefabInstance:
   m_ObjectHideFlags: 0

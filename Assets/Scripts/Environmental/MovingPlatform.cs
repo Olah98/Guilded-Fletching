@@ -40,7 +40,6 @@ public class MovingPlatform : MonoBehaviour
     public IEnumerator CheckForPlayerSquashing(Character character) {
         isStopped = true;
         do {
-            print("holding platform");
             yield return new WaitForFixedUpdate();
         } while (character.isSquashed);
         isStopped = false;
