@@ -86,6 +86,7 @@ public class Arrow : MonoBehaviour
             Debug.Log(name);
             transform.position = hit.point;
 
+            //Burn objects and switch objects
             if (hit.transform.tag == "Burnable" && isLit)
             {
                 Destroy(hit.transform.gameObject);
@@ -97,25 +98,27 @@ public class Arrow : MonoBehaviour
                 {
                     hit.transform.gameObject.GetComponent<Switch>().ArrowHit(gameObject);
                 }
-            }    
+            }
 
-
-            if (type == Type.airburst)
+            //Dictate arrow used
+            switch (type)
             {
-                gameObject.GetComponent<AirburstArrow>().Use();
+                case Type.airburst:
+                    gameObject.GetComponent<AirburstArrow>().Use();
+                    break;
+                case Type.bramble:
+                    gameObject.GetComponent<BrambleArrow>().Use(hit.transform.gameObject);
+                    break;
+                case Type.warp:
+                    gameObject.GetComponent<WarpArrow>().Use(hit.transform.gameObject);
+                    break;
+                case Type.standard:
+                    gameObject.GetComponent<BaseArrow>().Impact(hit.transform.gameObject);
+                    break;
+                default:
+                    return;
             }
-            else if (type == Type.bramble)
-            {
-                gameObject.GetComponent<BrambleArrow>().Use(hit.transform.gameObject);
-            }
-            else if (type == Type.warp)
-            {
-                gameObject.GetComponent<WarpArrow>().Use(hit.transform.gameObject);
-            }
-            else if (type == Type.standard)
-            {
-                gameObject.GetComponent<BaseArrow>().Impact(hit.transform.gameObject);
-            }
+            
         }
     }
 
