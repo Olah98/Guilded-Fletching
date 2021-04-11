@@ -39,20 +39,6 @@ public class Arrow : MonoBehaviour
         
     }
 
-    void OnCollisionEnter(Collision collision)
-    {
-        if (stuck==false)
-        {
-
-            if (collision.gameObject.tag == "Burnable" && isLit)
-            {
-                Destroy(collision.gameObject);
-                return;
-            }
-            //Debug.Log("Collision!");
-            //Stuck();
-        }
-    }
 
 
     public void Stuck()
@@ -97,6 +83,12 @@ public class Arrow : MonoBehaviour
             string name = transform.name;
             Debug.Log(name);
             transform.position = hit.point;
+
+            if (hit.transform.tag=="Burnable" && isLit)
+            {
+                Destroy(hit.transform.gameObject);
+                return;
+            }
 
             if (gameObject.GetComponent<AirburstArrow>())
             {
