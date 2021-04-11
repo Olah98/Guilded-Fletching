@@ -27,9 +27,10 @@ public class Bridge : Door {
     //open by rotation
     public override IEnumerator Open() {
         _moveTo.parent = transform.parent;
+        //rotate in opposite direction if the angle is too large
         do {
             transform.RotateAround((Vector3)_anchorPoint, 
-                                    Vector3.right, 
+                                    transform.right, 
                                     Time.fixedDeltaTime * openSpeed);
 
             yield return new WaitForFixedUpdate();
@@ -51,13 +52,11 @@ public class Bridge : Door {
             Gizmos.color = Color.red;
         
             //apply rotation to _moveTo and output it as the wiremesh
-            _moveTo.RotateAround((Vector3)_anchorPoint, 
-                                 transform.right, 
-                                 angleChange);
+            _moveTo.RotateAround((Vector3)_anchorPoint, transform.right, angleChange);
         
             // output target wiremesh
             Gizmos.DrawWireMesh(_myMesh, _moveTo.position, _moveTo.rotation,
-                                transform.lossyScale);
+                                transform.localScale);
         }
         // _anchorPoint must be defined once in this context
         else if (_anchorPoint == null)
