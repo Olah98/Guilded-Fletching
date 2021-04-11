@@ -68427,6 +68427,46 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_IsLocked
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_TranslationAtRest.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_TranslationAtRest.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_Sources.Array.data[0].weight
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_TranslationOffsets.Array.data[0].y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_TranslationOffsets.Array.data[0].z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6638654759763158961, guid: 0cd4be233c0704147bf7b19f7f8c690d,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7708338805887994989, guid: 0cd4be233c0704147bf7b19f7f8c690d,
         type: 3}
       propertyPath: m_LocalPosition.z
@@ -68437,7 +68477,8 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 6528708515624774234, guid: 0cd4be233c0704147bf7b19f7f8c690d, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 0cd4be233c0704147bf7b19f7f8c690d, type: 3}
 --- !u!1 &1307636172
 GameObject:

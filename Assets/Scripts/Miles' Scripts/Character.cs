@@ -96,6 +96,7 @@ public class Character : MonoBehaviour
     private SavedData _currentData;
     private GameObject _arrowInHand;
     private PlayerAnimationController _pAnimController;
+    private Transform _originParent;
     private bool _runOnce;
 
     // properties
@@ -111,6 +112,7 @@ public class Character : MonoBehaviour
     {
         // intialize camera based values
         _cam = Camera.main;
+        _originParent = transform.parent;
         _isCrouching = false;
         interactionHintText.enabled = false;
         s_baseFOV = getCurrentData?.baseFOV ?? 60f;
@@ -173,7 +175,7 @@ public class Character : MonoBehaviour
 
         // begin camera based updates
         // interact with objects
-        if (Physics.Raycast(transform.position, transform.forward, out var hit, 3.5f))
+        if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out var hit, 3.5f))
         {
             if (hit.transform.tag == "Interactable")
             {
@@ -504,6 +506,7 @@ public class Character : MonoBehaviour
         }
     }
 
+    [System.Obsolete]
     public void RoofCheck()
     {
         if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out var hit, 1.2f))
@@ -511,7 +514,6 @@ public class Character : MonoBehaviour
             if (_velocity.y > 0f)
             {
                 _velocity.y = 0f;
-                print("called");
             }
         }
     }
@@ -539,7 +541,7 @@ public class Character : MonoBehaviour
         if (hit.transform.tag == "Stoppable" && hit.point.y > hit.transform.position.y)
             transform.parent = hit.transform;
         else
-            transform.parent = null;
+            transform.parent = _originParent;
     }
 
     /// <summary>
@@ -615,11 +617,16 @@ public class Character : MonoBehaviour
         incrementor        = (action) ? -incrementor : incrementor;
         bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
                                       : transform.localScale.y >= 1.0f;
+
+        var ipt = bowPosition.GetComponent<IgnoreParentTransforms>();
         if (!isBoundaryHit)
         {
+            ipt.SetParentInstance(true, action);
             transform.localScale += new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime;
             // prevent the player from "floating"
             cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
+        } else {
+            ipt.SetParentInstance(false, action);
         }
     }
 
