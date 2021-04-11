@@ -9,6 +9,8 @@ public class Arrow : MonoBehaviour
     public float stickTime = 30f;
     public bool isLit;
     LayerMask mask;
+    public enum Type { standard, bramble, warp, airburst}
+    public Type type;
     // Start is called before the first frame update
 
     void Start()
@@ -84,29 +86,36 @@ public class Arrow : MonoBehaviour
             Debug.Log(name);
             transform.position = hit.point;
 
-            if (hit.transform.tag=="Burnable" && isLit)
+            if (hit.transform.tag == "Burnable" && isLit)
             {
                 Destroy(hit.transform.gameObject);
                 return;
             }
+            else if (hit.transform.gameObject.GetComponent<Switch>())
+            {
+                if (hit.transform.gameObject.GetComponent<Switch>().triggerByArrow)
+                {
+                    hit.transform.gameObject.GetComponent<Switch>().ArrowHit(gameObject);
+                }
+            }    
 
-            if (gameObject.GetComponent<AirburstArrow>())
+
+            if (type == Type.airburst)
             {
                 gameObject.GetComponent<AirburstArrow>().Use();
             }
-            else if (gameObject.GetComponent<BrambleArrow>())
+            else if (type == Type.bramble)
             {
                 gameObject.GetComponent<BrambleArrow>().Use(hit.transform.gameObject);
             }
-            else if (gameObject.GetComponent<WarpArrow>())
+            else if (type == Type.warp)
             {
                 gameObject.GetComponent<WarpArrow>().Use(hit.transform.gameObject);
             }
-            else if (gameObject.GetComponent<BaseArrow>())
+            else if (type == Type.standard)
             {
                 gameObject.GetComponent<BaseArrow>().Impact(hit.transform.gameObject);
             }
-         
         }
     }
 

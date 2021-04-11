@@ -127,7 +127,6 @@ MonoBehaviour:
   damage: 10
   drawSpeed: 0.7
   distance: 0
-  isLit: 0
   burstPower: 20
   burstRadius: 6
   canPushPlayer: 0
@@ -144,3 +143,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 8257999739402627259}
+  stickTime: 30
+  isLit: 0
+  type: 3
