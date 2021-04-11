@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using System;
+using TMPro;
 
 public class ArrowButton : MonoBehaviour
 {
@@ -16,7 +17,7 @@ public class ArrowButton : MonoBehaviour
     public int type;
     public Sprite imageOn;
     public Sprite imageOff;
-    public Text myText;
+    public TMP_Text myText;
     // Start is called before the first frame update
     void Start()
     {

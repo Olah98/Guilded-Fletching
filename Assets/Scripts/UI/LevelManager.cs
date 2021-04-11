@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 [ExecuteAlways]
 public class LevelManager : MonoBehaviour
@@ -20,7 +21,7 @@ public class LevelManager : MonoBehaviour
     private bool runTimer;
     public bool complete;
     private Quiver myQuiver;
-    private Text timerLabel;
+    private TMP_Text timerLabel;
     public PuzzleManager dragPuzzleManagerHere;
     public List<PuzzleManager> index = new List<PuzzleManager>();
     [Header("Try the ammo type, Empty, All, FirstCombo or SecondCombo")]
@@ -38,7 +39,7 @@ public class LevelManager : MonoBehaviour
         if (Application.IsPlaying(gameObject))
         {
             // Play logic
-            timerLabel = GameObject.FindWithTag("TimerText").GetComponent<Text>();
+            timerLabel = GameObject.FindWithTag("TimerText").GetComponent<TMP_Text>();
             ResetTime();
             StartTimer();
         }
