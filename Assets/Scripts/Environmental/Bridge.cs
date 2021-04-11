@@ -1,7 +1,7 @@
 ﻿/*
 Author: Christian Mullins
 Date: 03/24/2021
-Summary: Class inhereted from Door script to manipulate how the 
+Summary: Class inhereted from Door script to manipulate how the
 */
 using System.Collections;
 using UnityEngine;
@@ -27,8 +27,9 @@ public class Bridge : Door {
     //open by rotation
     public override IEnumerator Open() {
         _moveTo.parent = transform.parent;
+        //rotate in opposite direction if the angle is too large
         do {
-            transform.RotateAround((Vector3)_anchorPoint, 
+            transform.RotateAround((Vector3)_anchorPoint,
                                     transform.right,
                                     Time.fixedDeltaTime * openSpeed);
 
@@ -45,19 +46,17 @@ public class Bridge : Door {
         if (transform.childCount > 0 && _anchorPoint != null) {
             _moveTo = transform.GetChild(0);
             // reset each time to refresh values
-            _moveTo.SetPositionAndRotation(transform.position, 
+            _moveTo.SetPositionAndRotation(transform.position,
                                            transform.rotation);
             _myMesh = GetComponent<MeshFilter>().sharedMesh;
             Gizmos.color = Color.red;
-        
+
             //apply rotation to _moveTo and output it as the wiremesh
-            _moveTo.RotateAround((Vector3)_anchorPoint, 
-                                 transform.right, 
-                                 angleChange);
-        
+            _moveTo.RotateAround((Vector3)_anchorPoint, transform.right, angleChange);
+
             // output target wiremesh
             Gizmos.DrawWireMesh(_myMesh, _moveTo.position, _moveTo.rotation,
-                                transform.lossyScale);
+                                transform.localScale);
         }
         // _anchorPoint must be defined once in this context
         else if (_anchorPoint == null)
