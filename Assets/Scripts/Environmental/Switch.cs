@@ -3,7 +3,6 @@ Author: Christian Mullins
 Date: 02/15/2021
 Summary: Class that interacts with and triggers the Door script class.
 */
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
@@ -15,9 +14,9 @@ public enum SwitchType
 [System.Serializable]
 public class Switch : MonoBehaviour
 {
-    [SerializeField] private Door myDoor = null;
-    [SerializeField] private Bridge myBridge = null;
-    [SerializeField] private CountingPlatform myPlatform = null;
+    [HideInInspector] public Door myDoor = null;
+    [HideInInspector] public Bridge myBridge = null;
+    [HideInInspector] public CountingPlatform myPlatform = null;
 
     public bool isTimedByArrow;
     public bool isFlipped = false;
@@ -30,16 +29,13 @@ public class Switch : MonoBehaviour
     //Edit to change whether color or material is being affected.
     private Color _isOn = Color.green;
     private Color _isOff = Color.red;
-    private List<MeshRenderer> _rend = new List<MeshRenderer>();
+    private MeshRenderer _rend;
 
     private void Start()
     {
 
         //By Warren
-        if (GetComponent<MeshRenderer>() != null)
-            _rend.Add(GetComponent<MeshRenderer>());
-        else if (GetComponentsInChildren<MeshRenderer>() != null)
-            _rend = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
+        _rend = GetComponent<MeshRenderer>();
         UpdateColor();
 
         // push this Switch into the Switch list of the object we're switching
@@ -128,10 +124,11 @@ public class Switch : MonoBehaviour
         {
             change = _isOff;
         }
-        foreach (var r in _rend) r.material.SetColor("_Color", change);
+        _rend.material.SetColor("_Color", change);
     }
 }
 
+#if UNITY_EDITOR
 // editor class to handle Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor {
@@ -160,4 +157,4 @@ public class SwitchEditor : Editor {
         serializedObject.ApplyModifiedProperties();
     }
 }
-
+#endif

@@ -26,7 +26,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4385485731136742984}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 99.708046, y: 179.5801, z: -36.037933}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3918424783556710843}
@@ -89,10 +89,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3918424783556710843}
   - component: {fileID: 5839452354068621686}
-  - component: {fileID: 9171532082538611552}
   m_Layer: 0
   m_Name: Switch
-  m_TagString: Interactable
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -105,7 +104,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4407575123352898305}
   m_LocalRotation: {x: 0, y: 0.7071068, z: -0, w: -0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: -6.948382, y: 1.8167474, z: -15.962857}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
   - {fileID: 7444021463959071312}
@@ -132,19 +131,6 @@ MonoBehaviour:
   isFlipped: 0
   isInteractable: 1
   triggerByArrow: 0
---- !u!65 &9171532082538611552
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4407575123352898305}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 19.343506, y: 31.256569, z: 18.211517}
-  m_Center: {x: 0.007908792, y: -0.22401214, z: -13.479257}
 --- !u!1 &6809977686544271937
 GameObject:
   m_ObjectHideFlags: 0
@@ -171,7 +157,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6809977686544271937}
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 98.134995, y: 180.35225, z: -29.3442}
   m_LocalScale: {x: 0.18997478, y: 0.30561864, z: 0.18997478}
   m_Children: []
   m_Father: {fileID: 3918424783556710843}
