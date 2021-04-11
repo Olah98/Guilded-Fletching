@@ -29,7 +29,7 @@ public class Bridge : Door {
         _moveTo.parent = transform.parent;
         do {
             transform.RotateAround((Vector3)_anchorPoint, 
-                                    Vector3.right, 
+                                    transform.right,
                                     Time.fixedDeltaTime * openSpeed);
 
             yield return new WaitForFixedUpdate();
