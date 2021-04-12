@@ -83,7 +83,6 @@ public class Arrow : MonoBehaviour
           
             Stuck();
             string name = transform.name;
-            Debug.Log(name);
             transform.position = hit.point;
 
             //Burn objects and switch objects
