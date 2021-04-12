@@ -14,6 +14,12 @@ public class AirburstArrow : BaseArrow {
     public float burstRadius;
     public bool canPushPlayer; // set to false for now
     private bool _hasDamagedPlayer = false;
+    private LayerMask mask;
+
+    private void Start()
+    {
+        mask = LayerMask.GetMask("Enemy", "Movable");
+    }
 
     /// <summary>
     /// Inheritted function for bursting instead
@@ -78,13 +84,16 @@ public class AirburstArrow : BaseArrow {
         Collider[] hits = new Collider[20];
         // max number of collisions = hits.Length
         int numOfHits = Physics.OverlapSphereNonAlloc(transform.position,
-                                                    burstRadius, hits);
+                                                    burstRadius, hits, mask);
+   
         // take all collisions and handle them all seperately based on their 
         // tags
         for (int i = 0; i < numOfHits; ++i)
         {
+            Debug.Log(hits[i].name);
             if (hits[i].tag == "Arrow")
             {
+              
                 if (hits[i].gameObject != gameObject)
                     Destroy(hits[i].gameObject);
                 continue;
@@ -106,7 +115,11 @@ public class AirburstArrow : BaseArrow {
                 //StartCoroutine(WaitAndPrintVelocity(hits[i].transform));
             }
             if (hits[i].tag == "Enemy")
+            {
                 hits[i].GetComponent<BaseEnemy>().TakeDamage(damage);
+      
+            }
+                
             if (hits[i].tag == "Player" && !_hasDamagedPlayer)
             {
                 // handle player collision without RigidBody
