@@ -17,7 +17,7 @@ public class ArrowButton : MonoBehaviour
     public int type;
     public Sprite imageOn;
     public Sprite imageOff;
-    public TMP_Text myText;
+    //public TMP_Text myText;
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +31,7 @@ public class ArrowButton : MonoBehaviour
         if (myQuiver.GetArrowTypeAccess(type) == false)
         {
             myButton.image.enabled = false;
-            myText.text = "";
+            //myText.text = "";
         }
         else
         {
@@ -53,10 +53,13 @@ public class ArrowButton : MonoBehaviour
                     myButton.image.sprite = imageOff;
                 }
             }
+            /*
+            // Removed for current build
             if (myButton.interactable)
             {
                 myText.text = "" + myQuiver.GetArrowTypeShot(type);
             }
+            */
         }
     }
 }

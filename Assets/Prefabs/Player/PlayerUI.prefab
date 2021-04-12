@@ -213,7 +213,6 @@ MonoBehaviour:
   type: 3
   imageOn: {fileID: 21300000, guid: b52b65f5b192e1244a6446e2976c4ef7, type: 3}
   imageOff: {fileID: 21300000, guid: cbc1996088c8b974586b11a5ab4cb2e9, type: 3}
-  myText: {fileID: 3451468582176246195}
 --- !u!1 &1512226495644936507
 GameObject:
   m_ObjectHideFlags: 0
@@ -533,7 +532,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3865387147154880973
 RectTransform:
   m_ObjectHideFlags: 0
@@ -860,7 +859,6 @@ MonoBehaviour:
   type: 1
   imageOn: {fileID: 21300000, guid: aebb78452defe5840a1c36d2215e6d00, type: 3}
   imageOff: {fileID: 21300000, guid: a2d36f2e61bbf5c45ace802ec174b545, type: 3}
-  myText: {fileID: 2616360378101744662}
 --- !u!1 &2446202266269545132
 GameObject:
   m_ObjectHideFlags: 0
@@ -1634,7 +1632,6 @@ MonoBehaviour:
   type: 2
   imageOn: {fileID: 21300000, guid: d47e74813fd2aa7468a635f6d79177a8, type: 3}
   imageOff: {fileID: 21300000, guid: 39e497cad07a28e4eb77b76ad8afa08f, type: 3}
-  myText: {fileID: 7328281462421322342}
 --- !u!1 &5055913693885497719
 GameObject:
   m_ObjectHideFlags: 0
@@ -1652,7 +1649,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5348971693788311526
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1983,7 +1980,6 @@ MonoBehaviour:
   type: 0
   imageOn: {fileID: 21300000, guid: 126b4a19bcc37f24d87a6960dca49e9b, type: 3}
   imageOff: {fileID: 21300000, guid: ac10bd4bb4d06c94d9af4a6074f63c71, type: 3}
-  myText: {fileID: 6819955993236708191}
 --- !u!1 &6055263496958938926
 GameObject:
   m_ObjectHideFlags: 0
@@ -2001,7 +1997,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2202347851665633966
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2134,7 +2130,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1012641889910766107
 RectTransform:
   m_ObjectHideFlags: 0
