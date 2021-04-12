@@ -96,6 +96,8 @@ public class Switch : MonoBehaviour
     /// Check if an arrow hits the switch, then activate.
     /// </summary>
     /// <param name="other">Object hitting the switch.</param>
+    /// 
+    /*
     protected void OnCollisionEnter(Collision other)
     {
         if (other.transform.tag == "Arrow" && triggerByArrow)
@@ -107,6 +109,17 @@ public class Switch : MonoBehaviour
             }
         }
     }
+    */
+
+    public void ArrowHit(GameObject other)
+    {
+        HitSwitch();
+        if (isTimedByArrow)
+        {
+            Invoke("ResetSwitch", other.GetComponent<Arrow>().stickTime);
+        }
+    }
+  
 
     /// <summary>
     /// Function to call when changing color or material.

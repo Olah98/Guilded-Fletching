@@ -72,6 +72,68 @@ public class AirburstArrow : BaseArrow {
         } // end forloop
         Destroy(gameObject);
     }
+
+    public void Use()
+    {
+        Collider[] hits = new Collider[20];
+        // max number of collisions = hits.Length
+        int numOfHits = Physics.OverlapSphereNonAlloc(transform.position,
+                                                    burstRadius, hits);
+        // take all collisions and handle them all seperately based on their 
+        // tags
+        for (int i = 0; i < numOfHits; ++i)
+        {
+            if (hits[i].tag == "Arrow")
+            {
+                if (hits[i].gameObject != gameObject)
+                    Destroy(hits[i].gameObject);
+                continue;
+            }
+
+            int damage = CalculateDamage(hits[i].transform.position);
+            // check to destroy
+            if (hits[i].TryGetComponent<Blastable>(out var b))
+            {
+                if (b.isDestroyable) Destroy(hits[i].gameObject);
+                continue;
+            }
+            // explosion
+            Rigidbody hRB = hits[i].attachedRigidbody;
+            if (hRB != null)
+            {
+                hRB.AddExplosionForce(burstPower, transform.position,
+                                      burstRadius, 5f, ForceMode.VelocityChange);
+                //StartCoroutine(WaitAndPrintVelocity(hits[i].transform));
+            }
+            if (hits[i].tag == "Enemy")
+                hits[i].GetComponent<BaseEnemy>().TakeDamage(damage);
+            if (hits[i].tag == "Player" && !_hasDamagedPlayer)
+            {
+                // handle player collision without RigidBody
+                if (canPushPlayer)
+                {
+                    var cc = hits[i].GetComponent<CharacterController>();
+                    Vector3 forceDir = hits[i].transform.position
+                                        - transform.position;
+                    float clampVal = Vector3.Distance(transform.position,
+                                                      hits[i].transform.position);
+                    forceDir = Vector3.ClampMagnitude(forceDir, 0.25f);
+                    // override CC movements in order to move position
+                    cc.enabled = false;
+                    hits[i].transform.position += forceDir * burstPower;
+                    cc.enabled = true;
+                }
+                if (!_hasDamagedPlayer)
+                {
+                    hits[i].GetComponent<Character>().TakeDamage(damage);
+                    Debug.Log(hits[i].tag);
+                    _hasDamagedPlayer = true;
+                }
+
+            }
+        } // end forloop
+        Destroy(gameObject);
+    }
     
 
     /// <summary>

@@ -36,16 +36,11 @@ public class SwingingPendulum : MonoBehaviour
             collision.gameObject.GetComponent<Character>().TakeDamage(damage);
         }
 
-        if (collision.transform.tag== "Arrow")
-        {
-            Debug.Log(collision.transform.gameObject.name);
+    }
 
-            if (collision.gameObject.GetComponent<BrambleArrow>())
-            {
-                StartCoroutine(PauseAnimation(collision.gameObject.GetComponent<BrambleArrow>().bindTime));
-            }
-        }
-
+    public void Bind(float bindtime)
+    {
+        StartCoroutine(PauseAnimation(bindtime));
     }
 
     IEnumerator PauseAnimation(float pauseTime)
