@@ -86,7 +86,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 10
-  drawSpeed: 1
+  drawSpeed: 2
   distance: 0
 --- !u!114 &4983532946320009758
 MonoBehaviour:
@@ -103,6 +103,7 @@ MonoBehaviour:
   rb: {fileID: -4004642369045121068}
   stickTime: 30
   isLit: 0
+  type: 0
 --- !u!1001 &294263154315073462
 PrefabInstance:
   m_ObjectHideFlags: 0
