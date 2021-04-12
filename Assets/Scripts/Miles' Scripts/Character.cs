@@ -147,8 +147,7 @@ public class Character : MonoBehaviour
         //}
 
 
-        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot);
-                        //?? new SavedData();
+        _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot) ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
         //grab options preferences and set them
 
