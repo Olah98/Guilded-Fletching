@@ -142,3 +142,7 @@ MonoBehaviour:
   rb: {fileID: 817292240541976104}
   stickTime: 30
   isLit: 0
+  standard: 1
+  bramble: 0
+  warp: 0
+  airburst: 0

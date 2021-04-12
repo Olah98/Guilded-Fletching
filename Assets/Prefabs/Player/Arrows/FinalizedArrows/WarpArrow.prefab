@@ -400,6 +400,11 @@ MonoBehaviour:
   rb: {fileID: 8514675489086818363}
   stickTime: 30
   isLit: 0
+  type: 2
+  standard: 0
+  bramble: 0
+  warp: 1
+  airburst: 0
 --- !u!65 &8733352011365230902
 BoxCollider:
   m_ObjectHideFlags: 0
