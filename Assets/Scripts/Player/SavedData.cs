@@ -227,6 +227,10 @@ public class SavedData {
             s.volume = (s.tag != "Player") ? options.soundFXVol 
                                            : options.musicVol;
         }
+
+        GameObject.FindGameObjectWithTag("Player")
+            .GetComponent<Character>().SetOptionVals(options);
+
     }
 
     /// <summary>
