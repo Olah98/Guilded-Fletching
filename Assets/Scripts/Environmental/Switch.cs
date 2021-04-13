@@ -147,6 +147,8 @@ public class Switch : MonoBehaviour
 }
 
 // editor class to handle Inspector UI for the Switch class
+
+#if UNITY_EDITOR
 [CustomEditor(typeof(Switch))]
 public class SwitchEditor : Editor
 {
@@ -177,4 +179,5 @@ public class SwitchEditor : Editor
         serializedObject.ApplyModifiedProperties();
     }
 }
+#endif
 
