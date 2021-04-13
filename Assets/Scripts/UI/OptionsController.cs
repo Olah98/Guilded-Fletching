@@ -62,40 +62,44 @@ public class OptionsController : MonoBehaviour {
         InitializeOptionUI();
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
 
-        _resolutions = Screen.resolutions;
-
-        selectResolution.ClearOptions();
-
-        int _currentRes = -1;
-        int _numberRes = 0;
-
-        // Load the resolutions
-        foreach (var res in _resolutions)
+        //SelectResolution Dropdown is only present in the Options Scene
+        if (selectResolution != null)
         {
-            //Debug.Log(res.width + "x" + res.height + " : " + res.refreshRate);
-            TMP_Dropdown.OptionData _newData = new TMP_Dropdown.OptionData();
-            _newData.text = res.width + "x" + res.height + " : " + res.refreshRate;
-            selectResolution.options.Add(_newData);
+            _resolutions = Screen.resolutions;
 
-            if ((res.width == Screen.width) && (res.height == Screen.height)
-                && (res.refreshRate == Screen.currentResolution.refreshRate))
-            {
-                _currentRes = _numberRes;
-            }
-            _numberRes++;
-        }
-
-        if (_currentRes == -1)
-        {
-            _currentRes = 0;
             selectResolution.ClearOptions();
-            TMP_Dropdown.OptionData _newData = new TMP_Dropdown.OptionData();
-            _newData.text = "Resolution Not Found";
-            selectResolution.options.Add(_newData);
-            selectResolution.interactable = false;
-            Debug.Log("Can't detect current resolution, probably still in Play Mode");
+
+            int _currentRes = -1;
+            int _numberRes = 0;
+
+            // Load the resolutions
+            foreach (var res in _resolutions)
+            {
+                //Debug.Log(res.width + "x" + res.height + " : " + res.refreshRate);
+                TMP_Dropdown.OptionData _newData = new TMP_Dropdown.OptionData();
+                _newData.text = res.width + "x" + res.height + " : " + res.refreshRate;
+                selectResolution.options.Add(_newData);
+
+                if ((res.width == Screen.width) && (res.height == Screen.height)
+                    && (res.refreshRate == Screen.currentResolution.refreshRate))
+                {
+                    _currentRes = _numberRes;
+                }
+                _numberRes++;
+            }
+
+            if (_currentRes == -1)
+            {
+                _currentRes = 0;
+                selectResolution.ClearOptions();
+                TMP_Dropdown.OptionData _newData = new TMP_Dropdown.OptionData();
+                _newData.text = "Resolution Not Found";
+                selectResolution.options.Add(_newData);
+                selectResolution.interactable = false;
+                Debug.Log("Can't detect current resolution, probably still in Play Mode");
+            }
+            selectResolution.value = _currentRes;
         }
-        selectResolution.value = _currentRes;
     }
 
     private void OnEnable() {
