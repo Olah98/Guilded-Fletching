@@ -14,6 +14,7 @@ public class LevelEndReport : MonoBehaviour
 {
     public Button nextLevelButton;
     public TMP_Text report;
+    public bool fourth_build;
     private int[,] _lastLoadout;
     private float _lastTime;
     private string _lastLocation;
@@ -52,23 +53,46 @@ public class LevelEndReport : MonoBehaviour
             _lastLocation = SaveManager.instance.lastLocation;
             _nextLocation = SaveManager.instance.nextLocation;
             SaveManager.instance.ResetLevelEndStats();
+
+            //Fourth build overrides the next location read from ThankYou
+            //as they're all currently set to MainMenu
+            if (fourth_build)
+            {
+                switch (_lastLocation)
+                {
+                    case "WalkingTutorial":
+                        _nextLocation = "BOShootingTutorial";
+                        break;
+                    case "BOShootingTutorial":
+                        _nextLocation = "Combat-Focused_Blocked";
+                        break;
+                    case "Combat-Focused_Blocked":
+                        _nextLocation = "BOBrambleTutorial";
+                        break;
+                    case "BOBrambleTutorial":
+                        _nextLocation = "Warp_Arrow_Blocked";
+                        break;
+                    case "Warp_Arrow_Blocked":
+                        _nextLocation = "Air_Burst_Arrow_Blocked";
+                        break;
+                    default:
+                        Debug.Log("No record of next level in chain");
+                        break;
+                }
+            }
+
             if ((_nextLocation != "") && (_nextLocation != "MainMenu"))
             {
                 nextLevelButton.interactable = true;
             }
+
             var minutes = _lastTime / 60;
             var seconds = _lastTime % 60;
 
-            report.text = "You completed the level in " + 
+            report.text = "You completed the level in " +
                 string.Format("{0:00} : {1:00}", minutes, seconds) + "\n" +
-                "Standard Arrows Used: " + 
-                    GetArrowTypeShot((int)Ammo.Standard) + "\n" +
-                "Bramble Arrows Used: " + 
-                    GetArrowTypeShot((int)Ammo.Bramble) + "\n" +
-                "Warp Arrows Used: " + 
-                    GetArrowTypeShot((int)Ammo.Warp) + "\n" +
-                "Airburst Arrows Used: " + 
-                    GetArrowTypeShot((int)Ammo.Airburst) + "\n";
+                FormatArrowsShot("Standard") + FormatArrowsShot("Bramble") +
+                FormatArrowsShot("Warp") + FormatArrowsShot("Airburst");
         } else
         {
             Debug.Log("No report saved");
@@ -84,6 +108,50 @@ public class LevelEndReport : MonoBehaviour
     {
         this.GetComponent<MainMenuButtons>().LoadScene(_nextLocation);
     }//NextLevel
+
+    /*
+    * Format Arrows Shot
+    * Returns string value showing selected ammo type used this loadout
+    */
+    public string FormatArrowsShot(string arrows)
+    {
+        int _numberShot = GetArrowTypeShot(arrows);
+        string _record = "";
+        if (_numberShot > 0)
+        {
+            _record = arrows + " Arrows Used: " + _numberShot + "\n";
+        }
+        return _record;
+    }//FormatArrowsShot
+
+    /*
+    * Get Arrow Type Shot
+    * Returns int value of selected ammo type used this loadout
+    */
+    public int GetArrowTypeShot(string arrows)
+    {
+        if (arrows == "Standard")
+        {
+            return _lastLoadout[(int)Ammo.Standard, RECORD];
+        }
+        else if (arrows == "Bramble")
+        {
+            return _lastLoadout[(int)Ammo.Bramble, RECORD];
+        }
+        if (arrows == "Warp")
+        {
+            return _lastLoadout[(int)Ammo.Warp, RECORD];
+        }
+        if (arrows == "Airburst")
+        {
+            return _lastLoadout[(int)Ammo.Airburst, RECORD];
+        }
+        else
+        {
+            Debug.Log("Invalid arrow type.");
+            return -1;
+        }
+    }//GetArrowTypeShot
 
     /*
     * Get Arrow Type Shot (Int Overload)
