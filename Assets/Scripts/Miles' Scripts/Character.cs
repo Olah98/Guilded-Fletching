@@ -9,6 +9,8 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;//By Warren
+
 //Author: Miles Gomez
 //Changes made 3/4/2021
 
@@ -51,14 +53,14 @@ public class Character : MonoBehaviour
     public bool dead = false;
 
     [Header("UI Elements")]
-    public Text chargeText;
+    public TMP_Text chargeText;//Change by Warren
     public Slider chargeSlider;//Added by Warren
     private GameObject _blackScreen; //By Warren
 
     /* BEGIN FIRSTPERSONCAMERA VARIABLES */
     #region Camera_Variables
     [Header("Camera Variables")]
-    public Text interactionHintText;
+    public TMP_Text interactionHintText; //Change by Warren
     [Header("Look values for Camera Movement")]
     [Range(5f, 15f)]
     [Tooltip("This value is not the same as player mouseSensitivity.")]

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 4013189594755017705}
   - component: {fileID: 5109355656932596720}
   - component: {fileID: 8693990007510423751}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: MeleeEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -114,6 +114,8 @@ MonoBehaviour:
   rangeOfAttack: 2
   aggroArea: 0
   isAggroed: 0
+  isDead: 0
+  isBrambled: 0
 --- !u!54 &8693990007510423751
 Rigidbody:
   m_ObjectHideFlags: 0

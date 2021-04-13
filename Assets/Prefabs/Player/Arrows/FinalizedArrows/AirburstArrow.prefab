@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 20
-  drawSpeed: 1
+  drawSpeed: 2
   distance: 0
   burstPower: 20
   burstRadius: 6
@@ -146,7 +146,3 @@ MonoBehaviour:
   stickTime: 30
   isLit: 0
   type: 3
-  standard: 0
-  bramble: 0
-  warp: 0
-  airburst: 1

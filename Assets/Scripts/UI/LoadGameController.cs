@@ -10,6 +10,7 @@ using System.Linq; // for data migration concerning audio
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 // script must be attached to Canvas object
 [RequireComponent(typeof(Canvas))]
@@ -18,7 +19,7 @@ public class LoadGameController : MonoBehaviour {
     [Tooltip("Save 1-3\nMainMenu\nLoad\nBack\nDelete\nSaveNameAndLoad")]
     public Button[] buttons = new Button[8];
     public GameObject inputFieldGroup;
-    public Text currentLevelText, timePlayedText, totalArrowsShotText;
+    public TMP_Text currentLevelText, timePlayedText, totalArrowsShotText;
     [Header("UI Animation Values")]
     [Range(0.1f, 2.0f)]
     public float uiSpeed = 1f;
@@ -100,7 +101,7 @@ public class LoadGameController : MonoBehaviour {
     /// Button for "Play!" once the player enters their save name.
     /// </summary>
     public void SaveNameForData() {
-        var name = inputFieldGroup.GetComponentInChildren<InputField>().text;
+        var name = inputFieldGroup.GetComponentInChildren<TMP_InputField>().text;
         if (name == String.Empty) return;
         // retrieve current data and migrate it the first level
         var curData = _dataArr[SavedData.currentSaveSlot];

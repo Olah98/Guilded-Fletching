@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4013189594755017705}
   - component: {fileID: 5400288156816638467}
   - component: {fileID: 8693990007510423751}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: ArcherEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -146,6 +146,7 @@ MonoBehaviour:
   aggroArea: 11
   isAggroed: 0
   isDead: 0
+  isBrambled: 0
   shotAccuracy: 90
   arrowGO: {fileID: 2895406901005049204, guid: e3e3cb8c0af09c54b9646225fe14e68f, type: 3}
   bowTrans: {fileID: 6444446404314253524}

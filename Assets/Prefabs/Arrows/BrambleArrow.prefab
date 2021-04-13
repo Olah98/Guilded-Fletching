@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5
-  drawSpeed: 1
+  drawSpeed: 2
   distance: 0
   bindTime: 3
 --- !u!114 &4983532946320009758

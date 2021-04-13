@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 20
-  drawSpeed: 0.7
+  drawSpeed: 1.8
   distance: 0
   burstPower: 20
   burstRadius: 10

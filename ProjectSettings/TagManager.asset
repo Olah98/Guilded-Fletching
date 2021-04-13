@@ -32,8 +32,8 @@ TagManager:
   - Character
   - Arrow
   - EnemyAttack
-  - 
-  - 
+  - Enemy
+  - Movable
   - 
   - 
   - 

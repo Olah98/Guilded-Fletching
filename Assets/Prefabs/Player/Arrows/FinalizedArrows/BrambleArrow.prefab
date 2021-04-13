@@ -125,7 +125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 5
-  drawSpeed: 1
+  drawSpeed: 2
   distance: 0
   bindTime: 3
 --- !u!114 &-3099823741885013466
@@ -144,7 +144,3 @@ MonoBehaviour:
   stickTime: 30
   isLit: 0
   type: 1
-  standard: 0
-  bramble: 1
-  warp: 0
-  airburst: 0

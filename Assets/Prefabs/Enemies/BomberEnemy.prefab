@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 4013189594755017705}
   - component: {fileID: 5400288156816638467}
   - component: {fileID: 8693990007510423751}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: BomberEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -145,6 +145,8 @@ MonoBehaviour:
   rangeOfAttack: 10
   aggroArea: 11
   isAggroed: 0
+  isDead: 0
+  isBrambled: 0
   shotAccuracy: 54
   arrowGO: {fileID: 4911665736226165007, guid: d3dd8322550d46244b39329f8da1b29d, type: 3}
   bowTrans: {fileID: 6444446404314253524}

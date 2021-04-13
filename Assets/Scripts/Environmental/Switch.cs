@@ -145,19 +145,22 @@ public class Switch : MonoBehaviour
             r.material.SetColor("_Color", change);
     }
 }
-/*
+
 // editor class to handle Inspector UI for the Switch class
 [CustomEditor(typeof(Switch))]
-public class SwitchEditor : Editor {
+public class SwitchEditor : Editor
+{
     public SwitchType switchType;
 
-    public override void OnInspectorGUI() {
+    public override void OnInspectorGUI()
+    {
         base.OnInspectorGUI();
         EditorGUILayout.Space();
         // create enum property
-        switchType = (SwitchType) EditorGUILayout.EnumPopup("SwitchType", switchType);
+        switchType = (SwitchType)EditorGUILayout.EnumPopup("SwitchType", switchType);
         // set display to selected enum
-        switch (switchType) {
+        switch (switchType)
+        {
             case SwitchType.DoorOrLadder:
                 EditorGUILayout.PropertyField(
                     serializedObject.FindProperty("myDoor"));
@@ -174,5 +177,4 @@ public class SwitchEditor : Editor {
         serializedObject.ApplyModifiedProperties();
     }
 }
-*/
 
