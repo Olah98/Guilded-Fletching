@@ -143,7 +143,7 @@ MonoBehaviour:
   rb: {fileID: 817292240541976104}
   stickTime: 30
   isLit: 0
-  ps: {fileID: 3809542874359673558}
+  ps: {fileID: 3809542874359673576}
   type: 0
 --- !u!1001 &6997543078544403653
 PrefabInstance:
@@ -217,6 +217,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ArrowFire
       objectReference: {fileID: 0}
+    - target: {fileID: 6179628450030411309, guid: 25fe79bd9d3251c4eb75eb5d2d036099,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 6179628450034145345, guid: 25fe79bd9d3251c4eb75eb5d2d036099,
         type: 3}
       propertyPath: playOnAwake
@@ -259,15 +264,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 25fe79bd9d3251c4eb75eb5d2d036099, type: 3}
---- !u!4 &3809542874359673557 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 6179628450030411280, guid: 25fe79bd9d3251c4eb75eb5d2d036099,
+--- !u!1 &3809542874359673576 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6179628450030411309, guid: 25fe79bd9d3251c4eb75eb5d2d036099,
     type: 3}
   m_PrefabInstance: {fileID: 6997543078544403653}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &3809542874359673558 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 6179628450030411283, guid: 25fe79bd9d3251c4eb75eb5d2d036099,
+--- !u!4 &3809542874359673557 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6179628450030411280, guid: 25fe79bd9d3251c4eb75eb5d2d036099,
     type: 3}
   m_PrefabInstance: {fileID: 6997543078544403653}
   m_PrefabAsset: {fileID: 0}

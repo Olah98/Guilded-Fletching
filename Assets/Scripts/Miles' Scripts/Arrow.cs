@@ -8,7 +8,7 @@ public class Arrow : MonoBehaviour
     private bool stuck = false;
     public float stickTime = 30f;
     public bool isLit;
-    public ParticleSystem ps;
+    public GameObject ps;
     LayerMask mask;
     public enum Type { standard, bramble, warp, airburst}
     public Type type;
@@ -67,7 +67,8 @@ public class Arrow : MonoBehaviour
             isLit = true;
             if (ps!=null)
             {
-                ps.Play();
+                ps.GetComponent<ParticleSystem>().Play();
+                ps.tag = "Fire";
             }
         }
     }
