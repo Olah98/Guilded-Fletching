@@ -11,38 +11,39 @@ public class ArcherEnemy : BaseEnemy {
     public int shotAccuracy;
     public GameObject arrowGO;
     public Transform bowTrans;
-    private float retreatTimer;
-    private Vector3 startPos;
+
+    private float _retreatTimer;
+    private Vector3 _startPos;
     // for calculating player velocity
-    private Vector3 playerVelocity;
-    private Vector3 lastPlayerPos;
+    private Vector3 _playerVelocity;
+    private Vector3 _lastPlayerPos;
 
     protected override void Start() {
         base.Start();
-        startPos = transform.position;
-        playerVelocity = Vector3.zero;
-        lastPlayerPos = _playerTrans.position;
+        _startPos = transform.position;
+        _playerVelocity = Vector3.zero;
+        _lastPlayerPos = _playerTrans.position;
     }
 
     protected override void FixedUpdate() {
         if (_isBrambled) return;
         Vector3 moveDir = Vector3.zero;
 
-        playerVelocity = GetCurrentPlayerVelocity();
-        lastPlayerPos = _playerTrans.position;
+        _playerVelocity = _GetCurrentPlayerVelocity();
+        _lastPlayerPos = _playerTrans.position;
 
         // check for aggro, increment timer, check for attack range
         isAggroed = IsPlayerInAggroRange();
         if (isAggroed) _attackTimer += Time.fixedDeltaTime;
         if (IsPlayerInAttackRange()) {
             if (_attackTimer >= attackFrequency) {
-                Vector3 targetPos = GetNewShotPosition();
+                Vector3 targetPos = _GetNewShotPosition();
                 moveDir = Vector3.Lerp(transform.position, targetPos, 0.5f) - transform.position;
                 Vector3 shotDir = moveDir;
                 moveDir.y = 0f;
-                shotDir.y += AddShotArc(targetPos);
+                shotDir.y += _AddShotArc(targetPos);
                 transform.LookAt(moveDir + transform.position, transform.up);
-                ShootAt(shotDir);
+                _ShootAt(shotDir);
                 return;
             }
         }
@@ -52,8 +53,8 @@ public class ArcherEnemy : BaseEnemy {
             if (isAggroed)
                 moveDir = _playerTrans.position - transform.position;
             // am I at the startPos?
-            else if ((startPos - transform.position).magnitude > 1f)
-                moveDir = startPos - transform.position;
+            else if ((_startPos - transform.position).magnitude > 1f)
+                moveDir = _startPos - transform.position;
         }
         // apply movement if necessary
         moveDir.y = 0f;
@@ -66,36 +67,27 @@ public class ArcherEnemy : BaseEnemy {
     /// Fire arrowGO at target position.
     /// </summary>
     /// <param name="target">Vector3 of position to shot.</param>
-    protected override void ShootAt(Vector3 shotDir) {
+    protected override void _ShootAt(in Vector3 shotDir) {
         // create gameObject at bowPos
-        GameObject shotGO = Instantiate(arrowGO, bowTrans.position, arrowGO.transform.rotation);
+        var outQuat = Quaternion.Euler(0f, 0f, 90f);
+        GameObject shotGO = Instantiate(arrowGO, bowTrans);
         shotGO.transform.parent = null;
-        shotGO.transform.up = shotDir;
+
         // base power off of distance
         float power = Vector3.Distance(bowTrans.position, new Vector3(_playerTrans.position.x, _playerTrans.position.y +.5f, _playerTrans.position.z)) / 2.5f;
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
         shotGO.GetComponent<Rigidbody>().AddForce(shotDir * power, ForceMode.VelocityChange);
         _attackTimer = 0f;
     }
-    // for testing only (called from test scripts)
-    public void ShootAtTest(Vector3 target) {
-        Vector3 lookDir = (target - transform.position).normalized;
-        lookDir.y = 0f;
-        transform.LookAt(transform.position + lookDir.normalized, transform.up);
-        Vector3 shotDir = Vector3.Lerp(transform.position, target, 0.5f)
-                        - transform.position;
-        shotDir.y += AddShotArc(target);
-        ShootAt(shotDir);
-    }
 
     /// <summary>
     /// Calculate and return position of possible hit or miss.
     /// </summary>
     /// <returns>Position to shoot at.</returns>
-    protected Vector3 GetNewShotPosition() {
+    protected Vector3 _GetNewShotPosition() {
         Vector3 shootAt = _playerTrans.position;
         // apply player velocity (implemented in FixedUpdate)
-        shootAt += playerVelocity * _playerTrans.GetComponent<Character>().speed;
+        shootAt += _playerVelocity * _playerTrans.GetComponent<Character>().speed;
         // RNG for accuracy
         if (Random.Range(0, 100) >= shotAccuracy) {
             // calculate miss (2 directions, and 2 severity values)
@@ -107,6 +99,19 @@ public class ArcherEnemy : BaseEnemy {
         return shootAt;
     }
 
+    #region TestFunctions
+    // for testing only (called from test scripts)
+    public void ShootAtTest(in Vector3 target) {
+        Vector3 lookDir = (target - transform.position).normalized;
+        lookDir.y = 0f;
+        transform.LookAt(transform.position + lookDir.normalized, transform.up);
+        Vector3 shotDir = Vector3.Lerp(transform.position, target, 0.5f)
+                        - transform.position;
+        shotDir.y += _AddShotArc(target);
+        _ShootAt(shotDir);
+    }
+    #endregion
+
     /* PRIVATE FUNCTIONS FOR PROJECTILE SHOT CALCULATIONS */
     /// <summary>
     /// Create additional y-axis value by taking elevation change and horizontal
@@ -114,8 +119,8 @@ public class ArcherEnemy : BaseEnemy {
     /// </summary>
     /// <param name="targetPos">Position of the enemy's target.</param>
     /// <returns>Additional y-axis padding.</returns>
-    private float AddShotArc(Vector3 targetPos) {
-        float arc = 0;
+    private float _AddShotArc(Vector3 targetPos) {
+        float arc = 0f;
         // adjust arc for elevation change (negative value means downslope)
         float yDif = targetPos.y - transform.position.y;
         if (yDif > 5f) arc += 2.5f; 
@@ -133,10 +138,10 @@ public class ArcherEnemy : BaseEnemy {
     /// CharacterController to track velocity (because it sucks).
     /// </summary>
     /// <returns>The current player velocity.</returns>
-    private Vector3 GetCurrentPlayerVelocity() {
-        Vector3 posChange = _playerTrans.position - lastPlayerPos;
+    private Vector3 _GetCurrentPlayerVelocity() {
+        Vector3 posChange = _playerTrans.position - _lastPlayerPos;
         if (posChange.magnitude > 0f) {
-            posChange = (_playerTrans.position - lastPlayerPos) / Time.fixedDeltaTime;
+            posChange = (_playerTrans.position - _lastPlayerPos) / Time.fixedDeltaTime;
             // clamping value is relatively arbitrary, it just feels best when
             // taking player speed into account in GetNewShotPosition()
             return Vector3.ClampMagnitude(posChange, 0.35f);
@@ -152,7 +157,7 @@ public class ArcherEnemy : BaseEnemy {
     /// <param name="targetPos"></param>
     /// <param name="maxHeight"></param>
     /// <returns>Launch angle in radians.</returns>
-    private float GetLaunchAngle(Vector3 targetPos, float maxHeight) {
+    private float _GetLaunchAngle(Vector3 targetPos, float maxHeight) {
         float range = Mathf.Sqrt(Mathf.Pow(transform.position.x - targetPos.x, 2)
                     + Mathf.Pow(transform.position.z - targetPos.z, 2f));
 

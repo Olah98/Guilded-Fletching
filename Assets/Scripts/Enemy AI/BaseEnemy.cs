@@ -15,8 +15,8 @@ public class BaseEnemy : MonoBehaviour {
     public float rangeOfAttack;
     [Tooltip("Denoted by yellow wire sphere.")]
     public float aggroArea;
-    public bool isAggroed;
-    public bool isDead = false;
+    public bool isAggroed  { get; protected set; }
+    public bool isDead     { get; protected set; }
     [SerializeField]
     protected bool _isBrambled;
     protected float _attackTimer;
@@ -28,6 +28,7 @@ public class BaseEnemy : MonoBehaviour {
 
     protected virtual void Start() {
         isAggroed = false;
+        isDead = false;
         _isBrambled = false;
         _attackTimer = 0f;
         _brambleTimer = 0f;
@@ -40,12 +41,6 @@ public class BaseEnemy : MonoBehaviour {
     protected virtual void FixedUpdate() {}
 
     protected void Update() {
-        /*
-        if (_brambleTimer > 0) {
-            _brambleTimer -= Time.deltaTime;
-            print("brambleTimer: " + _brambleTimer);
-        }
-        */
         if (isDead) {
             SaveManager.instance.activeSave.unsavedDead.Add(gameObject.name);
             Destroy(gameObject);
@@ -95,7 +90,7 @@ public class BaseEnemy : MonoBehaviour {
     /// Inheritted function that will act differently depending on the enemy.
     /// </summary>
     /// <param name="target">Vector3 of position to shoot.</param>
-    protected virtual void ShootAt(Vector3 target) {}
+    protected virtual void _ShootAt(in Vector3 target) {}
 
 
     /// <summary>
