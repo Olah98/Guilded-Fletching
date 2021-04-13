@@ -5,10 +5,14 @@ using UnityEngine;
 public class SwingingPendulum : MonoBehaviour
 {
     // Start is called before the first frame update
+    [Header ("Speed on animation, most comfortable to leave at 1")]
     [Tooltip("Default value is 1")]
     public float speed;
+    [Header ("Delays the start of the animation, so that pendulums can either be offset")]
     public float startDelay;
+    [Header ("Determines how much damage someone takes from a pendulum")]
     public int damage;
+    [Header ("Determines how far a player is hit")]
     [Tooltip("Dictates how far a player or enemy is hit.")]
     public float force;
     private float forceHolder;
