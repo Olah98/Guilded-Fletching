@@ -12,7 +12,14 @@ public class MainMenuButtons : MonoBehaviour
     private void Start()
     {
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
-        SaveManager.instance.Load();
+        if (GameObject.FindGameObjectWithTag("Save Manager") != null)
+        {
+            SaveManager.instance.Load();
+        } else
+        {
+            Debug.Log("No SaveManager Found");
+        }
+        
         if (cont != null)
         {
             cont.GetComponent<Button>().interactable = false;
