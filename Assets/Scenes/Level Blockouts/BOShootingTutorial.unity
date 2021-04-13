@@ -10253,7 +10253,7 @@ PrefabInstance:
     - target: {fileID: 7995530826904041227, guid: b83681f4e1a9ddb449c9c7cbd1a1ec0a,
         type: 3}
       propertyPath: loadoutName
-      value: FirstCombo
+      value: Standard
       objectReference: {fileID: 0}
     - target: {fileID: 8764416170017648904, guid: b83681f4e1a9ddb449c9c7cbd1a1ec0a,
         type: 3}
