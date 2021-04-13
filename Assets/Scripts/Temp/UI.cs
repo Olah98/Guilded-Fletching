@@ -56,7 +56,9 @@ public class UI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        //Altered by Warren - Input Manager's default "Cancel" was already ESC
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Cancel"))
         {
             if (_isPaused)
             {

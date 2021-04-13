@@ -334,6 +334,7 @@ public class Character : MonoBehaviour
         }
 
         //Altered by Warren - Input Manager's default "Fire3" was already Left Shift
+        //Now also includes MiddleMouseButton
         //_Crouching(Input.GetKey(KeyCode.LeftShift));
         _Crouching(Input.GetButton("Fire3"));
 
