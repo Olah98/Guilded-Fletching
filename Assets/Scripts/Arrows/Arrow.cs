@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class Arrow : MonoBehaviour
 {
+    //Author Miles Gomez
+    //Edited 4/13/2021
+    [Header ("Rigidbody")]
     public Rigidbody rb;
     private bool stuck = false;
+    [Header ("Time that the arrow is alive for")]
+    [Tooltip ("Deletes after *stickTime* seconds")]
     public float stickTime = 30f;
+    [Header ("Bool determining whether or not the arrow is on fire")]
     public bool isLit;
+    [Header ("Particle system on the arrows, only standard should have one")]
     public GameObject ps;
     LayerMask mask;
     public enum Type { standard, bramble, warp, airburst}
+    [Header("Determine the type of arrow being shot")]
     public Type type;
     // Start is called before the first frame update
 
