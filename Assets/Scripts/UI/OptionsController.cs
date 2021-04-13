@@ -18,6 +18,7 @@ using UnityEngine;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 public class OptionsController : MonoBehaviour {
     public struct Option {
@@ -31,12 +32,15 @@ public class OptionsController : MonoBehaviour {
     }
     
     public Dropdown saveSelector;
-    public Toggle fullScreen;
+    public Toggle fullScreen; //By Warren
+    public TMP_Dropdown selectResolution; //By Warren
     [Tooltip("Graphics Quality\nMouseSensitivity\nBaseFOV\nMaster\nSoundFX\nAmbient")]
     public GameObject[] optionGroup = new GameObject[6];
 
     private Option[] _options = new Option[6];
     private SavedData _curData;
+    protected Resolution[] _resolutions; //By Warren from Screen.resolutions API
+
     //private int curSaveIndex = -1;
     private GameObject blackScreen; //By Warren
     private bool _isOptionsMenu { get { 
@@ -57,6 +61,41 @@ public class OptionsController : MonoBehaviour {
         fullScreen.GetComponent<Toggle>().isOn = Screen.fullScreen; //By Warren
         InitializeOptionUI();
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
+
+        _resolutions = Screen.resolutions;
+
+        selectResolution.ClearOptions();
+
+        int _currentRes = -1;
+        int _numberRes = 0;
+
+        // Load the resolutions
+        foreach (var res in _resolutions)
+        {
+            //Debug.Log(res.width + "x" + res.height + " : " + res.refreshRate);
+            TMP_Dropdown.OptionData _newData = new TMP_Dropdown.OptionData();
+            _newData.text = res.width + "x" + res.height + " : " + res.refreshRate;
+            selectResolution.options.Add(_newData);
+
+            if ((res.width == Screen.width) && (res.height == Screen.height)
+                && (res.refreshRate == Screen.currentResolution.refreshRate))
+            {
+                _currentRes = _numberRes;
+            }
+            _numberRes++;
+        }
+
+        if (_currentRes == -1)
+        {
+            _currentRes = 0;
+            selectResolution.ClearOptions();
+            TMP_Dropdown.OptionData _newData = new TMP_Dropdown.OptionData();
+            _newData.text = "Resolution Not Found";
+            selectResolution.options.Add(_newData);
+            selectResolution.interactable = false;
+            Debug.Log("Can't detect current resolution, probably still in Play Mode");
+        }
+        selectResolution.value = _currentRes;
     }
 
     private void OnEnable() {
@@ -212,6 +251,20 @@ public class OptionsController : MonoBehaviour {
     {
         Screen.fullScreen = !Screen.fullScreen;
     }//OnToggle_Fullscreen
+
+    /*
+    * On Dropdown Resolution - By Warren 
+    * Changes resolution to supported type, by checking the current value of
+    * the Dropdown menu and setting the screen to the resolution it represents
+    */
+    public void OnDropDown_Resolution()
+    {
+        //public static void SetResolution(int width, int height,
+        //          bool fullscreen, int preferredRefreshRate = 0);
+        Screen.SetResolution(_resolutions[selectResolution.value].width, 
+            _resolutions[selectResolution.value].height, Screen.fullScreen,
+            _resolutions[selectResolution.value].refreshRate);
+    }//OnDropDown_Resolution
 
     /*
     * Delay - By Warren 
