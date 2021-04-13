@@ -5154,7 +5154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 113, y: -124}
+  m_AnchoredPosition: {x: 113, y: -86}
   m_SizeDelta: {x: 600, y: 800}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7334971944488221157
@@ -5197,7 +5197,9 @@ MonoBehaviour:
 
     ESC: pause menu
 
-    1-4:  Equip Special Arrows'
+    1-4:  Equip Special Arrows
+
+    Left Shift: Crouch'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: af88e2ceaf647f1478e80b11d6da7b10, type: 2}
   m_sharedMaterial: {fileID: 5039220195375064363, guid: af88e2ceaf647f1478e80b11d6da7b10,
@@ -5261,7 +5263,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -35.71475, y: 0, z: 0, w: 177.92273}
+  m_margin: {x: -35.71475, y: 0, z: 0, w: 92.74535}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
