@@ -19,6 +19,16 @@ public class SaveManager : MonoBehaviour
     private GameObject[] switches;
     private GameObject[] enemies;
     private GameObject player;
+
+    //These by Warren for Level End Screen.
+    //They're set in Character -> Interacting with <ThankYou> Object
+    public bool levelBeaten;
+    public int[,] lastLoadout;
+    public float lastTime;
+    public string nextLocation;
+    public string lastLocation;
+
+
     // Start is called before the first frame update
 
     private void Awake()
@@ -233,6 +243,18 @@ public class SaveManager : MonoBehaviour
     /// <returns>List of all objects in scene that contains an AudioSource</returns>
     public static AudioSource[] GetAllAudioInScene() {
         return FindObjectsOfType<AudioSource>();
+    }
+
+    /// <summary>
+    /// (Added by Warren): clears level end data.
+    /// </summary>
+    public void ResetLevelEndStats()
+    {
+        levelBeaten = false;
+        lastLoadout = new int[0,0];
+        lastTime = 0f;
+        nextLocation = "";
+        lastLocation = "";
     }
 }
 

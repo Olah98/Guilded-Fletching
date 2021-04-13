@@ -438,6 +438,16 @@ public class Character : MonoBehaviour
         }
         else if (interactingWith.TryGetComponent<ThankYou>(out ThankYou t))
         {
+            //These are by Warren to initialize the Level End Screen
+            SaveManager.instance.levelBeaten = true;
+            SaveManager.instance.lastLoadout = _myQuiver.ReportLoadout();
+            LevelManager timer = GameObject.FindWithTag("Level Manager").GetComponent<LevelManager>();
+            if (timer != null)
+            {
+                SaveManager.instance.lastTime = timer.ReportTime();
+            }
+            SaveManager.instance.lastLocation = SceneManager.GetActiveScene().name;
+            SaveManager.instance.nextLocation = t.level;
             t.load();
         }
         Debug.Log("Interacting with: " + interactingWith.name);
