@@ -8,6 +8,7 @@ public class Arrow : MonoBehaviour
     private bool stuck = false;
     public float stickTime = 30f;
     public bool isLit;
+    public ParticleSystem ps;
     LayerMask mask;
     public enum Type { standard, bramble, warp, airburst}
     public Type type;
@@ -64,6 +65,10 @@ public class Arrow : MonoBehaviour
         if (other.tag == "Fire")
         {
             isLit = true;
+            if (ps!=null)
+            {
+                ps.Play();
+            }
         }
     }
 
@@ -89,6 +94,7 @@ public class Arrow : MonoBehaviour
             if (hit.transform.tag == "Burnable" && isLit)
             {
                 Destroy(hit.transform.gameObject);
+                Destroy(gameObject);
                 return;
             }
             else if (hit.transform.gameObject.GetComponent<Switch>())

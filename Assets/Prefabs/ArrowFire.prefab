@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6179628450030411282}
   - component: {fileID: 6836942499894282887}
   m_Layer: 9
-  m_Name: Fire
+  m_Name: ArrowFire
   m_TagString: Fire
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
