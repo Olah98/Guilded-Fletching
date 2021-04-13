@@ -63,7 +63,7 @@ public class OptionsController : MonoBehaviour {
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
 
         //SelectResolution Dropdown is only present in the Options Scene
-        if (selectResolution != null)
+        if (_isOptionsMenu)
         {
             _resolutions = Screen.resolutions;
 
@@ -140,7 +140,8 @@ public class OptionsController : MonoBehaviour {
     /// </summary>
     public void GoBack() {
         SaveOptionsToCurrentData();
-        SceneManager.LoadScene("MainMenu");
+        //SceneManager.LoadScene("MainMenu");
+        loadScene("MainMenu");
     }
 
     /// <summary>
