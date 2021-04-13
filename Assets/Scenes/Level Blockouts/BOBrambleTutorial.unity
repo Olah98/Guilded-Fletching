@@ -75847,7 +75847,7 @@ PrefabInstance:
     - target: {fileID: 7265321699892232929, guid: 2d466d49102a97445beb69f1a111e523,
         type: 3}
       propertyPath: maxRounds
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2d466d49102a97445beb69f1a111e523, type: 3}
