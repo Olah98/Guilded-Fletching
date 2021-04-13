@@ -333,7 +333,9 @@ public class Character : MonoBehaviour
             _jumpTime -= Time.fixedDeltaTime;
         }
 
-        _Crouching(Input.GetKey(KeyCode.LeftShift));
+        //Altered by Warren - Input Manager's default "Fire3" was already Left Shift
+        //_Crouching(Input.GetKey(KeyCode.LeftShift));
+        _Crouching(Input.GetButton("Fire3"));
 
         if (Input.GetButton("Fire1"))
         {
