@@ -63,6 +63,7 @@ public class OptionsController : MonoBehaviour {
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
 
         //SelectResolution Dropdown is only present in the Options Scene
+        //By Warren following Unity API example presented by Jeff Underwood
         if (_isOptionsMenu)
         {
             _resolutions = Screen.resolutions;

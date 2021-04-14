@@ -163,6 +163,7 @@ public class UI : MonoBehaviour
         //store values!!
         Debug.Log("Quit Game");
         //Application.Quit();
+        Time.timeScale = 1; //By Warren - fixed bug delaying Coroutine
         StartCoroutine(ExitGameCo()); //By Warren
     }
 
