@@ -28,6 +28,7 @@ public class SaveManager : MonoBehaviour
     public string nextLocation;
     public string lastLocation;
 
+    protected int customFrameRate = 60; //By Warren
 
     // Start is called before the first frame update
 
@@ -50,7 +51,8 @@ public class SaveManager : MonoBehaviour
     
     void Start()
     {
-      
+        //Added by Warren from Jeff's lecture
+        Application.targetFrameRate = customFrameRate;
     }
     private void OnLevelWasLoaded(int level)
     {

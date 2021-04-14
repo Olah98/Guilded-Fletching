@@ -101,11 +101,11 @@ public class OptionsController : MonoBehaviour
                     {
                         _inexactRes = _numberRes;
                     }
-                    _numberRes++;
                 }
+                _numberRes++;
             }
 
-            if ((_currentRes == -1))
+            if (_currentRes == -1)
             {
                 if (_inexactRes == -1)
                 {
@@ -129,12 +129,20 @@ public class OptionsController : MonoBehaviour
                 }
                 else
                 {
-                    _currentRes = _inexactRes;
                     Debug.Log("Mismatch Found. Current refresh rate is " + Screen.currentResolution.refreshRate + "Hz");
-                    Debug.Log("Closest match found in supported resolutions is " + _resolutions[_inexactRes].refreshRate);
+                    Debug.Log("Setting display to closest found of " + _resolutions[_inexactRes].refreshRate + "Hz");
+                    Screen.SetResolution(_resolutions[_inexactRes].width,
+                        _resolutions[_inexactRes].height, Screen.fullScreen,
+                        _resolutions[_inexactRes].refreshRate);
+                    _currentRes = _inexactRes;
                 }
             }
             selectResolution.value = _currentRes;
+            if (Screen.currentResolution.refreshRate > Application.targetFrameRate)
+            {
+                Debug.Log("Warning: The current refresh rate of " + Screen.currentResolution.refreshRate +
+                    " may be a poor match for our current target frames per second of " + Application.targetFrameRate);
+            }
         }
     }
 
