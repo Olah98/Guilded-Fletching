@@ -97,7 +97,17 @@ public class OptionsController : MonoBehaviour {
                 _newData.text = "Resolution Not Found";
                 selectResolution.options.Add(_newData);
                 selectResolution.interactable = false;
+
                 Debug.Log("Can't detect current resolution, probably still in Play Mode");
+
+                //Bug testing code 4/13/21
+                Debug.Log("Is reading as: " + Screen.width + " x " + Screen.height + " : " + Screen.currentResolution.refreshRate);
+                Debug.Log("Available Resolutions are: ");
+                // Read the resolutions
+                foreach (var res in _resolutions)
+                {
+                    Debug.Log(res.width + "x" + res.height + " : " + res.refreshRate);
+                }
             }
             selectResolution.value = _currentRes;
         }
