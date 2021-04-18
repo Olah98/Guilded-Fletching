@@ -3,21 +3,22 @@ Author: Christian Mullins
 Date: 02/15/2021
 Summary: Class that interacts with and triggers the Door script class.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
+using Object = UnityEngine.Object;
 
-public enum SwitchType
-{
-    DoorOrLadder, Bridge, Platform
+public enum SwitchType {
+    Ladder, HingedObject, Platform
 }
 
-[System.Serializable]
-public class Switch : MonoBehaviour
-{
-    [HideInInspector] public Door myDoor = null;
-    [HideInInspector] public Bridge myBridge = null;
-    [HideInInspector] public CountingPlatform myPlatform = null;
+[Serializable]
+public class Switch : MonoBehaviour {
+    [HideInInspector] public List<Door> doorObjs;
+    [HideInInspector] public List<HingedObject> hingedObjs;
+    [HideInInspector] public List<CountingPlatform> platformObjs;
+
+    [HideInInspector] public SwitchType mySwitchType;
 
     public bool isTimedByArrow;
     public bool isFlipped = false;
@@ -34,7 +35,6 @@ public class Switch : MonoBehaviour
 
     private void Start()
     {
-
         //By Warren
         if (GetComponent<MeshRenderer>() != null)
             _rend.Add(GetComponent<MeshRenderer>());
@@ -44,16 +44,14 @@ public class Switch : MonoBehaviour
 
         // push this Switch into the Switch list of the object we're switching
         // if it exists
-        myDoor?.mySwitches.Add(this);
-        myBridge?.mySwitches.Add(this);
-        myPlatform?.mySwitches.Add(this);
+        doorObjs.ForEach(    obj => { obj.mySwitches.Add(this); });
+        hingedObjs.ForEach(  obj => { obj.mySwitches.Add(this); });
+        platformObjs.ForEach(obj => { obj.mySwitches.Add(this); });
 
-
-        if (!isFlipped)
-        {
-            myDoor?.UpdateColor(false); //By Warren, updates color
-            myBridge?.UpdateColor(false);
-            myPlatform?.UpdateColor(false);
+        if (!isFlipped) {
+            doorObjs.ForEach(    obj => { obj.UpdateColor(false); });
+            hingedObjs.ForEach(  obj => { obj.UpdateColor(false); });
+            platformObjs.ForEach(obj => { obj.UpdateColor(false); });
         }
     }
 
@@ -66,19 +64,16 @@ public class Switch : MonoBehaviour
 
         isFlipped = true;
         UpdateColor();//By Warren
-        // handle what is
-        if (myDoor != null && myDoor.IsAllSwitchesFlipped())
-        {
-            StartCoroutine(myDoor.Open());
-        }
-        if (myBridge != null && myBridge.IsAllSwitchesFlipped())
-        {
-            StartCoroutine(myBridge.Open());
-        }
-        if (myPlatform != null)
-        {
-            myPlatform.IsAllSwitchesFlipped();
-        }
+        
+        doorObjs.ForEach(obj => {
+            if (obj.IsAllSwitchesFlipped())
+                StartCoroutine(obj.Open());
+        });
+        hingedObjs.ForEach(obj => {
+            if (obj.IsAllSwitchesFlipped())
+                StartCoroutine(obj.Open());
+        });
+        platformObjs.ForEach(obj => { obj.IsAllSwitchesFlipped(); });
     }
 
     /// <summary>
@@ -101,7 +96,6 @@ public class Switch : MonoBehaviour
     /// </summary>
     /// <param name="other">Object hitting the switch.</param>
     /// 
-    /*
     protected void OnCollisionEnter(Collision other)
     {
         if (other.transform.tag == "Arrow" && triggerByArrow)
@@ -113,8 +107,7 @@ public class Switch : MonoBehaviour
             }
         }
     }
-    */
-
+    
     public void ArrowHit(GameObject other)
     {
         HitSwitch();
@@ -123,7 +116,6 @@ public class Switch : MonoBehaviour
             Invoke("ResetSwitch", other.GetComponent<Arrow>().stickTime);
         }
     }
-  
 
     /// <summary>
     /// Function to call when changing color or material.
@@ -145,39 +137,3 @@ public class Switch : MonoBehaviour
             r.material.SetColor("_Color", change);
     }
 }
-
-// editor class to handle Inspector UI for the Switch class
-
-#if UNITY_EDITOR
-[CustomEditor(typeof(Switch))]
-public class SwitchEditor : Editor
-{
-    public SwitchType switchType;
-
-    public override void OnInspectorGUI()
-    {
-        base.OnInspectorGUI();
-        EditorGUILayout.Space();
-        // create enum property
-        switchType = (SwitchType)EditorGUILayout.EnumPopup("SwitchType", switchType);
-        // set display to selected enum
-        switch (switchType)
-        {
-            case SwitchType.DoorOrLadder:
-                EditorGUILayout.PropertyField(
-                    serializedObject.FindProperty("myDoor"));
-                break;
-            case SwitchType.Bridge:
-                EditorGUILayout.PropertyField(
-                    serializedObject.FindProperty("myBridge"));
-                break;
-            case SwitchType.Platform:
-                EditorGUILayout.PropertyField(
-                    serializedObject.FindProperty("myPlatform"));
-                break;
-        }
-        serializedObject.ApplyModifiedProperties();
-    }
-}
-#endif
-

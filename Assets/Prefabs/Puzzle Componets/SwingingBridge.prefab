@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 1604819224035867415}
   - component: {fileID: 8645422485584745192}
   - component: {fileID: 5167927731817548167}
-  - component: {fileID: 6738877077923469746}
+  - component: {fileID: 6299142092546014118}
   m_Layer: 0
-  m_Name: Bridge
+  m_Name: SwingingBridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -95,7 +95,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6738877077923469746
+--- !u!114 &6299142092546014118
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -104,15 +104,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 5948381266976714198}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7867992bbc2aedb4aa7f100271497b09, type: 3}
+  m_Script: {fileID: 11500000, guid: 41202a7700ee50142a7e861d4b5b3be3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  openSpeed: 13.7
+  openSpeed: 10
   mySwitches: []
-  _angleChange: 81
+  _angleChange: 90
   _anchorPoint: {x: 0, y: -3.17235, z: 0}
-  rotationEnum: 6
-  _customRot: {x: -1, y: -0.94, z: -1}
+  rotationAxis: 0
+  stopTimer: 3
 --- !u!1 &8957745371512219698
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,8 +137,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8957745371512219698}
-  m_LocalRotation: {x: 0.649448, y: -0, z: -0, w: 0.760406}
-  m_LocalPosition: {x: 0, y: -0.42178273, z: 9.786342}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: -0.49999994, z: 9.908329}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4862408568182528732}
