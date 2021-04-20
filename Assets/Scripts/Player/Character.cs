@@ -101,6 +101,8 @@ public class Character : MonoBehaviour
     private Transform _originParent;
     private bool _runOnce;
 
+    public int arrowAllowed = 5;
+
     // properties
     public bool      isCrouching    => _isCrouching;
     public SavedData getCurrentData => _currentData;
@@ -606,12 +608,12 @@ public class Character : MonoBehaviour
     public void TrackArrow(GameObject projectile, List<GameObject> tracker)
     {
         tracker.Insert(0, projectile);
-        if (tracker.Count > 2)
+        if (tracker.Count > arrowAllowed)
         {
-            if (tracker[2] != null)
+            if (tracker[arrowAllowed] != null)
             {
-                Destroy(tracker[2]);
-                tracker.RemoveAt(2);
+                Destroy(tracker[arrowAllowed]);
+                tracker.RemoveAt(arrowAllowed);
             }
         }
     }

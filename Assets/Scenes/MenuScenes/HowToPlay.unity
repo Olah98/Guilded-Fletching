@@ -2975,7 +2975,9 @@ MonoBehaviour:
 
     ESC: Pause Game
 
-    1-4:  Equip Special Arrows'
+    1-4:  Equip Special Arrows
+
+    Left Shift: Crouch'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: af88e2ceaf647f1478e80b11d6da7b10, type: 2}
   m_sharedMaterial: {fileID: 5039220195375064363, guid: af88e2ceaf647f1478e80b11d6da7b10,
@@ -3015,7 +3017,7 @@ MonoBehaviour:
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
-  m_lineSpacing: 80
+  m_lineSpacing: 60
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
