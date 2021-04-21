@@ -7,19 +7,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwingingObject : HingedObject {
-    [Header("Pause values")]
-    [HideInInspector]
-    public float stopTimer = 3f;
+public class SwingingObject : HingedObject, IBrambleable {
     private bool _isStopped;
     private bool _movingForward;
     private float _deltaAngle;
-
+    [System.Obsolete]
     private float _timer;
 
     protected override void Start() {
         base.Start();
-        _timer = 0f;
         _deltaAngle = 0f;
         _isStopped = false;
         _movingForward = true;
@@ -39,22 +35,31 @@ public class SwingingObject : HingedObject {
                 _deltaAngle = 0f;
             }
         }
-        if (_timer > 0) _timer -= Time.fixedDeltaTime;
+        //if (_timer > 0) _timer -= Time.fixedDeltaTime;
     }
 
+    public void Bramble(in bool enabled) {
+        _isStopped = enabled;
+        if (!enabled) {
+            mySwitches.ForEach(s => { s.ResetSwitch(); });
+            IsAllSwitchesFlipped();
+        }
+    }
+/*
+    [System.Obsolete]
     public override IEnumerator Open() {
         return StopFor(stopTimer);
     }
-
+*/
+    [System.Obsolete]
     public IEnumerator StopFor(float time) {
+        _timer = time;
         if (_isStopped) yield break;
 
         _isStopped = true;
-        _timer = time;
         yield return new WaitUntil(() => { return _timer <= 0; });
         _isStopped = false;
         mySwitches.ForEach(s => { s.ResetSwitch(); });
         IsAllSwitchesFlipped();
-        yield return null;
     }
 }

@@ -12,7 +12,6 @@ using UnityEditor.SceneManagement;
 public class SwingingObjectEditor : HingedObjectEditor {
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
-        EditorGUILayout.PropertyField(thisTarget.FindProperty("stopTimer"));
 
         if (GUI.changed) {
             EditorUtility.SetDirty(target);
