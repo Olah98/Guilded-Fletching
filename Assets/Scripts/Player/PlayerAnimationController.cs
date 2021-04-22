@@ -65,7 +65,7 @@ public class PlayerAnimationController : MonoBehaviour {
             _SetAllFloats("DrawSpeed", _character.attackCharge / 100f);
         // set movement based animations
         _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
-        //_SetAllBools("IsCrouching", _character.isCrouching);
+        _SetAllBools("IsCrouching", _character.isCrouching);
         _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f || Input.GetAxis("Vertical") != 0f);
         
         /// trigger fire animation
