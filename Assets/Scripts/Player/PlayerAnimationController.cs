@@ -14,6 +14,7 @@ Summary: Controls the flow on animation for the player in it's various states.
     -Take Damage
 */
 using UnityEngine;
+using UnityEngine.Animations;
 
 /// <summary>
 /// Enum to denote animation states.
@@ -31,10 +32,13 @@ public class PlayerAnimationController : MonoBehaviour {
     [SerializeField] private Animator _bowAnimator;
     public Animator handAnimator => _handAnimator;
     public Animator bowAnimator  => _bowAnimator;
+    [Header("Randomized Hurt Animations")]
     [SerializeField] private Animation[] _handHurtAnims;
     [SerializeField] private Animation[] _bowHurtAnims;
 
     private Character _character;
+    private AnimatorOverrideController _handOverride;
+    private AnimatorOverrideController _bowOverride;
 
     // debugging code
     /*
@@ -48,6 +52,8 @@ public class PlayerAnimationController : MonoBehaviour {
 
     private void Start() {
         _character = GetComponent<Character>();
+        _handOverride = new AnimatorOverrideController(_handAnimator.runtimeAnimatorController);
+        _bowOverride = new AnimatorOverrideController(_bowAnimator.runtimeAnimatorController);
     }
 
 /*
@@ -68,7 +74,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _SetAllBools("IsCrouching", _character.isCrouching);
         _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f || Input.GetAxis("Vertical") != 0f);
         
-        /// trigger fire animation
+        // trigger fire animation
         if (_character.attackCD > 0)
             _SetAllTriggers("Fire");
         //_Debug_PrintAnim(_bowAnimator);
@@ -85,7 +91,8 @@ public class PlayerAnimationController : MonoBehaviour {
                 priority.
         */
         //int damageIndex = Random.Range(0, _handHurtAnims.Length);
-        //_handAnimator
+        //set clips using the AnimatorOverrideController
+        //_handOverride.Anim
 
         //_SetAllTriggers("Damage");
     }
