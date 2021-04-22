@@ -107,10 +107,14 @@ public class Character : MonoBehaviour
     public bool      isCrouching    => _isCrouching;
     public SavedData getCurrentData => _currentData;
     public Quiver    getMyQuiver    => _myQuiver;
-    public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
+    public int       getMyArrowType => _myQuiver.GetArrowType();
     public bool      isSquashed     { get {
         return Physics.Raycast(transform.position, Vector3.up, 1.2f);
     } }
+    public float totalJumpPower { get { 
+        return Mathf.Sqrt(jumpPower * -Physics.gravity.y * ((coyoteJump > 0) ? 1.2f : 1f));
+    } }
+    public Vector3 getVelocity => _velocity;
 
     private void Start()
     {
@@ -464,14 +468,7 @@ public class Character : MonoBehaviour
         {
             _canJump = false;
             //Adds force to jum pwith
-            if (coyoteJump > 0)
-            {
-                _velocity.y = Mathf.Sqrt(jumpPower * -Physics.gravity.y * 1.2f);
-            }
-            else
-            {
-                _velocity.y = Mathf.Sqrt(jumpPower * -Physics.gravity.y);
-            }
+            _velocity.y = totalJumpPower; //coyote jump handled in this property
             jumpCD = .5f;
             _coyoteJumpTime = 0f;
 

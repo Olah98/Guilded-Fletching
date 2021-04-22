@@ -40,15 +40,11 @@ public class PlayerAnimationController : MonoBehaviour {
     private AnimatorOverrideController _handOverride;
     private AnimatorOverrideController _bowOverride;
 
-    // debugging code
     /*
-    private AnimState _currentState;
-    private readonly string[] _animStrs = {
-        "Idle", "Walking", "Jumping", "LoadingArrow", 
-        "SwitchingArrows", "DrawingArrow", "FullyDrawn", 
-        "Shooting", "NULL"
-    };
+        TODO:
+            Interpolate motion multiplier based on values.
     */
+    private float _jumpMotion => Mathf.Clamp(_character.getVelocity.y / _character.totalJumpPower, 0f, _character.totalJumpPower);
 
     private void Start() {
         _character = GetComponent<Character>();
@@ -73,7 +69,8 @@ public class PlayerAnimationController : MonoBehaviour {
         _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
         _SetAllBools("IsCrouching", _character.isCrouching);
         _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f || Input.GetAxis("Vertical") != 0f);
-        
+        _SetAllFloats("JumpMotion", Mathf.Abs(_jumpMotion - 1f));
+
         // trigger fire animation
         if (_character.attackCD > 0)
             _SetAllTriggers("Fire");
@@ -99,7 +96,7 @@ public class PlayerAnimationController : MonoBehaviour {
 
     private void _Debug_PrintAnim(Animator animator) {
         try {
-            print("currentAnim: " + animator.GetCurrentAnimatorClipInfo(0)?[0].clip.name);
+            print("currentAnim: " + animator.GetCurrentAnimatorClipInfo(0)[0].clip.name);
         } catch (System.IndexOutOfRangeException) {
             print("currentAnim: N/A");
         }
