@@ -35,19 +35,17 @@ public class IgnoreParentTransforms : MonoBehaviour {
     /// <param name="crouching">Check if the player is trying to crouch or not.</param>
     public void SetParentInstance(in bool enabled, in bool crouching) {
         // prevent multiple calls in Update()
-        if (enabled == _isActive) return; // originally uncommented
+        if (enabled == _isActive) return;
 
         transform.parent = (enabled) ? _newParent : _camParent;
         
         _isActive = enabled;
         _myPC.constraintActive = enabled;
-        
         // snap position to the appropriate coordinates if we're done crouching
         if (!enabled && !crouching) {
             transform.parent = _camParent;
             transform.localPosition = _originLocalPos;
             transform.localScale = Vector3.one;
         }
-
     }
 }

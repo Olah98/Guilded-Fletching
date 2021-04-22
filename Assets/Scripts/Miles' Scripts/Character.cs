@@ -644,7 +644,7 @@ public class Character : MonoBehaviour
             transform.localScale += incrementDir * Time.fixedDeltaTime;
             // prevent the player from "floating"
             cc.SimpleMove(incrementDir * Time.fixedDeltaTime);
-        } else if (!action) { // CONTINUE TO TEST THIS WHEN YOU GET BACK
+        } else if (!action) {
             ipt.SetParentInstance(false, action);
         }
     }
