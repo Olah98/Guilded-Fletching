@@ -37,13 +37,15 @@ public class IgnoreParentTransforms : MonoBehaviour {
         // prevent multiple calls in Update()
         if (enabled == _isActive) return;
 
-        _isActive = enabled;
         transform.parent = (enabled) ? _newParent : _camParent;
-        _myPC.constraintActive = enabled;
         
+        _isActive = enabled;
+        _myPC.constraintActive = enabled;
         // snap position to the appropriate coordinates if we're done crouching
         if (!enabled && !crouching) {
+            transform.parent = _camParent;
             transform.localPosition = _originLocalPos;
+            transform.localScale = Vector3.one;
         }
     }
 }

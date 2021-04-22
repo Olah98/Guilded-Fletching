@@ -107,10 +107,14 @@ public class Character : MonoBehaviour
     public bool      isCrouching    => _isCrouching;
     public SavedData getCurrentData => _currentData;
     public Quiver    getMyQuiver    => _myQuiver;
-    public int       getMyArrowType { get { return _myQuiver.GetArrowType(); } }
+    public int       getMyArrowType => _myQuiver.GetArrowType();
     public bool      isSquashed     { get {
         return Physics.Raycast(transform.position, Vector3.up, 1.2f);
     } }
+    public float totalJumpPower { get { 
+        return Mathf.Sqrt(jumpPower * -Physics.gravity.y * ((coyoteJump > 0) ? 1.2f : 1f));
+    } }
+    public Vector3 getVelocity => _velocity;
 
     private void Start()
     {
@@ -467,14 +471,7 @@ public class Character : MonoBehaviour
         {
             _canJump = false;
             //Adds force to jum pwith
-            if (coyoteJump > 0)
-            {
-                _velocity.y = Mathf.Sqrt(jumpPower * -Physics.gravity.y * 1.2f);
-            }
-            else
-            {
-                _velocity.y = Mathf.Sqrt(jumpPower * -Physics.gravity.y);
-            }
+            _velocity.y = totalJumpPower; //coyote jump handled in this property
             jumpCD = .5f;
             _coyoteJumpTime = 0f;
 
@@ -556,10 +553,13 @@ public class Character : MonoBehaviour
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) 
     {
-        if (hit.transform.tag == "Stoppable" && hit.point.y > hit.transform.position.y)
+        if (hit.transform.tag == "Stoppable" && hit.point.y > hit.transform.position.y) {
             transform.parent = hit.transform;
-        else
+            //print("parenting");
+        } else {
             transform.parent = _originParent;
+            //print("unparenting");
+        }
     }
 
     /// <summary>
@@ -576,6 +576,7 @@ public class Character : MonoBehaviour
             currentHp = 0;
             dead = true;
         }
+        _pAnimController.TriggerDamageAnim();
     }
 
     /// <summary>
@@ -630,9 +631,7 @@ public class Character : MonoBehaviour
     {
         speed = (action) ? maxSpeed * 0.6f : maxSpeed;
         _isCrouching = action;
-        float incrementor = Mathf.Lerp(minCrouchHeight,
-                                       1.0f,
-                                       transform.localScale.y);
+        float incrementor = Mathf.Lerp(minCrouchHeight, 1.0f, transform.localScale.y);
         incrementor        = (action) ? -incrementor : incrementor;
         bool isBoundaryHit = (action) ? transform.localScale.y <= minCrouchHeight
                                       : transform.localScale.y >= 1.0f;
@@ -641,10 +640,11 @@ public class Character : MonoBehaviour
         if (!isBoundaryHit)
         {
             ipt.SetParentInstance(true, action);
-            transform.localScale += new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime;
+            Vector3 incrementDir = new Vector3(0f, incrementor, 0f);
+            transform.localScale += incrementDir * Time.fixedDeltaTime;
             // prevent the player from "floating"
-            cc.SimpleMove(new Vector3(0f, incrementor, 0f) * Time.fixedDeltaTime);
-        } else {
+            cc.SimpleMove(incrementDir * Time.fixedDeltaTime);
+        } else if (!action) {
             ipt.SetParentInstance(false, action);
         }
     }
