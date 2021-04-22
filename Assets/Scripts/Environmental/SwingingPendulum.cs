@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class SwingingPendulum : MonoBehaviour
 {
+    //Author Miles Gomez
+    //Edited 4/13/2021
     // Start is called before the first frame update
     [Header ("Speed on animation, most comfortable to leave at 1")]
     [Tooltip("Default value is 1")]
