@@ -10,6 +10,8 @@ Summary: Controls the flow on animation for the player in it's various states.
     -Pulling string (drawing arrow)
     -Full charge    (FullyDrawn)
     -Release string (shooting)
+    -Crouching
+    -Take Damage
 */
 using UnityEngine;
 
@@ -19,36 +21,42 @@ using UnityEngine;
 public enum AnimState {
     Idle,            Walking,      Jumping,    LoadingArrow,
     SwitchingArrows, DrawingArrow, FullyDrawn, Shooting,
-    NULL
+    Crouching,       TakeDamage,   NULL
 }
+
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
-    /*
-        Presently working animations:
-            -Walking
-            -DrawingArrow
-            -FullyDrawn
-            -Shooting
-    */
-
-    public Animator handAnimator;
-    public Animator bowAnimator;
+    [SerializeField] private Animator _handAnimator;
+    [SerializeField] private Animator _bowAnimator;
+    public Animator handAnimator => _handAnimator;
+    public Animator bowAnimator  => _bowAnimator;
+    [SerializeField] private Animation[] _handHurtAnims;
+    [SerializeField] private Animation[] _bowHurtAnims;
 
     private Character _character;
+
     // debugging code
+    /*
     private AnimState _currentState;
     private readonly string[] _animStrs = {
         "Idle", "Walking", "Jumping", "LoadingArrow", 
         "SwitchingArrows", "DrawingArrow", "FullyDrawn", 
         "Shooting", "NULL"
     };
+    */
 
     private void Start() {
         _character = GetComponent<Character>();
-        _currentState = AnimState.Idle;
     }
 
+/*
+    Currently adding:
+        ----crouching : bool isCrouching
+        fully drawn (holding) (**NEW ANIMATION**)
+        ----jumping (check for not being grounded)
+        ----take damage (set a trigger for this)
+*/
     private void Update() {
         _SetAllFloats("BowCharge", _character.attackCharge);
 
@@ -57,12 +65,37 @@ public class PlayerAnimationController : MonoBehaviour {
             _SetAllFloats("DrawSpeed", _character.attackCharge / 100f);
         // set movement based animations
         _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
-        _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f 
-                                        || Input.GetAxis("Vertical") != 0f);
+        //_SetAllBools("IsCrouching", _character.isCrouching);
+        _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f || Input.GetAxis("Vertical") != 0f);
         
-        // trigger fire animation
+        /// trigger fire animation
         if (_character.attackCD > 0)
             _SetAllTriggers("Fire");
+        //_Debug_PrintAnim(_bowAnimator);
+    }
+
+    /// <summary>
+    /// Public mutator that triggers the TakeDamageAnimation state
+    /// </summary>
+    public void TriggerDamageAnim() {
+        /*
+            TODO:
+                Set if statements to prevent this animation from being called if 
+                the player has another animation playing that has a "higher"
+                priority.
+        */
+        //int damageIndex = Random.Range(0, _handHurtAnims.Length);
+        //_handAnimator
+
+        //_SetAllTriggers("Damage");
+    }
+
+    private void _Debug_PrintAnim(Animator animator) {
+        try {
+            print("currentAnim: " + animator.GetCurrentAnimatorClipInfo(0)?[0].clip.name);
+        } catch (System.IndexOutOfRangeException) {
+            print("currentAnim: N/A");
+        }
     }
 
     //functions below aid in cleaning up excessive lines of code due 
