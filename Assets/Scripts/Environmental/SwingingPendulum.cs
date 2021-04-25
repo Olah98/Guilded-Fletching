@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class SwingingPendulum : MonoBehaviour
+public class SwingingPendulum : MonoBehaviour, IBrambleable
 {
     //Author Miles Gomez
     //Edited 4/13/2021
@@ -42,6 +42,15 @@ public class SwingingPendulum : MonoBehaviour
             collision.gameObject.GetComponent<Character>().TakeDamage(damage);
         }
 
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="enabled"></param>
+    public void Bramble(in bool enabled) {
+        anim.enabled = !enabled;
+        force = (enabled) ? 0f : forceHolder;
     }
 
     public void Bind(float bindtime)

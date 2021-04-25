@@ -21,12 +21,7 @@ public class BaseArrow : MonoBehaviour {
         rB = GetComponent<Rigidbody>();
         isAbilityUsed = false;
     }
-/*
-    private void FixedUpdate() {
-        if (!rB.IsSleeping() && !isAbilityUsed)
-            transform.up = rB.velocity;
-    }
-*/
+    
     /// <summary>
     /// Inheritted function that will be implemented differently on each arrow 
     /// type.
@@ -35,12 +30,12 @@ public class BaseArrow : MonoBehaviour {
     protected virtual void OnCollisionEnter(Collision other) {
         if (other.transform.tag == "Enemy") {
             other.gameObject.GetComponent<BaseEnemy>().TakeDamage(damage);
-            Debug.Log("Enemy Collision");
+            //Debug.Log("Enemy Collision");
         }
         if (other.transform.tag == "Player")
         {
             other.gameObject.GetComponent<Character>().TakeDamage(damage);
-            Debug.Log("Damage dealt");
+            //Debug.Log("Damage dealt");
         }
         if (!isAbilityUsed) {
             Hit();

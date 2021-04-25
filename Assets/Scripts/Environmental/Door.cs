@@ -4,10 +4,11 @@ Date: 02/15/2021
 Summary: The class called from the Switch to open the Door's GameObject.
 */
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
-[System.Serializable]
+[Serializable]
 public class Door : MonoBehaviour
 {
     [Range(1f, 50f)]

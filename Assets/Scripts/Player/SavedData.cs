@@ -10,6 +10,7 @@ using System.Collections;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [Serializable]
 public class SavedData {
@@ -227,10 +228,11 @@ public class SavedData {
             s.volume = (s.tag != "Player") ? options.soundFXVol 
                                            : options.musicVol;
         }
-
-        GameObject.FindGameObjectWithTag("Player")
-            .GetComponent<Character>().SetOptionVals(options);
-
+        if (SceneManager.GetActiveScene().name != "Options")//By Warren
+        {
+            GameObject.FindGameObjectWithTag("Player")
+                .GetComponent<Character>().SetOptionVals(options);
+        }
     }
 
     /// <summary>
