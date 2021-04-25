@@ -111,7 +111,10 @@ public class Character : MonoBehaviour
     public bool      isSquashed     { get {
         return Physics.Raycast(transform.position, Vector3.up, 1.2f);
     } }
-
+    private void Awake()
+    {
+        if (GameObject.Find("Main Menu Music")) Destroy(GameObject.Find("Main Menu Music"));
+    }
     private void Start()
     {
         // intialize camera based values
