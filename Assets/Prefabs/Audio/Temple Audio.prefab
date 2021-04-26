@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4556032684539840894}
   - component: {fileID: 4556032684539840895}
+  - component: {fileID: 6281437915008465453}
   m_Layer: 0
   m_Name: Temple Audio
   m_TagString: Untagged
@@ -127,3 +128,15 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &6281437915008465453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4556032684539840832}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e7bad6e2637cfd74d930261fcca30685, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
