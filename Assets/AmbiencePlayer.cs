@@ -6,14 +6,20 @@ public class AmbiencePlayer : MonoBehaviour
 {
     // Start is called before the first frame update
     private AudioSource _ambience;
-    void Start()
+    [Tooltip("Between 0.0 and 1.0")]
+    [Range(0.0f, 1.0f)] public float maxVolume;
+    private void Start()
     {
-        
+        _ambience = gameObject.GetComponent<AudioSource>();
+        _ambience.volume = maxVolume * SavedData.GetStoredOptionsAt(1).masterVol * SavedData.GetStoredOptionsAt(1).musicVol;     
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        //_ambience.volume = .1f * 
+        _ambience.volume = maxVolume * SavedData.GetStoredOptionsAt(1).masterVol * SavedData.GetStoredOptionsAt(1).musicVol;
     }
+
+  
+
+
 }
