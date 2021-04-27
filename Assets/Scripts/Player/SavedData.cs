@@ -278,6 +278,11 @@ public class OptionsData {
     public float mouseSensitivity;
     public float baseFOV;
 
+    void Start()
+    {
+        Debug.Log("Save Data Running");
+    }
+
     public OptionsData () {}
 
     public OptionsData(SavedData data) {
