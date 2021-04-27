@@ -16,6 +16,11 @@ using TMPro;//By Warren
 
 public class Character : MonoBehaviour
 {
+    //Bay for Constants
+    //Rate at which the player heals. If the player takes 10 damage
+    //and the modifier is 2, then the player recovers in 5 seconds.
+    public const int DAMAGEMODIFIER = 3;
+
     [Header("GameObjects")]
     CharacterController cc;
     public Transform bowPosition;
@@ -48,8 +53,9 @@ public class Character : MonoBehaviour
     public float attackCharge;
 
     [Header("Health")]
-    public int maxHp;
-    public int currentHp;
+    //public int maxHp;
+    //public int currentHp;
+    private int damageTaken;
     public bool dead = false;
 
     [Header("UI Elements")]
@@ -569,14 +575,27 @@ public class Character : MonoBehaviour
     /// <param name="damage">Amount to damage player.</param>
     public void TakeDamage(int damage)
     {
-        currentHp -= damage;
+        if (damageTaken != 0)
+        {
+            // implement player death
+            damageTaken = 0;
+            dead = true;
+        } else
+        {
+            //Recovery time is damage / modifier in seconds
+            damageTaken = Mathf.FloorToInt(damage/DAMAGEMODIFIER);
+            StartCoroutine(RecoverHealth());
+        }
+        _pAnimController.TriggerDamageAnim();
+
+        //Old Build
+        /*currentHp -= damage;
         if (currentHp < 1)
         {
             // implement player death
             currentHp = 0;
             dead = true;
-        }
-        _pAnimController.TriggerDamageAnim();
+        }*/
     }
 
     /// <summary>
@@ -586,7 +605,7 @@ public class Character : MonoBehaviour
     /// <returns></returns>
     public SavedData UpdateAndGetSaveData()
     {
-        _currentData.playerHealth = currentHp;
+        //_currentData.playerHealth = currentHp;
         _currentData.s_Quiver = new SerializableQuiver(_myQuiver);
         // future implementations will handle checkpoint system
         return _currentData;
@@ -600,7 +619,7 @@ public class Character : MonoBehaviour
     public void UpdateCharacterToSaveData(in SavedData data)
     {
         _currentData = data;
-        currentHp = data.playerHealth;
+        //currentHp = data.playerHealth;
         _myQuiver.CopySerializedQuiver(data.s_Quiver);
         var options = SavedData.GetStoredOptionsAt(SavedData.currentSaveSlot);
         // get saved data's stored options, then apply to scene
@@ -725,4 +744,23 @@ public class Character : MonoBehaviour
         yield return Delay();
         SceneManager.LoadScene(level);
     }//LoadSceneCo
+
+   /* 
+    * RecoverHealth - By Warren 
+    * Recovers a point of damageTaken per second
+    * Turns on and off warning lights
+    */
+    public IEnumerator RecoverHealth()
+    {
+        if (damageTaken > 0)
+        {
+            yield return new WaitForSeconds(1f);
+            damageTaken--;
+            StartCoroutine(RecoverHealth());
+        } else
+        {
+
+        }
+    }//RecoverHealth
+
 }
