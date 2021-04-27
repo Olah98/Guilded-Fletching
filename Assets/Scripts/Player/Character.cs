@@ -118,6 +118,7 @@ public class Character : MonoBehaviour
 
     private void Start()
     {
+        Destroy(GameObject.Find("Main Menu Music"));
         // intialize camera based values
         _cam = Camera.main;
         _originParent = transform.parent;
