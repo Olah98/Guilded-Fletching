@@ -52,7 +52,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f4ece3e1a9f592419746582cc07d26f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  active: 0
+  active: 1
   mode: 0
   canvasAxis: 1
   paintObjects:
@@ -69,22 +69,18 @@ MonoBehaviour:
   brushRadius: 0
   density: 1
   rotationStep: 15
-  levelSizeX: 1000
-  levelSizeY: 1000
-  levelSizeZ: 1000
+  paintCanvasSize: 500
   preventCanvasBelow0: 1
   snapToGrid: 0
   snappingBase: 1
   gridSize: {x: 1, y: 1, z: 1}
-  extraOffset: {x: 0, y: 0, z: 0}
+  placementOffset: {x: 0, y: 0, z: 0}
   dynamicGrid: 0
   paintIgnoreColliding: 0
   alignWithSurface: 1
-  raycastCanvasOnly: 1
+  paintOnlyOnGround: 1
   alignWithStroke: 0
   alignAxis: 2
-  drawLevelBoundaries: 0
-  drawCanvasBorder: 0
   fillRect: 0
   placeOffset: {x: 0, y: 0, z: 0}
   padding: 2
@@ -92,12 +88,13 @@ MonoBehaviour:
   sameScaleForObjects: 0
   editLayer: Ignore Raycast
   canvasLayer: Water
-  canvasTransparent: 0
+  hideCanvas: 0
   rootGroupObjectName: '[LevelTiles]'
   paintCanvasName: '[GOP-Canvas]'
   sampleScreenDistance: 20
   enableSounds: 1
   showInfoBar: 1
+  autoSetTerrainLayer: 1
   MASK_ONLY_OBJECTS: -21
   MASK_CANVAS_ONLY: 16
   MASK_EDITLAYER_ONLY: 4
