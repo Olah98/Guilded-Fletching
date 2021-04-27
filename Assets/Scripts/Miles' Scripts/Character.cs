@@ -591,15 +591,6 @@ public class Character : MonoBehaviour
             }
         }
         _pAnimController.TriggerDamageAnim();
-
-        //Old Build
-        /*currentHp -= damage;
-        if (currentHp < 1)
-        {
-            // implement player death
-            currentHp = 0;
-            dead = true;
-        }*/
     }
 
     /// <summary>
