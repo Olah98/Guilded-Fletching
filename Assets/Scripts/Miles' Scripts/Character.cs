@@ -585,6 +585,10 @@ public class Character : MonoBehaviour
             //Recovery time is damage / modifier in seconds
             damageTaken = Mathf.FloorToInt(damage/DAMAGEMODIFIER);
             StartCoroutine(RecoverHealth());
+            if (_blackScreen != null)
+            {
+                _blackScreen.GetComponent<ScreenShift>().ToggleDamage();
+            }
         }
         _pAnimController.TriggerDamageAnim();
 
@@ -759,7 +763,10 @@ public class Character : MonoBehaviour
             StartCoroutine(RecoverHealth());
         } else
         {
-
+            if (_blackScreen != null)
+            {
+                _blackScreen.GetComponent<ScreenShift>().ToggleDamage();
+            }
         }
     }//RecoverHealth
 

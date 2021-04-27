@@ -1,7 +1,7 @@
 ﻿/*
 Author: Warren Rose II
 Data: 4/2/2021
-Summary: Enabling screen transitions
+Summary: Enabling screen transitions and HP damage
 Using Reference:
 ** https://turbofuture.com/graphic-design-video/How-to-Fade-to-Black-in-Unity
 */
@@ -20,7 +20,11 @@ public class ScreenShift : MonoBehaviour
     private float _red, _green, _blue, _alpha;
     public bool fadeScreen;
     public bool goDark;
+    public bool showDamage;
     public float speed;
+    public Image redBorder;
+    private Image _redBorder;
+    private RectTransform _rectangleRB;
 
     /*
     * Start
@@ -35,6 +39,10 @@ public class ScreenShift : MonoBehaviour
         _clear = new Color(_red, _green, _blue, 0);
         _rectangle = GetComponent<RectTransform>();
         _rectangle.sizeDelta = new Vector2(Screen.width, Screen.height);
+
+        _redBorder = redBorder.GetComponent<Image>();
+        _rectangleRB = redBorder.GetComponent<RectTransform>();
+        _rectangleRB.sizeDelta = new Vector2(Screen.width, Screen.height);
         Change();
     }//Start
 
@@ -58,6 +66,15 @@ public class ScreenShift : MonoBehaviour
             goDark = !goDark;
         }
     }//Change
+
+    /*
+    * ToggleDamage
+    * Turns on and off Damage Indicators
+    */
+    public void ToggleDamage()
+    {
+        _redBorder.enabled = !_redBorder.enabled;
+    }//ToggleDamage
 
     /*
     * FadeScreen
