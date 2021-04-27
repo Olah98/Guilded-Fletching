@@ -577,7 +577,7 @@ public class Character : MonoBehaviour
             currentHp = 0;
             dead = true;
         }
-        _pAnimController.TriggerDamageAnim();
+       // _pAnimController.TriggerDamageAnim();
     }
 
     /// <summary>
