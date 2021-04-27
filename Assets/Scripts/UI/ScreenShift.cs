@@ -17,6 +17,7 @@ public class ScreenShift : MonoBehaviour
     private Color _color;
     private Color _solid;
     private Color _clear;
+    private Color _lerpedColor;
     private float _red, _green, _blue, _alpha;
     public bool fadeScreen;
     public bool goDark;
@@ -25,6 +26,8 @@ public class ScreenShift : MonoBehaviour
     public Image redBorder;
     private Image _redBorder;
     private RectTransform _rectangleRB;
+    private bool _damageHealed;
+
 
     /*
     * Start
@@ -43,8 +46,28 @@ public class ScreenShift : MonoBehaviour
         _redBorder = redBorder.GetComponent<Image>();
         _rectangleRB = redBorder.GetComponent<RectTransform>();
         _rectangleRB.sizeDelta = new Vector2(Screen.width, Screen.height);
+
+        _lerpedColor = Color.clear;
         Change();
     }//Start
+
+    /*
+    * Fixed Update
+    * Flashes screen when hit
+    */
+    public void FixedUpdate()
+    {
+        if (_redBorder.enabled)
+        {
+            _lerpedColor = Color.Lerp(Color.clear, Color.red, Mathf.PingPong(Time.time, 1));
+            _redBorder.color = _lerpedColor;
+            if (_damageHealed && (_lerpedColor == Color.clear))
+            {
+                _damageHealed = false;
+                _redBorder.enabled = false;
+            }
+        }
+    }//Fixed Update
 
     /*
     * Change
@@ -73,7 +96,13 @@ public class ScreenShift : MonoBehaviour
     */
     public void ToggleDamage()
     {
-        _redBorder.enabled = !_redBorder.enabled;
+        if (!_redBorder.enabled) {
+            _damageHealed = false;
+            _redBorder.enabled = true;
+        } else
+        {
+            _damageHealed = !_damageHealed;
+        }
     }//ToggleDamage
 
     /*
