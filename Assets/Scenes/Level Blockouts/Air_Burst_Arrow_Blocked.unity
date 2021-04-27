@@ -59873,6 +59873,16 @@ PrefabInstance:
       propertyPath: myDoor
       value: 
       objectReference: {fileID: 1295700572}
+    - target: {fileID: 6450973583707879104, guid: 6c05eef89a2bfda4fa3a0d21055ef16a,
+        type: 3}
+      propertyPath: doorObjs.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6450973583707879104, guid: 6c05eef89a2bfda4fa3a0d21055ef16a,
+        type: 3}
+      propertyPath: doorObjs.Array.data[0]
+      value: 
+      objectReference: {fileID: 1295700572}
     - target: {fileID: 6450973583707879111, guid: 6c05eef89a2bfda4fa3a0d21055ef16a,
         type: 3}
       propertyPath: m_RootOrder
@@ -67035,7 +67045,7 @@ PrefabInstance:
     - target: {fileID: 6916897290372462705, guid: 037e9c378fb0b5048846d8600a895b8e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.655
+      value: -3.43
       objectReference: {fileID: 0}
     - target: {fileID: 6916897290519919146, guid: 037e9c378fb0b5048846d8600a895b8e,
         type: 3}

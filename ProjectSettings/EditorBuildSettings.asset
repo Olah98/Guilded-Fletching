@@ -18,26 +18,26 @@ EditorBuildSettings:
     path: Assets/Scenes/MenuScenes/LevelSelect.unity
     guid: d2d01042cd2679240b69e4635aa44cce
   - enabled: 1
-    path: Assets/Scenes/Level Blockouts/Warp_Arrow_Blocked.unity
-    guid: eb144bbad4a90ab44a613a5e41c36e42
-  - enabled: 1
-    path: Assets/Scenes/Level Blockouts/BOBrambleTutorial.unity
-    guid: c0317c6aa40a6b5499c6ac23f6cb7c38
-  - enabled: 1
-    path: Assets/Scenes/Level Blockouts/WalkingTutorial.unity
-    guid: 2acffe05b41738948b77d6ac35355f5d
-  - enabled: 1
-    path: Assets/Scenes/MenuScenes/Credits.unity
-    guid: e468fe91986ce7c43878d4bd2c9f05d6
-  - enabled: 1
-    path: Assets/Scenes/Level Blockouts/Air_Burst_Arrow_Blocked.unity
-    guid: 72133df08c66e3642950e0be878a39aa
+    path: Assets/Scenes/FinalVersions/Final_Movment.unity
+    guid: 5d79aed0f7a49a94891596bf67607fc4
   - enabled: 1
     path: Assets/Scenes/Level Blockouts/BOShootingTutorial.unity
     guid: 7bd8cc1bdc44eeb40b6cf26c314edf71
   - enabled: 1
-    path: Assets/Scenes/Level Blockouts/Combat-Focused_Blocked.unity
-    guid: 65e469e7e30978a47bc96c66a77ccffe
+    path: Assets/Scenes/Level Blockouts/BOAdvancedShooting.unity
+    guid: 109c250a0d5cfd74fa303c8cd08d723d
+  - enabled: 1
+    path: Assets/Scenes/Level Blockouts/BOBrambleTutorial.unity
+    guid: c0317c6aa40a6b5499c6ac23f6cb7c38
+  - enabled: 1
+    path: Assets/Scenes/Level Blockouts/Warp_Arrow_Blocked.unity
+    guid: eb144bbad4a90ab44a613a5e41c36e42
+  - enabled: 1
+    path: Assets/Scenes/Level Blockouts/Air_Burst_Arrow_Blocked.unity
+    guid: 72133df08c66e3642950e0be878a39aa
+  - enabled: 1
+    path: Assets/Scenes/MenuScenes/Credits.unity
+    guid: e468fe91986ce7c43878d4bd2c9f05d6
   - enabled: 1
     path: Assets/Scenes/MenuScenes/LevelEnd.unity
     guid: a16189c9fb2914647ad704838e639901
