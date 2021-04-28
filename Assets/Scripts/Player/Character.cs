@@ -3,6 +3,7 @@ Author: Miles Gomez & Christian Mullins
 Date: 3/15/2021
 Summary: Script containing values of the player, their movement, and camera
     manipulation in-game.
+Referencing: DapperDino's UI Tutorial https://www.youtube.com/watch?v=Ikt5T-v2ZrM
 */
 using System.Collections;
 using System.Collections.Generic;
@@ -62,6 +63,7 @@ public class Character : MonoBehaviour
     public TMP_Text chargeText;//Change by Warren
     public Slider chargeSlider;//Added by Warren
     private GameObject _blackScreen; //By Warren
+    private Controls _controls; //By Warren
 
     /* BEGIN FIRSTPERSONCAMERA VARIABLES */
     #region Camera_Variables
@@ -106,6 +108,12 @@ public class Character : MonoBehaviour
     private PlayerAnimationController _pAnimController;
     private Transform _originParent;
     private bool _runOnce;
+    private bool _isJumpPressed;
+    private bool _crouchReady;
+    private bool _fireReady;
+    private bool _zoomInReady;
+    private bool _zoomOutReady;
+
 
     public int arrowAllowed = 5;
 
@@ -121,6 +129,30 @@ public class Character : MonoBehaviour
         return Mathf.Sqrt(jumpPower * -Physics.gravity.y * ((coyoteJump > 0) ? 1.2f : 1f));
     } }
     public Vector3 getVelocity => _velocity;
+
+
+    private void Awake()
+    {
+        _controls = new Controls(); //By Warren
+        _controls.Player.Jump.performed += ctx => _isJumpPressed = true;
+        _controls.Player.Crouch.started += ctx => _crouchReady = true;
+        _controls.Player.Crouch.performed += ctx => _crouchReady = false;
+        _controls.Player.Fire.started += ctx => _fireReady = true;
+        _controls.Player.Fire.performed += ctx => _fireReady = false;
+        _controls.Player.Zoom.started += ctx => _zoomInReady = true;
+        _controls.Player.Zoom.performed += ctx => _zoomOutReady = true;
+        _controls.Player.Interact.performed += ctx => Interact();
+    }
+
+    private void OnEnable()
+    {
+        _controls.Enable(); //By Warren
+    }
+
+    private void OnDisable()
+    {
+        _controls.Disable(); //By Warren
+    }
 
     private void Start()
     {
@@ -200,8 +232,6 @@ public class Character : MonoBehaviour
                 {
                     if (hit.transform.GetComponent<Switch>().isInteractable)
                     {
-                        if (Input.GetKeyDown(KeyCode.E))
-                            InteractWithObject(hit.transform.gameObject);
                         // display hint only under this condition
                         interactionHintText.enabled = true;
                     }
@@ -209,8 +239,6 @@ public class Character : MonoBehaviour
                 }
                 else
                 {
-                    if (Input.GetKeyDown(KeyCode.E))
-                        InteractWithObject(hit.transform.gameObject);
                     // display hint only under this condition
                     interactionHintText.enabled = true;
                 }
@@ -220,12 +248,14 @@ public class Character : MonoBehaviour
         else interactionHintText.enabled = false;
 
         // zoom in/out using RMB
-        if (Input.GetMouseButtonDown(1))
+        if (_zoomInReady)
         {
             StartCoroutine("ZoomIn");
+            _zoomInReady = false;// By Warren
         }
-        else if (Input.GetMouseButtonUp(1) && _cam.fieldOfView < s_baseFOV)
+        else if (_zoomOutReady && _cam.fieldOfView < s_baseFOV)
         {
+            _zoomOutReady = false;//By Warren
             StopCoroutine("ZoomIn");
             StartCoroutine("ZoomOut");
         }
@@ -261,19 +291,22 @@ public class Character : MonoBehaviour
             //lowers attack cd
         }
 
-        bool isJumpPressed = Input.GetButton("Jump");
-        if ((isJumpPressed && _canJump) || (isJumpPressed && _coyoteJumpTime > 0f))
+        if (_isJumpPressed)
         {
-            if (!_canJump && _coyoteJumpTime > 0f)
+            _isJumpPressed = false;
+            if (_canJump || (_coyoteJumpTime > 0f))
+            {
+                if (!_canJump && _coyoteJumpTime > 0f)
+                {
+                    _velocity.y = 0;
+                }
+                Jump();
+                //Jumps on input
+            }
+            else if (_canJump)
             {
                 _velocity.y = 0;
             }
-            Jump();
-            //Jumps on input
-        }
-        else if (isJumpPressed && _canJump)
-        {
-            _velocity.y = 0;
         }
 
         if (_impact.magnitude > 0.2)
@@ -286,8 +319,11 @@ public class Character : MonoBehaviour
     private void FixedUpdate()
     {
         // gather look input appropriately
-        float xInput = Input.GetAxis("Mouse X") * lookSpeed * s_mouseSensitivity;
-        float yInput = -Input.GetAxis("Mouse Y") * lookSpeed * s_mouseSensitivity;
+        //By Warren from Dapper Dino YT Tutorial Referenced above
+        var lookInput = _controls.Player.Look.ReadValue<Vector2>();
+
+        float xInput = lookInput.x * lookSpeed * s_mouseSensitivity;
+        float yInput = -lookInput.y * lookSpeed * s_mouseSensitivity;
         Vector3 lookRot = new Vector3(0f, xInput, 0f);
         // check if this point of looking rotation is valid
         if (yInput + _cam.transform.localEulerAngles.x < lowerBoundary
@@ -310,11 +346,10 @@ public class Character : MonoBehaviour
         // if the player is climbing, movement will be handled by Climber.cs
         if (isClimbing) return;
 
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        //Detects WASD movement or Jump
-
-        Vector3 move = transform.right * horizontalInput + transform.forward * verticalInput;
+        //By Warren from Dapper Dino YT Tutorial Referenced above
+        var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
+       
+        Vector3 move = transform.right * movementInput.x + transform.forward * movementInput.y;
         if (!dead && cc.enabled == true)
         {
             cc.Move(move.normalized * speed * Time.fixedDeltaTime);
@@ -344,12 +379,10 @@ public class Character : MonoBehaviour
             _jumpTime -= Time.fixedDeltaTime;
         }
 
-        //Altered by Warren - Input Manager's default "Fire3" was already Left Shift
-        //Now also includes MiddleMouseButton
-        //_Crouching(Input.GetKey(KeyCode.LeftShift));
-        _Crouching(Input.GetButton("Fire3"));
+        //Altered by Warren
+        _Crouching(_crouchReady);
 
-        if (Input.GetButton("Fire1"))
+        if (_fireReady)
         {
             if (attackCD <= 0 && !dead)
             {
@@ -437,6 +470,24 @@ public class Character : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
         yield return null;
+    }
+
+    /// <summary>
+    /// If the logic above means the interaction text is enabled then hitting
+    /// the key will trigger the object in question
+    /// </summary>
+    private void Interact()
+    {
+        if (interactionHintText.enabled == true)
+        {
+            if (Physics.Raycast(_cam.transform.position, _cam.transform.forward, out var hit, 3.5f))
+            {
+                if (hit.transform.tag == "Interactable")
+                {
+                    InteractWithObject(hit.transform.gameObject);
+                }
+            }
+        }
     }
 
     /// <summary>
