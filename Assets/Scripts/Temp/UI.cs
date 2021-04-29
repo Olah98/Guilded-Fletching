@@ -220,6 +220,7 @@ public class UI : MonoBehaviour
             var oc = optionMenu.GetComponent<OptionsController>();
             SavedData.SetOptionsInScene(oc.PackControllerOptions());
             oc.SaveOptionsToCurrentData();
+            AudioMaster.AudioM.SetVolumes(SavedData.GetStoredOptionsAt(1).masterVol, SavedData.GetStoredOptionsAt(1).musicVol);
         }
         optionMenu.SetActive(showing);
         pausePrompt.SetActive(!showing);
