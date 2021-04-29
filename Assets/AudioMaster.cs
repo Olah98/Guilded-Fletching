@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class AudioMaster : MonoBehaviour
 {
+    //Author: Miles Gomez
+    //Edited 4/29/2021
     // Start is called before the first frame update
     public static AudioMaster AudioM;
     private GameObject[] _AudioObjects;
@@ -16,11 +18,6 @@ public class AudioMaster : MonoBehaviour
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void SetVolumes(float master, float ambient)
     {
