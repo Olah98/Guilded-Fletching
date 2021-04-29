@@ -11,7 +11,7 @@ public class Quiver : MonoBehaviour
 {
     // public getters added by Christian for serialization
     public int[,] getLoadout => loadout;
-    public int getEquipped   => equipped;
+    public int getEquipped => equipped;
 
     //First segment is Ammo Type
     //Second segment is the integer values for access status and amount used
@@ -19,6 +19,7 @@ public class Quiver : MonoBehaviour
     private int equipped;
     // added by Christian to display proper arrow in the player's hand
     private Character _character;
+    private Controls _controls;
 
     //enum for checking stats
     enum Ammo : int
@@ -32,9 +33,40 @@ public class Quiver : MonoBehaviour
     public const int UNREADY = 3, READY = 4, ACCESS = 0, RECORD = 1;
 
     /*
-    * Start
-    * Initializing loadout
+    * Awake
+    * Initializing controls
     */
+    private void Awake()
+    {
+        _controls = new Controls();
+        _controls.Player.Standard.performed += ctx => EquipStandard();
+        _controls.Player.Bramble.performed += ctx => EquipBramble();
+        _controls.Player.Warp.performed += ctx => EquipWarp();
+        _controls.Player.Airburst.performed += ctx => EquipAirburst();
+    }//Awake
+
+    /*
+     * On Enable
+     * Enabling controls
+     */
+    private void OnEnable()
+    {
+        _controls.Enable();
+    }//OnEnable
+
+    /*
+     * On Disable
+     * Disabling controls
+     */
+    private void OnDisable()
+    {
+        _controls.Disable();
+    }//OnDisable
+
+    /*
+     * Start
+     * Initializing loadout
+     */
     void Start()
     {
         //Initial loadout
@@ -50,30 +82,15 @@ public class Quiver : MonoBehaviour
         _character = GetComponent<Character>();
     }//Start
 
-
     /*
-    * Update 
-    * Called once per frame
-    * Listens for keyboard selection, changes equipped selection if accessible
+    * Equip Standard, Equip Bramble, Equip Warp, Equip Airburst
+    * Called by the controls set in the Input Action schema,
+    * these set the equipped arrow if it meets the given logic
     */
-    void Update()
+    private void EquipStandard()
     {
         //don't accept input if the player has drawn an arrow
-        if (_character.attackCharge < 1) 
-        {
-            CheckKeyboardInput();
-        }
-    }//Update
-
-    /*
-    * Check Keyboard Input
-    * Called by Update
-    * Listens for keyboard selection, changes equipped selection if accessible
-    */
-    void CheckKeyboardInput()
-    {
-        if (Input.GetKeyDown(KeyCode.Alpha1)
-            || Input.GetKeyDown(KeyCode.Keypad1))
+        if (_character.attackCharge < 1) //By Christian
         {
             if (loadout[(int)Ammo.Standard, ACCESS] == READY)
             {
@@ -97,8 +114,12 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Standard arrows");
             }
         }
-        if (Input.GetKeyDown(KeyCode.Alpha2)
-            || Input.GetKeyDown(KeyCode.Keypad2))
+    }//EquipStandard
+
+    private void EquipBramble()
+    {
+        //don't accept input if the player has drawn an arrow
+        if (_character.attackCharge < 1) //By Christian
         {
             if (loadout[(int)Ammo.Bramble, ACCESS] == READY)
             {
@@ -122,8 +143,12 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Bramble arrows");
             }
         }
-        if (Input.GetKeyDown(KeyCode.Alpha3)
-            || Input.GetKeyDown(KeyCode.Keypad3))
+    }//EquipBramble
+
+    private void EquipWarp()
+    {
+        //don't accept input if the player has drawn an arrow
+        if (_character.attackCharge < 1) //By Christian
         {
             if (loadout[(int)Ammo.Warp, ACCESS] == READY)
             {
@@ -147,8 +172,12 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Warp arrows");
             }
         }
-        if (Input.GetKeyDown(KeyCode.Alpha4)
-            || Input.GetKeyDown(KeyCode.Keypad4))
+    }//EquipWarp
+
+    private void EquipAirburst()
+    {
+        //don't accept input if the player has drawn an arrow
+        if (_character.attackCharge < 1) //By Christian
         {
             if (loadout[(int)Ammo.Airburst, ACCESS] == READY)
             {
@@ -172,8 +201,7 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Airburst arrows");
             }
         }
-    }//CheckKeyboardInput
-
+    }//EquipAirburst
 
     /*
     * Load
@@ -549,8 +577,137 @@ public class Quiver : MonoBehaviour
     /// instance of the class for initialization.
     /// </summary>
     /// <param name="savedInstance">Instance that's being copied.</param>
-    public void CopySerializedQuiver(in SerializableQuiver serialized) {
+    public void CopySerializedQuiver(in SerializableQuiver serialized)
+    {
         this.equipped = serialized.equipped;
-        this.loadout  = serialized.loadout;
+        this.loadout = serialized.loadout;
     }
+
+    /* FUNCTION BELOW OLD BUILD */
+    /*
+   * Update 
+   * Called once per frame
+   * Listens for keyboard selection, changes equipped selection if accessible
+   */
+    /*
+    void Update()
+    {
+        //don't accept input if the player has drawn an arrow
+        if (_character.attackCharge < 1) //By Christian
+        {
+            CheckKeyboardInput();
+        }
+    }//Update
+    */
+
+    /*
+    * Check Keyboard Input
+    * Called by Update
+    * Listens for keyboard selection, changes equipped selection if accessible
+    */
+    /*
+    void CheckKeyboardInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha1)
+            || Input.GetKeyDown(KeyCode.Keypad1))
+        {
+            if (loadout[(int)Ammo.Standard, ACCESS] == READY)
+            {
+                if (equipped != (int)Ammo.Standard)
+                {
+                    equipped = (int)Ammo.Standard;
+                    _character.SetArrowInHandByIndex(0);
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Standard, RECORD] +
+                        " Standard arrows");
+                    return; //handles key-mashing
+                }
+                else
+                {
+                    Debug.Log(loadout[(int)Ammo.Standard, RECORD] +
+                        " Standard type arrows used so far");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Standard arrows");
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2)
+            || Input.GetKeyDown(KeyCode.Keypad2))
+        {
+            if (loadout[(int)Ammo.Bramble, ACCESS] == READY)
+            {
+                if (equipped != (int)Ammo.Bramble)
+                {
+                    equipped = (int)Ammo.Bramble;
+                    _character.SetArrowInHandByIndex(1);
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Bramble, RECORD] +
+                        " Bramble arrows");
+                    return; //handles key-mashing
+                }
+                else
+                {
+                    Debug.Log(loadout[(int)Ammo.Bramble, RECORD] +
+                        " Bramble type arrows used so far");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Bramble arrows");
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3)
+            || Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            if (loadout[(int)Ammo.Warp, ACCESS] == READY)
+            {
+                if (equipped != (int)Ammo.Warp)
+                {
+                    equipped = (int)Ammo.Warp;
+                    _character.SetArrowInHandByIndex(2);
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Warp, RECORD] +
+                        " Warp arrows");
+                    return; //handles key-mashing
+                }
+                else
+                {
+                    Debug.Log(loadout[(int)Ammo.Warp, RECORD] +
+                        " Warp type arrows used so far");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Warp arrows");
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha4)
+            || Input.GetKeyDown(KeyCode.Keypad4))
+        {
+            if (loadout[(int)Ammo.Airburst, ACCESS] == READY)
+            {
+                if (equipped != (int)Ammo.Airburst)
+                {
+                    equipped = (int)Ammo.Airburst;
+                    _character.SetArrowInHandByIndex(3);
+                    Debug.Log("Equipped. You have used " +
+                        loadout[(int)Ammo.Airburst, RECORD] +
+                        " Airburst arrows");
+                    return; //handles key-mashing
+                }
+                else
+                {
+                    Debug.Log(loadout[(int)Ammo.Airburst, RECORD] +
+                        " Airburst type arrows used so far");
+                }
+            }
+            else
+            {
+                Debug.Log("You're out of Airburst arrows");
+            }
+        }
+    }//CheckKeyboardInput
+    */
 }

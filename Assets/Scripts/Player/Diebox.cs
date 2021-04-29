@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Diebox : MonoBehaviour
 {
+    //Author Miles Gomez
     // Start is called before the first frame update
     void Start()
     {

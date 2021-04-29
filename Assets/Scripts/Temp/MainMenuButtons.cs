@@ -7,6 +7,7 @@ using UnityEngine;
 public class MainMenuButtons : MonoBehaviour
 {
     public Button cont;
+    public GameObject music;
     private GameObject blackScreen;
 
     private void Start()
@@ -106,7 +107,9 @@ public class MainMenuButtons : MonoBehaviour
             sceneToLoad != "Warren_Test"))
         {
             //SceneManager.LoadScene(SaveManager.instance.activeSave.sceneName);
+            Destroy(music);
             StartCoroutine(LoadSceneCo(sceneToLoad)); //By Warren
+            
         }
     }//Continue
 
