@@ -9,14 +9,11 @@ using UnityEngine.Audio;
 public class UI : MonoBehaviour
 {
     public GameObject pauseMenu;
-    //public GameObject controlMenu;
     public GameObject optionMenu;
-   // public GameObject restartPrompt;
     public GameObject mainMenuPrompt;
     public GameObject controlsPrompt; //By Warren
     public GameObject quitPrompt;
     public GameObject pauseBG;
-   // public GameObject howToPlay;
 
     // Character ref to aid in persistant data
     private Character character;
@@ -30,6 +27,8 @@ public class UI : MonoBehaviour
 
     private GameObject blackScreen; //By Warren
 
+    private Controls _controls; //By Warren
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -41,40 +40,47 @@ public class UI : MonoBehaviour
         character = GameObject.FindGameObjectWithTag("Player")
                                 .GetComponent<Character>();
         pausePrompt = mainMenuPrompt.transform.parent.gameObject;
+
+        _controls = new Controls(); //By Warren
+        _controls.Player.Cancel.performed += ctx => ToggleMenu();
+    }
+
+    private void OnEnable()
+    {
+        _controls.Enable(); //By Warren
+    }
+
+    private void OnDisable()
+    {
+        _controls.Disable(); //By Warren
     }
 
     private void Start()
     {
         Application.targetFrameRate = Screen.currentResolution.refreshRate;
 
-
         Time.timeScale = 1;
 
         blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
     }
 
-    // Update is called once per frame
-    void Update()
+    /// <summary>
+    /// Toggles Menu
+    /// </summary>
+    private void ToggleMenu()
     {
-        //Altered by Warren - Input Manager's default "Cancel" was already ESC
-        //if (Input.GetKeyDown(KeyCode.Escape))
-        if (Input.GetButtonDown("Cancel"))
+        if (_isPaused)
         {
-            if (_isPaused)
-            {
-                UnPause();
-            }
-            else
-            {
-                
-                Pause();
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
+            UnPause();
+        }
+        else
+        {
+
+            Pause();
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
     }
-
-
 
     /// <summary>
     /// Pause Game
@@ -119,14 +125,10 @@ public class UI : MonoBehaviour
     /// </summary>
     public void HideAll()
     {
-        //Hide(controlMenu);
         Hide(pauseMenu);
         Hide(quitPrompt);
         Hide(mainMenuPrompt);
         Hide(controlsPrompt);
-        // Hide(restartPrompt);
-        // Hide(optionMenu);
-        //Hide(howToPlay);
     }
 
     /// <summary>
@@ -134,12 +136,10 @@ public class UI : MonoBehaviour
     /// </summary>
     public void Restart()
     {
-        
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
         SaveManager.instance.DeleteSave();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
         //No fade here, has bugs
     }
 
@@ -148,7 +148,6 @@ public class UI : MonoBehaviour
         Debug.Log("Restart Level(Currently just loads current active scene for testing purposes");
         Time.timeScale = 1;
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        //StartCoroutine(LoadSceneCo(SceneManager.GetActiveScene().name));//By Warren
         //No fade here, has bugs
     }
 
@@ -162,7 +161,6 @@ public class UI : MonoBehaviour
 
         //store values!!
         Debug.Log("Quit Game");
-        //Application.Quit();
         Time.timeScale = 1; //By Warren - fixed bug delaying Coroutine
         StartCoroutine(ExitGameCo()); //By Warren
     }
@@ -175,12 +173,11 @@ public class UI : MonoBehaviour
     {
         if (value)
         {
-            // persisten data handling (by Christian)
+            // persistent data handling (by Christian)
             var curData = character.UpdateAndGetSaveData();
             StartCoroutine(SavedData.CutCurrentPlayTime(curData));
 
             Time.timeScale = 1;
-            //SceneManager.LoadScene("MainMenu");
             StartCoroutine(LoadSceneCo("MainMenu"));//By Warren
             Debug.Log("Go To Main Menu");
         }
@@ -188,7 +185,6 @@ public class UI : MonoBehaviour
         {
             ShowMenu(pauseMenu);
         }
-
     }
 
     /// <summary>
@@ -197,7 +193,6 @@ public class UI : MonoBehaviour
     /// <param name="menu"> Menu to Show</param>
     public void ShowMenu(GameObject menu)
     {
-        //HideAll();
         menu.SetActive(true);
     }
 
@@ -215,11 +210,14 @@ public class UI : MonoBehaviour
     /// Enable or disable showing the options screen based on parameter.
     /// </summary>
     /// <param name="showing">Bool to activate Options.</param>
-    public void ToggleOptions(bool showing) {
-        if (!showing) {
+    public void ToggleOptions(bool showing)
+    {
+        if (!showing)
+        {
             var oc = optionMenu.GetComponent<OptionsController>();
             SavedData.SetOptionsInScene(oc.PackControllerOptions());
             oc.SaveOptionsToCurrentData();
+            AudioMaster.AudioM.SetVolumes(SavedData.GetStoredOptionsAt(1).masterVol, SavedData.GetStoredOptionsAt(1).musicVol);
         }
         optionMenu.SetActive(showing);
         pausePrompt.SetActive(!showing);

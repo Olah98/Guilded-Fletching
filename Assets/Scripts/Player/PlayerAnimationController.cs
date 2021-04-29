@@ -12,6 +12,7 @@ Summary: Controls the flow on animation for the player in it's various states.
     -Release string (shooting)
     -Crouching
     -Take Damage
+Referencing: DapperDino's UI Tutorial https://www.youtube.com/watch?v=Ikt5T-v2ZrM
 */
 using UnityEngine;
 using UnityEngine.Animations;
@@ -39,12 +40,29 @@ public class PlayerAnimationController : MonoBehaviour {
     private Character _character;
     private AnimatorOverrideController _handOverride;
     private AnimatorOverrideController _bowOverride;
+    private Controls _controls; //By Warren
 
     /*
         TODO:
             Interpolate motion multiplier based on values.
     */
     private float _jumpMotion => Mathf.Clamp(_character.getVelocity.y / _character.totalJumpPower, 0f, _character.totalJumpPower);
+
+    private void Awake()
+    {
+        _controls = new Controls(); //By Warren
+        //_controls.Player.Jump.performed += ctx => Jump();
+    }
+
+    private void OnEnable()
+    {
+        _controls.Enable(); //By Warren
+    }
+
+    private void OnDisable()
+    {
+        _controls.Disable(); //By Warren
+    }
 
     private void Start() {
         _character = GetComponent<Character>();
@@ -60,6 +78,9 @@ public class PlayerAnimationController : MonoBehaviour {
         ----take damage (set a trigger for this)
 */
     private void Update() {
+        //By Warren from Dapper Dino YT Tutorial Referenced above
+        var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
+
         _SetAllFloats("BowCharge", _character.attackCharge);
 
         // set draw animation to sync with charge values
@@ -68,7 +89,7 @@ public class PlayerAnimationController : MonoBehaviour {
         // set movement based animations
         _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
         _SetAllBools("IsCrouching", _character.isCrouching);
-        _SetAllBools("IsMoving", Input.GetAxis("Horizontal") != 0f || Input.GetAxis("Vertical") != 0f);
+        _SetAllBools("IsMoving", movementInput != Vector2.zero);
         _SetAllFloats("JumpMotion", Mathf.Abs(_jumpMotion - 1f));
 
         // trigger fire animation

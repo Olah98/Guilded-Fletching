@@ -63,10 +63,16 @@ public class Switch : MonoBehaviour {
         if (isFlipped) return;
 
         isFlipped = true;
-        UpdateColor();//By Warren
         
         doorObjs.ForEach(obj => {
-            if (obj.IsAllSwitchesFlipped())
+            if (obj is TimedDoor) {
+                var tDoor = (TimedDoor)obj;
+                if (!tDoor.isClosing && tDoor.IsAllSwitchesFlipped())
+                    StartCoroutine(tDoor.Open());
+                else if (tDoor.isClosing)
+                    isFlipped = false;
+            }
+            else if (obj.IsAllSwitchesFlipped())
                 StartCoroutine(obj.Open());
         });
         hingedObjs.ForEach(obj => {
@@ -74,6 +80,8 @@ public class Switch : MonoBehaviour {
                 StartCoroutine(obj.Open());
         });
         platformObjs.ForEach(obj => { obj.IsAllSwitchesFlipped(); });
+        // update color at the end in case the ForEach check reverses the flip
+        UpdateColor();//By Warren
     }
 
     /// <summary>
@@ -90,7 +98,8 @@ public class Switch : MonoBehaviour {
             this.tag = "Interactable"; //By Warren
         }
     }
-
+/*
+    //COMMENTED OUT BECAUSE THIS COLLISION IS NOW BEING HANDLED BY RAYCASTING INSTEAD
     /// <summary>
     /// Check if an arrow hits the switch, then activate.
     /// </summary>
@@ -107,7 +116,7 @@ public class Switch : MonoBehaviour {
             }
         }
     }
-    
+ */   
     public void ArrowHit(GameObject other)
     {
         HitSwitch();
