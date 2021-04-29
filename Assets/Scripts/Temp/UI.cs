@@ -56,7 +56,9 @@ public class UI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
+        //Altered by Warren - Input Manager's default "Cancel" was already ESC
+        //if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetButtonDown("Cancel"))
         {
             if (_isPaused)
             {
@@ -161,6 +163,7 @@ public class UI : MonoBehaviour
         //store values!!
         Debug.Log("Quit Game");
         //Application.Quit();
+        Time.timeScale = 1; //By Warren - fixed bug delaying Coroutine
         StartCoroutine(ExitGameCo()); //By Warren
     }
 

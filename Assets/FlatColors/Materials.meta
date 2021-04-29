@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Samples/Input System.meta
+guid: 8f99362ff19ead84d9896100d2935ea1
+=======
 guid: b5cf9cf5b8de4f645b0a09c3c6a46a12
+>>>>>>> Jonathan-Mills:Assets/FlatColors/Materials.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

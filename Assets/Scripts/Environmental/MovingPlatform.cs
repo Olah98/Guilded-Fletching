@@ -9,7 +9,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
-public class MovingPlatform : MonoBehaviour
+public class MovingPlatform : MonoBehaviour, IBrambleable
 {
     public float speed;
     public bool isStopped; // originally "isBrambled"
@@ -20,8 +20,7 @@ public class MovingPlatform : MonoBehaviour
     protected virtual void Start()
     {
         var waypoints = from point in GetComponentsInChildren<Transform>()
-                        where point.tag == "Waypoint"
-                        select point;
+                        where point.tag == "Waypoint" select point;
         //only store children with the "Waypoint" tag in a LL
         movePoints = new LinkedList<Transform>(waypoints);
         curNode = movePoints.First;
@@ -35,6 +34,11 @@ public class MovingPlatform : MonoBehaviour
         //move platform
         Vector3 moveTo = (curNode.Value.position - transform.position).normalized;
         transform.position += moveTo * speed * Time.fixedDeltaTime;
+    }
+
+    //defined in IBrambleable interface
+    public void Bramble(in bool enabled) {
+        isStopped = enabled;
     }
 
     public IEnumerator CheckForPlayerSquashing(Character character) {
