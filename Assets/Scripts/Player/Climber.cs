@@ -2,6 +2,7 @@
 Author Christian Mullins
 Date: 02/19/2021
 Summary: Attach to object that you wish the player to be able to climb.
+Referencing: DapperDino's UI Tutorial https://www.youtube.com/watch?v=Ikt5T-v2ZrM
 */
 using UnityEngine;
 
@@ -9,6 +10,36 @@ public class Climber : MonoBehaviour {
     [Range(1f, 5f)]
     public float climbSpeed;
     private CharacterController _controller;
+    private Controls _controls; //By Warren
+
+    /*
+    * Awake
+    * Initializing controls
+    */
+    private void Awake()
+    {
+        _controls = new Controls();
+    }//Awake
+
+    /*
+     * On Enable
+     * Enabling controls
+     */
+    private void OnEnable()
+    {
+        _controls.Enable();
+    }//OnEnable
+
+    /*
+     * On Disable
+     * Disabling controls
+     */
+    private void OnDisable()
+    {
+        _controls.Disable();
+    }//OnDisable
+
+
 
     void Start() {
         _controller = null;
@@ -49,7 +80,9 @@ public class Climber : MonoBehaviour {
     private void OnTriggerExit(Collider other) {
         if (other.tag == "Player") {
             // if the player is ascending upon exit
-            if (Input.GetAxis("Vertical") > 0f) {
+            //By Warren from Dapper Dino YT Tutorial Referenced above
+            var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
+            if (movementInput.y > 0f) {
                 // give a boost to reach the top
                 _controller.Move(Vector3.up * 0.5f);
             }
@@ -64,8 +97,11 @@ public class Climber : MonoBehaviour {
     /// </summary>
     /// <returns>Movement from input for climbing.</returns>
     private Vector3 GetClimbingMovement() {
-        Vector3 moveDir = _controller.transform.right * Input.GetAxis("Horizontal")
-                        + _controller.transform.up * Input.GetAxis("Vertical");
+        //By Warren from Dapper Dino YT Tutorial Referenced above
+        var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
+
+        Vector3 moveDir = _controller.transform.right * movementInput.x
+                        + _controller.transform.up * movementInput.y;
         return moveDir * climbSpeed;
     }
 
