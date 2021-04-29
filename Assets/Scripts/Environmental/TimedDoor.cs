@@ -10,20 +10,22 @@ using System.Collections.Generic;
 [System.Serializable]
 public class TimedDoor : Door
 {
-    public int YieldSeconds;
+    public bool isClosing => _isClosing;
+    public float yieldSeconds;
     private Vector3 _startpos;
+    private bool _isClosing;
 
 
     protected override void Start()
     {
         base.Start();
+        _isClosing = false;
         _startpos = transform.position;
     }
 
     /// <summary>
     /// Iterate through every Switch to reset them.
     /// </summary>
-    /// 
     public void ResetAllSwitches()
     {
         foreach (var s in mySwitches)
@@ -43,7 +45,7 @@ public class TimedDoor : Door
     {
         //Debug.Log("Close Triggered");
         // detach _moveTo child
-        yield return new WaitForSeconds(YieldSeconds);
+        yield return new WaitForSeconds(yieldSeconds);
         ResetAllSwitches();
         _moveTo.parent = transform.parent;
         //Debug.Log("Close Started");
@@ -52,8 +54,10 @@ public class TimedDoor : Door
             Vector3 moveTo = (_startpos - transform.position).normalized;
             transform.Translate(moveTo * openSpeed * Time.deltaTime);
             yield return new WaitForSeconds(Time.deltaTime);
+            _isClosing = true;
         } while (!_IsPositionApproximateTo(_startpos));
         // re-attach _moveTo child
+        _isClosing = false;
         _moveTo.parent = transform;
         yield return null;
     }
@@ -64,10 +68,9 @@ public class TimedDoor : Door
     /// </summary>
     public override IEnumerator Open()
     {
-        //Debug.Log("Open Start");
-        yield return StartCoroutine(base.Open());
-        //Debug.Log("Open Done");
-        StartCoroutine(Close());
-        yield return null;
+        if (!_isClosing) {
+            yield return StartCoroutine(base.Open());
+            StartCoroutine(Close());
+        }
     }
 }
