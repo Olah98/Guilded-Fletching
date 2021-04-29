@@ -133,6 +133,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Video
       objectReference: {fileID: 0}
+    - target: {fileID: 4555405576654612707, guid: 59cdd63dfaafdf34e89150b91e8736d0,
+        type: 3}
+      propertyPath: m_TargetTexture
+      value: 
+      objectReference: {fileID: 8400000, guid: e696990b25cd43445a6ea0c9923a6810, type: 2}
     - target: {fileID: 4555405577483333426, guid: 59cdd63dfaafdf34e89150b91e8736d0,
         type: 3}
       propertyPath: m_Pivot.x
@@ -248,7 +253,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Video Output
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4555405578305616207, guid: 59cdd63dfaafdf34e89150b91e8736d0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4555405578305616207, guid: 59cdd63dfaafdf34e89150b91e8736d0,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: 
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4555405577483333430, guid: 59cdd63dfaafdf34e89150b91e8736d0, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 59cdd63dfaafdf34e89150b91e8736d0, type: 3}
 --- !u!1 &359665026
 GameObject:
