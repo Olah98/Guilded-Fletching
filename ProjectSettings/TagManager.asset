@@ -20,6 +20,7 @@ TagManager:
   - Level Manager
   - ScreenShift
   - Burnable
+  - Audio
   layers:
   - Default
   - TransparentFX
