@@ -3,7 +3,12 @@ guid: 4140b05fa2d77db44b1c3061799f80c5
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Bow_rigV6_lambert2
+    second: {fileID: 2100000, guid: 562c11220a991474dba191eb62324d0a, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0

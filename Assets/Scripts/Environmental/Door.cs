@@ -25,7 +25,7 @@ public class Door : MonoBehaviour
     private Color _isOn = Color.green;
     private Color _isOff = Color.red;
     // _rend converted to array to accomodate modular assets
-    private MeshRenderer[] _rendArr;
+    private List<MeshRenderer> _rendList = new List<MeshRenderer>();
 
     protected virtual void Start()
     {
@@ -33,7 +33,7 @@ public class Door : MonoBehaviour
         try {
             //By Warren
             if (_isModular)
-                _rendArr = GetComponentsInChildren<MeshRenderer>();
+                _rendList = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
             UpdateColor(true);
             IsAllSwitchesFlipped();
         } catch (MissingComponentException ) {
@@ -87,7 +87,7 @@ public class Door : MonoBehaviour
     {
         Color change = (isActive) ? _isOn : _isOff;
         if (_isModular)
-            foreach (var r in _rendArr)
+            foreach (var r in _rendList)
                 r.material.SetColor("_Color", change);
         else
             GetComponent<MeshRenderer>().material.SetColor("_Color", change); // error here 

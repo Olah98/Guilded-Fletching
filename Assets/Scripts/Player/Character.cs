@@ -161,6 +161,7 @@ public class Character : MonoBehaviour
         _cam = Camera.main;
         _originParent = transform.parent;
         _isCrouching = false;
+        _pAnimController = GetComponent<PlayerAnimationController>();
         interactionHintText.enabled = false;
         s_baseFOV = getCurrentData?.baseFOV ?? 60f;
         _cam.fieldOfView = s_baseFOV;
@@ -382,7 +383,11 @@ public class Character : MonoBehaviour
         //Altered by Warren
         _Crouching(_crouchReady);
 
-        if (_fireReady)
+        //if (_fireReady)
+        // suspend all firing until damage animation is played
+        if (_pAnimController.isDamageAnimPlaying) return;
+
+        if (Input.GetKey(KeyCode.Mouse0))
         {
             if (attackCD <= 0 && !dead)
             {
@@ -628,11 +633,15 @@ public class Character : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (damageTaken != 0)
+        //print("TAKING DAMAGE");
+        //currentHp -= damage;
+        if (false) //currentHp < 1)
         {
             // implement player death
             damageTaken = 0;
             dead = true;
-        } else
+        } 
+        else
         {
             //Recovery time is damage / modifier in seconds
             damageTaken = Mathf.FloorToInt(damage/DAMAGEMODIFIER);
@@ -643,6 +652,21 @@ public class Character : MonoBehaviour
             }
         }
        // _pAnimController.TriggerDamageAnim();
+
+        // Lock out the player from being able to shoot or charge
+        // if arrow charge is in progress, reset for damage
+        attackCharge = 0f;
+        attackCD = 0f;
+        //StartCoroutine(_PauseDrawing());
+        _pAnimController.TriggerDamageAnim();
+    }
+
+    private IEnumerator _PauseDrawing() {
+        do {
+            attackCharge = 0f;
+            attackCD = 0f;
+            yield return new WaitForFixedUpdate();
+        } while (_pAnimController.isDamageAnimPlaying);
     }
 
     /// <summary>
