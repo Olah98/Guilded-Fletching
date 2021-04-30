@@ -1,4 +1,4 @@
-﻿/*
+/*
 Author: Christian Mullins
 Date: 03/24/2021
 Summary: Class inhereted from Door script to manipulate object by rotation
@@ -7,6 +7,7 @@ Summary: Class inhereted from Door script to manipulate object by rotation
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum Axis {
@@ -24,8 +25,8 @@ public class HingedObject : Door {
     //rotation values
     [HideInInspector] public Axis pivotPosition;
     [HideInInspector] public Axis rotationAxis;
-    protected List<Collider> _colliders = new List<Collider>();
     private bool _isOpen;
+    protected List<Collider> _colliders = new List<Collider>();
 
     // properties
     public Vector3 currentRotation  { get {
@@ -139,8 +140,8 @@ public class HingedObject : Door {
     protected Vector3 _AssignRotationTo(Axis rotation) {
         return Vector3.RotateTowards(transform.eulerAngles, ToDirection(rotation), Mathf.PI, 1f);
     }
-
     #endregion
+
     /// <summary>
     /// Draws in editor space to aid in Level Design
     /// </summary>
@@ -151,7 +152,7 @@ public class HingedObject : Door {
             _moveTo = transform.GetChild(0);
             // reset each time to refresh values
             _moveTo.SetPositionAndRotation(transform.position, transform.rotation);
-            _myMesh = GetComponent<MeshFilter>().sharedMesh;   
+            _myMesh = GetComponent<MeshFilter>().sharedMesh;
             _moveTo.RotateAround(_anchorPoint, currentRotation, _angleChange);
 
             // output target wiremesh
@@ -161,12 +162,6 @@ public class HingedObject : Door {
             Gizmos.color = Color.green;
             //_anchorPoint = SnapPivotPos(_anchorPoint);
             Gizmos.DrawWireSphere(_anchorPoint, 0.5f);
-            /*
-            // output directional feedback
-            Gizmos.color = Color.yellow;
-            var rotDir = ToDirection(rotationAxis);
-            Gizmos.DrawRay(new Ray(transform.position, rotDir));
-            */
         }
     }
 
