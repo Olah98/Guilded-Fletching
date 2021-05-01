@@ -142,6 +142,10 @@ public class Character : MonoBehaviour
         _controls.Player.Zoom.started += ctx => _zoomInReady = true;
         _controls.Player.Zoom.performed += ctx => _zoomOutReady = true;
         _controls.Player.Interact.performed += ctx => Interact();
+        _controls.Player.Standard.performed += ctx => Equip("Standard");
+        _controls.Player.Bramble.performed += ctx => Equip("Bramble");
+        _controls.Player.Warp.performed += ctx => Equip("Warp");
+        _controls.Player.Airburst.performed += ctx => Equip("Airburst");
     }
 
     private void OnEnable()
@@ -487,6 +491,39 @@ public class Character : MonoBehaviour
                     InteractWithObject(hit.transform.gameObject);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// If the logic above means the interaction text is enabled then hitting
+    /// the key will trigger the object in question
+    /// </summary>
+    private void Equip(string type)
+    {
+        bool _success = false; //By Warren
+        switch (type)
+        {
+            case "Standard":
+                _success = _myQuiver.EquipStandard();
+                break;
+            case "Bramble":
+                _success = _myQuiver.EquipBramble();
+                break;
+            case "Warp":
+                _success = _myQuiver.EquipWarp();
+                break;
+            case "Airburst":
+                _success = _myQuiver.EquipAirburst();
+                break;
+            default:
+                break;
+        }
+        if (_success)
+        {
+            Debug.Log("Able to equip " + type);
+        } else
+        {
+            Debug.Log("Did not change ammo");
         }
     }
 

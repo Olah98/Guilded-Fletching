@@ -19,7 +19,6 @@ public class Quiver : MonoBehaviour
     private int equipped;
     // added by Christian to display proper arrow in the player's hand
     private Character _character;
-    private Controls _controls;
 
     //enum for checking stats
     enum Ammo : int
@@ -31,37 +30,6 @@ public class Quiver : MonoBehaviour
     //UNREADY and READY track the accesibility of the arrow types
     //ACCESS and RECORD are shortcuts for the loadout array slots
     public const int UNREADY = 3, READY = 4, ACCESS = 0, RECORD = 1;
-
-    /*
-    * Awake
-    * Initializing controls
-    */
-    private void Awake()
-    {
-        _controls = new Controls();
-        _controls.Player.Standard.performed += ctx => EquipStandard();
-        _controls.Player.Bramble.performed += ctx => EquipBramble();
-        _controls.Player.Warp.performed += ctx => EquipWarp();
-        _controls.Player.Airburst.performed += ctx => EquipAirburst();
-    }//Awake
-
-    /*
-     * On Enable
-     * Enabling controls
-     */
-    private void OnEnable()
-    {
-        _controls.Enable();
-    }//OnEnable
-
-    /*
-     * On Disable
-     * Disabling controls
-     */
-    private void OnDisable()
-    {
-        _controls.Disable();
-    }//OnDisable
 
     /*
      * Start
@@ -86,8 +54,10 @@ public class Quiver : MonoBehaviour
     * Equip Standard, Equip Bramble, Equip Warp, Equip Airburst
     * Called by the controls set in the Input Action schema,
     * these set the equipped arrow if it meets the given logic
+    * Returns true if successful, triggering animation handled
+    * in Character.cs
     */
-    private void EquipStandard()
+    public bool EquipStandard()
     {
         //don't accept input if the player has drawn an arrow
         if (_character.attackCharge < 1) //By Christian
@@ -101,7 +71,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Standard, RECORD] +
                         " Standard arrows");
-                    return; //handles key-mashing
+                    return true; //handles key-mashing
                 }
                 else
                 {
@@ -114,9 +84,10 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Standard arrows");
             }
         }
+        return false;
     }//EquipStandard
 
-    private void EquipBramble()
+    public bool EquipBramble()
     {
         //don't accept input if the player has drawn an arrow
         if (_character.attackCharge < 1) //By Christian
@@ -130,7 +101,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Bramble, RECORD] +
                         " Bramble arrows");
-                    return; //handles key-mashing
+                    return true; //handles key-mashing
                 }
                 else
                 {
@@ -143,9 +114,10 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Bramble arrows");
             }
         }
+        return false;
     }//EquipBramble
 
-    private void EquipWarp()
+    public bool EquipWarp()
     {
         //don't accept input if the player has drawn an arrow
         if (_character.attackCharge < 1) //By Christian
@@ -159,7 +131,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Warp, RECORD] +
                         " Warp arrows");
-                    return; //handles key-mashing
+                    return true; //handles key-mashing
                 }
                 else
                 {
@@ -172,9 +144,10 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Warp arrows");
             }
         }
+        return false;
     }//EquipWarp
 
-    private void EquipAirburst()
+    public bool EquipAirburst()
     {
         //don't accept input if the player has drawn an arrow
         if (_character.attackCharge < 1) //By Christian
@@ -188,7 +161,7 @@ public class Quiver : MonoBehaviour
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Airburst, RECORD] +
                         " Airburst arrows");
-                    return; //handles key-mashing
+                    return true; //handles key-mashing
                 }
                 else
                 {
@@ -201,6 +174,7 @@ public class Quiver : MonoBehaviour
                 Debug.Log("You're out of Airburst arrows");
             }
         }
+        return false;
     }//EquipAirburst
 
     /*
