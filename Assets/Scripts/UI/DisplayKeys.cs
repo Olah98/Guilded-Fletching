@@ -1,7 +1,9 @@
 ﻿/*
- * 
- * Referencing: DapperDino's UI Tutorial https://youtu.be/dUCcZrPhwSo
- */
+Author: Warren Rose II
+Data: 05/02/2021
+Summary: Interprets the keys bound to various actions as strings.
+Referencing: DapperDino's UI Tutorial https://youtu.be/dUCcZrPhwSo
+*/
 
 using System.Collections;
 using System.Collections.Generic;
@@ -10,36 +12,39 @@ using UnityEngine.InputSystem;
 
 public class DisplayKeys : MonoBehaviour
 {
-
     private Controls _controls;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    /*
+    * Awake
+    * Creates local copy of a Controls object
+    */
     private void Awake()
     {
         _controls = new Controls();
-    }
+    }//Awake
 
+    /*
+    * On Enable
+    * Turns listener on when script is enabled
+    */
     private void OnEnable()
     {
         _controls.Enable();
-    }
+    }//OnEnable
 
+    /*
+    * On Disable
+    * Turns listener off when script is disabled
+    */
     private void OnDisable()
     {
         _controls.Disable();
-    }
+    }//OnDisable
 
+    /*
+    * Action By Name
+    * Returns the input action object referenced by name
+    */
     public InputAction ActionByName(string name)
     {
         InputAction result = null;
@@ -85,78 +90,12 @@ public class DisplayKeys : MonoBehaviour
                 break;
         }
         return result;
-    }
+    }//ActionByName
 
-
-
-    public string ArraySize(string name)
-    {
-        switch (name)
-        {
-            case "Jump":
-                break;
-            case "Interact":
-                break;
-            case "Standard":
-                break;
-            case "Bramble":
-                break;
-            case "Warp":
-                break;
-            case "Airburst":
-                break;
-            case "Cancel":
-                break;
-            case "Movement":
-                break;
-            case "Look":
-                break;
-            case "Crouch":
-                break;
-            case "Fire":
-                break;
-            case "Zoom":
-                break;
-            default:
-                break;
-        }
-        return "";
-    }
-
-    public string KeyNumber(string name, int position)
-    {
-        switch (name)
-        {
-            case "Jump":
-                break;
-            case "Interact":
-                break;
-            case "Standard":
-                break;
-            case "Bramble":
-                break;
-            case "Warp":
-                break;
-            case "Airburst":
-                break;
-            case "Cancel":
-                break;
-            case "Movement":
-                break;
-            case "Look":
-                break;
-            case "Crouch":
-                break;
-            case "Fire":
-                break;
-            case "Zoom":
-                break;
-            default:
-                break;
-        }
-        return "" + position;
-    }
-
+    /*
+    * First Key
+    * Returns the first key binding as a human readable string
+    */
     public string FirstKey(string name)
     {
         InputAction target = ActionByName(name);
@@ -164,5 +103,37 @@ public class DisplayKeys : MonoBehaviour
             target.bindings[0].effectivePath,
             InputControlPath.HumanReadableStringOptions.OmitDevice);
         return report;
-    }
-}
+    }//FirstKey
+
+    /*
+    * Second Key
+    * Returns the second key binding as a human readable string
+    * This is necessary for the four arrow types and the crouch action
+    */
+    public string SecondKey(string name)
+    {
+        InputAction target = ActionByName(name);
+        string report = InputControlPath.ToHumanReadableString(
+            target.bindings[1].effectivePath,
+            InputControlPath.HumanReadableStringOptions.OmitDevice);
+        return report;
+    }//SecondKey
+
+    /*
+    * By Part
+    * Returns composite bindings as human readable strings
+    * [0] and [5] display "2D Axis" as that is the type of control
+    * [1 through 4] and [6 through 9] return keys bound to the axes
+    * In order of Up, Down, Left, Right
+    * Used for Movement and Look actions
+    * Movement covers both sets, Look only deals with keys [1 through 4] 
+    */
+    public string ByPart(string name, int number)
+    {
+        InputAction target = ActionByName(name);
+        string report = InputControlPath.ToHumanReadableString(
+            target.bindings[number].effectivePath,
+            InputControlPath.HumanReadableStringOptions.OmitDevice);
+        return report;
+    }//ByPart
+}//DisplayKeys
