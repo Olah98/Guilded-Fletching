@@ -16,8 +16,14 @@ public class HowToPlayUI : MonoBehaviour
     public TMP_Text brambText;
     public TMP_Text warpText;
     public TMP_Text airText;
+    public TMP_Text titleText;
+    public TMP_Text buttonText;
+    public GameObject[] items = new GameObject[2];
 
     private DisplayKeys _displayKeys;
+    private bool _secondScreen;
+    private string _firstTitle = "How To Play";
+    private string _secondTitle = "Rebind Controls";
 
     /*
     * Awake
@@ -86,4 +92,24 @@ public class HowToPlayUI : MonoBehaviour
             "Knock over light objects with the airburst arrow. " +
             "Switch using the " + _airburstKey + " key.";
     }//Start
+
+    public void ToggleMenus()
+    {
+        for (int i = 0; i < items.Length; i++)
+        {
+            items[i].active = !items[i].active;
+        }
+        _secondScreen = !_secondScreen;
+
+        if (_secondScreen)
+        {
+            titleText.text = _secondTitle;
+            buttonText.text = _firstTitle;
+        } else
+        {
+            titleText.text = _firstTitle;
+            buttonText.text = _secondTitle;
+        }
+    }
+
 }//HowToPlayUI
