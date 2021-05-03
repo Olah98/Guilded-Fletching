@@ -5154,7 +5154,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 113, y: -86}
+  m_AnchoredPosition: {x: 109, y: -100}
   m_SizeDelta: {x: 600, y: 800}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &7334971944488221157
@@ -5184,22 +5184,25 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'WASD: To move
+  m_text: '<b>To Move:</b> W or Up Arrow, S or Down Arrow, A or Left Arrow, D or
+    Right Arrow
 
-    E: Interact
+    <b>Interact</b>: E
 
-    LMB: Hold to fire
+    <b>Hold to Fire:</b> Left Button
 
-    RMB: Zoom
+    <b>Zoom:</b>
+    Right Button
 
-    Space:
-    Jump
+    <b>Jump:</b> Space
 
-    ESC: pause menu
+    <b>Pause Game:</b> Escape
 
-    1-4:  Equip Special Arrows
+    <b>Equip
+    Special Arrows:</b> 1 or Numpad 1, 2 or Numpad 2, 3 or Numpad 3, 4 or Numpad
+    4
 
-    Left Shift: Crouch'
+    <b>Crouch:</b> Left Shift or Middle Button'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: af88e2ceaf647f1478e80b11d6da7b10, type: 2}
   m_sharedMaterial: {fileID: 5039220195375064363, guid: af88e2ceaf647f1478e80b11d6da7b10,
@@ -5227,14 +5230,14 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 40
-  m_fontSizeBase: 40
+  m_fontSize: 28
+  m_fontSizeBase: 28
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
+  m_HorizontalAlignment: 8
   m_VerticalAlignment: 256
   m_textAlignment: 65535
   m_characterSpacing: 0
@@ -5251,7 +5254,7 @@ MonoBehaviour:
   m_enableKerning: 1
   m_enableExtraPadding: 0
   checkPaddingRequired: 0
-  m_isRichText: 0
+  m_isRichText: 1
   m_parseCtrlCharacters: 1
   m_isOrthographic: 1
   m_isCullingEnabled: 0
@@ -5263,7 +5266,7 @@ MonoBehaviour:
   m_VertexBufferAutoSizeReduction: 1
   m_useMaxVisibleDescender: 1
   m_pageToDisplay: 1
-  m_margin: {x: -35.71475, y: 0, z: 0, w: 92.74535}
+  m_margin: {x: -81.67014, y: 0, z: 109.49103, w: 165.61583}
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_hasFontAssetChanged: 0
@@ -5414,6 +5417,7 @@ GameObject:
   - component: {fileID: 5094223376204616531}
   - component: {fileID: 3879399731958817433}
   - component: {fileID: 4704434355659235630}
+  - component: {fileID: 8502374576261347285}
   m_Layer: 5
   m_Name: ControlsPrompt
   m_TagString: Untagged
@@ -5485,6 +5489,55 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &8502374576261347285
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7726185759645434162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bf01a76ed085fca4388b2d5e55576ea1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controlsText: {fileID: 1822352096274041225}
+  standText: {fileID: 4029687662535621951}
+  brambText: {fileID: 7664858630628845797}
+  warpText: {fileID: 4494844247448425025}
+  airText: {fileID: 3792639611601685075}
+  titleText: {fileID: 881242857805661867}
+  buttonText: {fileID: 881242857805661867}
+  items:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  refs:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &8212202973609211162
 GameObject:
   m_ObjectHideFlags: 0

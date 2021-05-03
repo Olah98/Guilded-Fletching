@@ -86,8 +86,8 @@ public class LevelEndReport : MonoBehaviour
                 nextLevelButton.interactable = true;
             }
 
-            var minutes = _lastTime / 60;
-            var seconds = _lastTime % 60;
+            var minutes = Mathf.Floor(_lastTime / 60);
+            var seconds = Mathf.Floor(_lastTime % 60);
 
             report.text = "You completed the level in " +
                 string.Format("{0:00} : {1:00}", minutes, seconds) + "\n" +
