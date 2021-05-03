@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using TMPro;//By Warren
 
@@ -146,6 +147,13 @@ public class Character : MonoBehaviour
         _controls.Player.Bramble.performed += ctx => Equip("Bramble");
         _controls.Player.Warp.performed += ctx => Equip("Warp");
         _controls.Player.Airburst.performed += ctx => Equip("Airburst");
+
+        //From DapperDino Tutorial
+        string rebinds = PlayerPrefs.GetString("rebinds", string.Empty);
+
+        if (string.IsNullOrEmpty(rebinds)) { return; }
+
+        _controls.LoadBindingOverridesFromJson(rebinds);
     }
 
     private void OnEnable()

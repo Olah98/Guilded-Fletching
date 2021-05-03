@@ -3,10 +3,17 @@ Author: Warren Rose II
 Data: 05/02/2021
 Summary: Overview of controls, set to update if keys are rebound.
     In the Main Menu Controls page, this allows rebinding of keys.
+    A local copy of DisplayKeys is used to read and bind controls.
+References: Using DapperDino's Tutorial https://youtu.be/dUCcZrPhwSo
 */
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
 using TMPro;
 
@@ -39,11 +46,16 @@ public class HowToPlayUI : MonoBehaviour
     //Specific to Main Menu Controls UI
     public TMP_Text titleText;
     public TMP_Text buttonText;
+    public GameObject rebindBlock;
     public GameObject[] items = new GameObject[5];
     public TMP_Text[] refs = new TMP_Text[23];
     private bool _secondScreen;
     private string _firstTitle = "How To Play";
     private string _secondTitle = "Rebind Controls";
+    private const int _rebindsLength = 23;
+
+    //From DapperDino Tutorial
+    private InputActionRebindingExtensions.RebindingOperation _rebindingOperation;
 
     /*
     * Awake
@@ -187,4 +199,75 @@ public class HowToPlayUI : MonoBehaviour
             refs[21].text = _crouchKey; refs[22].text = _crouchKey2;
         }
     }//UpdateText
+
+    /*
+    * Rebind Key
+    * Toggles on reblocker, rebinds key, allocates memory to rebinder
+    */
+    public void RebindKey(int actionIndex)
+    {
+        //Specific to Controls UI
+        //InputBinding boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
+        InputAction actedInput = _displayKeys.ActionsArrayLocation(actionIndex);
+        int boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
+        rebindBlock.SetActive(true);
+
+        //From DapperDino Tutorial
+        _rebindingOperation =
+            actedInput.PerformInteractiveRebinding(boundInput)
+            .OnMatchWaitForAnother(0.1f)
+            .OnComplete(operation => RebindComplete())
+            .Start();
+    }//RebindKey
+
+    /*
+    * Rebind Complete
+    * Toggles off blocker, deletes rebinder from memory
+    */
+    public void RebindComplete()
+    {
+        //Specific to Controls UI
+        rebindBlock.SetActive(false);
+        UpdateStrings();
+        UpdateText();
+        _displayKeys.SaveKeys();
+
+        //From DapperDino Tutorial
+        _rebindingOperation.Dispose();
+    }//RebindComplete
+
+    /*
+    * Reset All Keys
+    * Removes overrides from all keys
+    */
+    public void ResetAllKeys()
+    {
+        //Specific to Controls UI
+        for (int i = 0; i < _rebindsLength; i++)
+        {
+            InputAction actedInput = _displayKeys.ActionsArrayLocation(i);
+            int boundInput = _displayKeys.BindingsArrayLocation(i);
+            actedInput.RemoveBindingOverride(boundInput);
+        }
+
+        UpdateStrings();
+        UpdateText();
+        _displayKeys.SaveKeys();
+    }//ResetAllKeys
+
+    /*
+    * Reset Key
+    * Removes overrides from specific key
+    */
+    public void ResetKey(int actionIndex)
+    {
+        //Specific to Controls UI
+        InputAction actedInput = _displayKeys.ActionsArrayLocation(actionIndex);
+        int boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
+        actedInput.RemoveBindingOverride(boundInput);
+
+        UpdateStrings();
+        UpdateText();
+        _displayKeys.SaveKeys();
+    }//ResetAllKeys
 }//HowToPlayUI
