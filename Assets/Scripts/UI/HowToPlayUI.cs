@@ -78,7 +78,7 @@ public class HowToPlayUI : MonoBehaviour
             "Shoot targets with the normal arrow. It is on the " + _standardKey + " key.";
         brambText.text =
             "Bind moving objects in place for seconds with the bramble arrow. " +
-            "Switch using the " + _brambleKey + " key. Try in level 2.";
+            "Switch using the " + _brambleKey + " key. Try in level 4.";
         warpText.text =
             "Teleport to certain targets by hitting them with the warp arrow. " +
             "Switch using the " + _warpKey + " key. Needed to navigate level 5.";
