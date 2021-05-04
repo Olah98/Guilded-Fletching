@@ -302,7 +302,6 @@ public class OptionsController : MonoBehaviour
 
     public void loadScene(string level)
     {
-        //SceneManager.LoadScene(level);
         StartCoroutine(LoadSceneCo(level));//By Warren
     }//loadScene
 

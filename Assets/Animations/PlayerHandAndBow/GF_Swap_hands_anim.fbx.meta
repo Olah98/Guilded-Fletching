@@ -1,11 +1,11 @@
 fileFormatVersion: 2
-guid: cabadaf2b831ea74684db420e0c80bd7
+guid: ba2f4de8a93613347b839ab5b1ffca81
 ModelImporter:
   serializedVersion: 19301
   internalIDToNameTable:
   - first:
       74: 1827226128182048838
-    second: Hurt2_HandAnim
+    second: Swap_HandAnim
   externalObjects: {}
   materials:
     materialImportMode: 1
@@ -35,11 +35,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Hurt2_HandAnim
+      name: Swap_HandAnim
       takeName: Take 001
       internalID: 0
       firstFrame: 0
-      lastFrame: 15
+      lastFrame: 40
       wrapMode: 0
       orientationOffsetY: 0
       level: 0

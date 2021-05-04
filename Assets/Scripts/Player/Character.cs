@@ -60,10 +60,10 @@ public class Character : MonoBehaviour
     public bool dead = false;
 
     [Header("UI Elements")]
-    public TMP_Text chargeText;//Change by Warren
-    public Slider chargeSlider;//Added by Warren
-    private GameObject _blackScreen; //By Warren
-    private Controls _controls; //By Warren
+    public TMP_Text chargeText;
+    public Slider chargeSlider;
+    private GameObject _blackScreen;
+    private Controls _controls;
 
     /* BEGIN FIRSTPERSONCAMERA VARIABLES */
     #region Camera_Variables
@@ -110,25 +110,23 @@ public class Character : MonoBehaviour
     private bool _runOnce;
     private bool _isJumpPressed;
     private bool _crouchReady;
-    private bool _fireReady;
+    private bool _firePressed;
     private bool _zoomInReady;
     private bool _zoomOutReady;
-
 
     public int arrowAllowed = 5;
 
     // properties
+    public bool      firePressed    => _firePressed;
     public bool      isCrouching    => _isCrouching;
     public SavedData getCurrentData => _currentData;
     public Quiver    getMyQuiver    => _myQuiver;
     public int       getMyArrowType => _myQuiver.GetArrowType();
-    public bool      isSquashed     { get {
-        return Physics.Raycast(transform.position, Vector3.up, 1.2f);
-    } }
-    public float totalJumpPower { get { 
-        return Mathf.Sqrt(jumpPower * -Physics.gravity.y * ((coyoteJump > 0) ? 1.2f : 1f));
-    } }
-    public Vector3 getVelocity => _velocity;
+    public Vector3   getVelocity    => _velocity;
+    public bool      isSquashed     
+        => Physics.Raycast(transform.position, Vector3.up, 1.2f);
+    public float totalJumpPower
+        => Mathf.Sqrt(jumpPower * -Physics.gravity.y * ((coyoteJump > 0) ? 1.2f : 1f));
 
 
     private void Awake()
@@ -137,21 +135,25 @@ public class Character : MonoBehaviour
         _controls.Player.Jump.performed += ctx => _isJumpPressed = true;
         _controls.Player.Crouch.started += ctx => _crouchReady = true;
         _controls.Player.Crouch.performed += ctx => _crouchReady = false;
-        _controls.Player.Fire.started += ctx => _fireReady = true;
-        _controls.Player.Fire.performed += ctx => _fireReady = false;
+        _controls.Player.Fire.started += ctx => _firePressed = true;
+        _controls.Player.Fire.performed += ctx => _firePressed = false;
         _controls.Player.Zoom.started += ctx => _zoomInReady = true;
         _controls.Player.Zoom.performed += ctx => _zoomOutReady = true;
         _controls.Player.Interact.performed += ctx => Interact();
+        _controls.Player.Standard.performed += ctx => Equip("Standard");
+        _controls.Player.Bramble.performed += ctx => Equip("Bramble");
+        _controls.Player.Warp.performed += ctx => Equip("Warp");
+        _controls.Player.Airburst.performed += ctx => Equip("Airburst");
     }
 
     private void OnEnable()
     {
-        _controls.Enable(); //By Warren
+        _controls.Enable();
     }
 
     private void OnDisable()
     {
-        _controls.Disable(); //By Warren
+        _controls.Disable();
     }
 
     private void Start()
@@ -161,6 +163,7 @@ public class Character : MonoBehaviour
         _cam = Camera.main;
         _originParent = transform.parent;
         _isCrouching = false;
+        _pAnimController = GetComponent<PlayerAnimationController>();
         interactionHintText.enabled = false;
         s_baseFOV = getCurrentData?.baseFOV ?? 60f;
         _cam.fieldOfView = s_baseFOV;
@@ -170,7 +173,7 @@ public class Character : MonoBehaviour
         // end camera initialization
         isClimbing = false;
         cc = GetComponent<CharacterController>();
-        _blackScreen = GameObject.FindGameObjectWithTag("ScreenShift"); //By Warren
+        _blackScreen = GameObject.FindGameObjectWithTag("ScreenShift");
 
         if (SaveManager.instance.activeSave.respawnPos != null &&
             SaveManager.instance.activeSave.sceneName == SceneManager.GetActiveScene().name)
@@ -184,13 +187,6 @@ public class Character : MonoBehaviour
         // if data comes back null (it shouldn't), create new instance
         _myQuiver = GetComponent<Quiver>();
         _SetArrowInHand(arrowPrefabs[getMyArrowType]); // set after quiver
-
-        //LevelManager starter = GameObject.FindWithTag("Save Manager").GetComponent<LevelManager>();
-        //if (starter != null)
-        //{
-        //    _myQuiver.Load(starter.loadoutName);
-        //}
-
 
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot) ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
@@ -250,14 +246,14 @@ public class Character : MonoBehaviour
         // zoom in/out using RMB
         if (_zoomInReady)
         {
-            StartCoroutine("ZoomIn");
-            _zoomInReady = false;// By Warren
+            StartCoroutine("_ZoomIn");
+            _zoomInReady = false;
         }
         else if (_zoomOutReady && _cam.fieldOfView < s_baseFOV)
         {
-            _zoomOutReady = false;//By Warren
-            StopCoroutine("ZoomIn");
-            StartCoroutine("ZoomOut");
+            _zoomOutReady = false;
+            StopCoroutine("_ZoomIn");
+            StartCoroutine("_ZoomOut");
         }
         // end camera based updates
 
@@ -379,26 +375,28 @@ public class Character : MonoBehaviour
             _jumpTime -= Time.fixedDeltaTime;
         }
 
-        //Altered by Warren
         _Crouching(_crouchReady);
 
-        if (_fireReady)
+        // suspend all firing until damage animation is played
+        if (_pAnimController.blockInputForAnim) return;
+
+        // grab context
+        if (_firePressed)
         {
             if (attackCD <= 0 && !dead)
             {
                 if (attackCharge < 100)
                 {
-                    float drawMultiplier = arrowPrefabs[_myQuiver.GetArrowType()]
-                                            .GetComponent<BaseArrow>().drawSpeed;
+                    float drawMultiplier = arrowPrefabs[_myQuiver.GetArrowType()].GetComponent<BaseArrow>().drawSpeed;
                     attackCharge += 40 * drawMultiplier * Time.fixedDeltaTime;
                 }
                 if (attackCharge > 100)
                 {
-                    attackCharge = 100; //Added by Warren for rounding
+                    attackCharge = 100;
                 }
             }
         }
-        else if (attackCharge > 0)
+        else if (!_firePressed && attackCharge > 0)
         {
             if (attackCD <= 0 && !dead)
             {
@@ -406,16 +404,11 @@ public class Character : MonoBehaviour
                 GameObject arrowEquipped = arrowPrefabs[_myQuiver.GetArrowType()];
                 _myQuiver.Fire();
                 //Checks that attack is off CD, shoots upon letting go of the mouse button
-                // commented to merge this line and below   Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
-
-                //Expanded Fire to include arrow type
-                GameObject projectile;
-                projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
+                var projectile = Fire(attackCharge, arrowEquipped, _cam.transform, bowPosition);
                 attackCD = 1;
                 //Attack cd set  back to 1 second
                 attackCharge = 0;
                 //Bow Chare set back to 0
-
 
                 //added by Warren
                 if (_myQuiver.GetArrowType() == 0)
@@ -428,6 +421,7 @@ public class Character : MonoBehaviour
                 }
             }
         }
+
     } // end FixedUpdate()
 
     #region CameraFunctions
@@ -446,7 +440,7 @@ public class Character : MonoBehaviour
     /// Takes the current Main camera and manipulates the Field of View to
     /// zoom the camera in.
     /// </summary>
-    private IEnumerator ZoomIn()
+    private IEnumerator _ZoomIn()
     {
         // FOV starts at s_baseFOV, ends at s_baseFOV - maxZoomVal
         while (_cam.fieldOfView > s_baseFOV - maxZoomVal)
@@ -454,14 +448,13 @@ public class Character : MonoBehaviour
             --_cam.fieldOfView;
             yield return new WaitForSeconds(Time.deltaTime * 2f);
         }
-        yield return null;
     }
 
     /// <summary>
     /// Takes the current Main camera and manipulates the Field of View to zoom
     ///  the camera back out.
     /// </summary>
-    private IEnumerator ZoomOut()
+    private IEnumerator _ZoomOut()
     {
         // FOV starts at s_baseFOV - maxZoomVal, ends at s_baseFOV
         while (_cam.fieldOfView < s_baseFOV)
@@ -469,7 +462,6 @@ public class Character : MonoBehaviour
             ++_cam.fieldOfView;
             yield return new WaitForEndOfFrame();
         }
-        yield return null;
     }
 
     /// <summary>
@@ -487,6 +479,43 @@ public class Character : MonoBehaviour
                     InteractWithObject(hit.transform.gameObject);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// If the logic above means the interaction text is enabled then hitting
+    /// the key will trigger the object in question
+    /// </summary>
+    private void Equip(string type)
+    {
+        // don't execute if already swapping or took damage
+        if (_pAnimController.blockInputForAnim) return;
+
+        bool _success = false; //By Warren
+        switch (type)
+        {
+            case "Standard":
+                _success = _myQuiver.EquipStandard();
+                break;
+            case "Bramble":
+                _success = _myQuiver.EquipBramble();
+                break;
+            case "Warp":
+                _success = _myQuiver.EquipWarp();
+                break;
+            case "Airburst":
+                _success = _myQuiver.EquipAirburst();
+                break;
+            default:
+                break;
+        }
+        if (_success)
+        {
+            Debug.Log("Able to equip " + type);
+            _pAnimController.TriggerArrowSwapAnim(type);
+        } else
+        {
+            Debug.Log("Did not change ammo");
         }
     }
 
@@ -579,31 +608,17 @@ public class Character : MonoBehaviour
         }
     }
 
-    [System.Obsolete]
-    public void RoofCheck()
-    {
-        if (Physics.Raycast(transform.position, new Vector3(0f, 1f, 0f), out var hit, 1.2f))
-        {
-            if (_velocity.y > 0f)
-            {
-                _velocity.y = 0f;
-            }
-        }
-    }
-
     public GameObject Fire(float attackCharge, GameObject arrow, Transform cam, Transform bowPosition)
     {
         GameObject projectile;
         var outQuat = Quaternion.LookRotation(bowPosition.position - transform.position, transform.up);
         projectile = Instantiate(arrow, bowPosition.transform.position, outQuat);
-        //creates force
         //grants projectile force based on time spent charging attack
         projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
         StartCoroutine(_HideArrowForShot());
-        return projectile; // added by Warren
+        return projectile;
     }
     
-    //FUNCTIONS BELOW IN CLASS ARE WRITTEN BY CHRISTIAN
     /// <summary>
     /// Move the player with the motion of a platform only if the player is
     /// above the platform.
@@ -611,13 +626,10 @@ public class Character : MonoBehaviour
     /// <param name="hit">Platform collider that the player hit.</param>
     private void OnControllerColliderHit(ControllerColliderHit hit) 
     {
-        if (hit.transform.tag == "Stoppable" && hit.point.y > hit.transform.position.y) {
+        if (hit.transform.tag == "Stoppable" && hit.point.y > hit.transform.position.y)
             transform.parent = hit.transform;
-            //print("parenting");
-        } else {
+        else
             transform.parent = _originParent;
-            //print("unparenting");
-        }
     }
 
     /// <summary>
@@ -629,10 +641,10 @@ public class Character : MonoBehaviour
     {
         if (damageTaken != 0)
         {
-            // implement player death
             damageTaken = 0;
             dead = true;
-        } else
+        }
+        else
         {
             //Recovery time is damage / modifier in seconds
             damageTaken = Mathf.FloorToInt(damage/DAMAGEMODIFIER);
@@ -642,14 +654,18 @@ public class Character : MonoBehaviour
                 _blackScreen.GetComponent<ScreenShift>().ToggleDamage();
             }
         }
-       // _pAnimController.TriggerDamageAnim();
+
+        // Lock out the player from being able to shoot or charge
+        // if arrow charge is in progress, reset for damage
+        attackCharge = 0f;
+        attackCD = 0f;
+        _pAnimController.TriggerDamageAnim();
     }
 
     /// <summary>
-    ///
+    /// Construct save data based on current game conditions and return them.
     /// </summary>
-    /// <param name="data"></param>
-    /// <returns></returns>
+    /// <returns>Up-to-date SavedData.</returns>
     public SavedData UpdateAndGetSaveData()
     {
         //_currentData.playerHealth = currentHp;
@@ -717,6 +733,16 @@ public class Character : MonoBehaviour
 
     #region ArrowInHand_Handling
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="delayTime"></param>
+    /// <returns></returns>
+    public IEnumerator SwapArrowWithDelay(int index, float delayTime) {
+        yield return new WaitForSeconds(delayTime);
+        SetArrowInHandByIndex(index);
+    }
+    /// <summary>
     /// Call _SetArrowInHand publically with some restrictions.
     /// </summary>
     /// <param name="index">Index of the prefab arrows array.</param>
@@ -760,10 +786,13 @@ public class Character : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Hide arrow in-hand GameObject to wait until the player can fire again.
+    /// </summary>
     private IEnumerator _HideArrowForShot()
     {
         arrowPosition.gameObject.SetActive(false);
-        yield return new WaitForSeconds(1.0f);
+        yield return new WaitForSeconds(1.0f); // adjust later?
         arrowPosition.gameObject.SetActive(true);
     }
     #endregion
