@@ -11,6 +11,8 @@ using System.Collections.Generic;
 [Serializable]
 public class Door : MonoBehaviour
 {
+    [SerializeField]
+    protected bool _isModular;
     [Range(1f, 50f)]
     public float openSpeed = 10f;
     [HideInInspector]
@@ -22,15 +24,21 @@ public class Door : MonoBehaviour
     //Edit to change whether color or material is being affected.
     private Color _isOn = Color.green;
     private Color _isOff = Color.red;
-    private MeshRenderer _rend;
+    // _rend converted to array to accomodate modular assets
+    private List<MeshRenderer> _rendList = new List<MeshRenderer>();
 
     protected virtual void Start()
     {
         _moveTo = transform.GetChild(0);
-        //By Warren
-        _rend = GetComponent<MeshRenderer>();
-        UpdateColor(true);
-        IsAllSwitchesFlipped();
+        try {
+            //By Warren
+            if (_isModular)
+                _rendList = new List<MeshRenderer>(GetComponentsInChildren<MeshRenderer>());
+            UpdateColor(true);
+            IsAllSwitchesFlipped();
+        } catch (MissingComponentException ) {
+            throw new MissingComponentException("If this is a modular piece select 'isModular'.");
+        }
     }
 
     /// <summary>
@@ -77,14 +85,13 @@ public class Door : MonoBehaviour
     /// </summary>
     public void UpdateColor(bool isActive)
     {
-        Color change;
-        //Material m_change;
-        if (isActive)
-            change = _isOn;
+        Color change = (isActive) ? _isOn : _isOff;
+        if (_isModular)
+            foreach (var r in _rendList)
+                r.material.SetColor("_Color", change);
         else
-            change = _isOff;
-        if (_rend != null)
-            _rend.material.SetColor("_Color", change);
+            GetComponent<MeshRenderer>().material.SetColor("_Color", change); // error here 
+
     }
 
     /// <summary>
@@ -97,8 +104,7 @@ public class Door : MonoBehaviour
         Gizmos.color = Color.red;
         _myMesh = GetComponent<MeshFilter>().sharedMesh;
         // draw _moveTo as a wiremesh
-        Gizmos.DrawWireMesh(_myMesh, _moveTo.position, _moveTo.rotation,
-                            transform.lossyScale);
+        Gizmos.DrawWireMesh(_myMesh, _moveTo.position, _moveTo.rotation, transform.lossyScale);
     }
 
     /// <summary>
