@@ -378,7 +378,7 @@ public class Character : MonoBehaviour
         _Crouching(_crouchReady);
 
         // suspend all firing until damage animation is played
-        if (_pAnimController.blockDrawInput) return;
+        if (_pAnimController.blockInputForAnim) return;
 
         // grab context
         if (_firePressed)
@@ -488,6 +488,9 @@ public class Character : MonoBehaviour
     /// </summary>
     private void Equip(string type)
     {
+        // don't execute if already swapping or took damage
+        if (_pAnimController.blockInputForAnim) return;
+
         bool _success = false; //By Warren
         switch (type)
         {
@@ -509,6 +512,7 @@ public class Character : MonoBehaviour
         if (_success)
         {
             Debug.Log("Able to equip " + type);
+            _pAnimController.TriggerArrowSwapAnim(type);
         } else
         {
             Debug.Log("Did not change ammo");
@@ -637,7 +641,6 @@ public class Character : MonoBehaviour
     {
         if (damageTaken != 0)
         {
-            // implement player death
             damageTaken = 0;
             dead = true;
         }
@@ -730,6 +733,16 @@ public class Character : MonoBehaviour
 
     #region ArrowInHand_Handling
     /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="index"></param>
+    /// <param name="delayTime"></param>
+    /// <returns></returns>
+    public IEnumerator SwapArrowWithDelay(int index, float delayTime) {
+        yield return new WaitForSeconds(delayTime);
+        SetArrowInHandByIndex(index);
+    }
+    /// <summary>
     /// Call _SetArrowInHand publically with some restrictions.
     /// </summary>
     /// <param name="index">Index of the prefab arrows array.</param>
@@ -779,7 +792,7 @@ public class Character : MonoBehaviour
     private IEnumerator _HideArrowForShot()
     {
         arrowPosition.gameObject.SetActive(false);
-        yield return new WaitForSeconds(1.0f); // adjust later
+        yield return new WaitForSeconds(1.0f); // adjust later?
         arrowPosition.gameObject.SetActive(true);
     }
     #endregion

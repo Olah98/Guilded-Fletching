@@ -15,13 +15,10 @@ Summary: Controls the flow on animation for the player in it's various states.
 Referencing: DapperDino's UI Tutorial https://www.youtube.com/watch?v=Ikt5T-v2ZrM
 */
 using UnityEngine;
-using UnityEngine.Animations;
 using System;
-using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
-using InputActionPhase = UnityEngine.InputSystem.InputActionPhase;
 
 /// <summary>
 /// Enum to denote animation states.
@@ -29,12 +26,11 @@ using InputActionPhase = UnityEngine.InputSystem.InputActionPhase;
 public enum AnimState {
     Idle,            Walking,      Jumping,    LoadingArrow,
     SwitchingArrows, DrawingArrow, FullyDrawn, Shooting,
-    Crouching,       TakeDamage,   NULL
+    Crouching,       TakeDamage,   Dead,       NULL
 }
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
-    public bool blockDrawInput { get; private set; }
     public Animator handAnimator   => _handAnimator;
     public Animator bowAnimator    => _bowAnimator;
     [SerializeField] private Animator _handAnimator;
@@ -49,14 +45,15 @@ public class PlayerAnimationController : MonoBehaviour {
     private AnimatorOverrideController _handOverride;
     private AnimatorOverrideController _bowOverride;
     private Controls _controls;
+    private float _swapArrowAnimTime;
 
     // properties
+    public bool  blockInputForAnim { get; private set; }
     private float _jumpMotion => Mathf.Clamp(_character.getVelocity.y / _character.totalJumpPower, 0f, _character.totalJumpPower);
 
     private void Awake()
     {
-        _controls = new Controls(); //By Warren
-        //_controls.Player.Jump.performed += ctx => Jump();
+        _controls = new Controls();
     }
 
     private void OnEnable()
@@ -70,7 +67,7 @@ public class PlayerAnimationController : MonoBehaviour {
     }
     
     private void Start() {
-        blockDrawInput = false;
+        blockInputForAnim = false;
         //store ALL possible animations in _animHashTable
         _animHashTable = new Dictionary<int, string>();
         var allAnims = new List<AnimationClip>(_bowAnimator.runtimeAnimatorController.animationClips);
@@ -86,22 +83,23 @@ public class PlayerAnimationController : MonoBehaviour {
         _bowOverride = new AnimatorOverrideController(_bowAnimator.runtimeAnimatorController);
         _bowAnimator.runtimeAnimatorController = _bowOverride;
 
-        //_SetAllBools("IsDead", false);
+        _SetAllBools("IsDead", false);
+        // grab time for arrow swap animation from the current RuntimeAnimatorController
+        _swapArrowAnimTime = new List<AnimationClip>(_bowOverride.animationClips).Find(ac => ac.name.StartsWith("Swap")).length;
     }
 
     private void Update() {
-        //if (isDamageAnimPlaying) return;
-
+        //if (blockInputForAnim) return;
+        /*
+        // code used  for demostration purposes only
         #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Q)) {
             _character.TakeDamage(0);
         }
         #endif
-        
+        */
         //By Warren from Dapper Dino YT Tutorial Referenced above
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
-        print("movementPhase: " + _controls.Player.Movement.phase);
-        print("movementInput: " + movementInput);
 
         // set draw animation to sync with charge values
         if (_character.attackCharge > 1f)
@@ -132,42 +130,79 @@ public class PlayerAnimationController : MonoBehaviour {
         _curHurtAnimationClip = hurtIndex;
         _SetAllTriggers("Damage");
 
-        StartCoroutine(_BlockFireAnims());
+        StartCoroutine(_WaitForAnim(AnimState.TakeDamage));
         _controls.Player.Fire.Disable();
         _controls.Player.Zoom.Disable();
     }
 
+    //placeholder
     public void TriggerDeathAnim() {
-        //_SetAllBools("IsDead", true);
+        _SetAllBools("IsDead", true);
+        _controls.Disable();
+        //lock out player input?
     }
 
     /// <summary>
-    /// Coroutine to handle logic of input blockingwhen the player takes damage.
+    /// Set appropriate actions to trigger the animation for arrow swapping
     /// </summary>
-    private IEnumerator _BlockFireAnims() {
-        float curHurtAnimLength = _bowHurtAnims[_curHurtAnimationClip].length;
+    /// <param name="arrowStr"></param>
+    public void TriggerArrowSwapAnim(in string arrowStr) {
+        // trigger animation
+        _SetAllTriggers("SwitchArrow");
+        StartCoroutine(_WaitForAnim(AnimState.SwitchingArrows));
+        int arrowIndex;
+        // char comparisons are faster (preferable in animation)
+        switch (arrowStr[0]) {
+            case 'S': arrowIndex = 0; break;
+            case 'B': arrowIndex = 1; break;
+            case 'W': arrowIndex = 2; break;
+            case 'A': arrowIndex = 3; break;
+            default: throw new IndexOutOfRangeException(arrowStr + ": is not a valid arrow.");
+        }
+        StartCoroutine(_character.SwapArrowWithDelay(arrowIndex, _swapArrowAnimTime / 2f));
+    }
+
+    /// <summary>
+    /// Coroutine to handle logic of input blocking when the player is executing a
+    /// high priority animation.
+    /// </summary>
+    private IEnumerator _WaitForAnim(AnimState waitForState) {
+        float waitAnimLength;
+        switch (waitForState) {
+            case AnimState.TakeDamage:
+                waitAnimLength = _bowHurtAnims[_curHurtAnimationClip].length;
+                break;
+            case AnimState.SwitchingArrows:
+                waitAnimLength = _swapArrowAnimTime;
+                break;
+            default: throw new IndexOutOfRangeException(waitForState + ": is not a valid animation to wait for.");
+        }
         float timer = 0f;
         bool pressState = true;
-        blockDrawInput = true;
+        blockInputForAnim = true;
         // wait for animation but check if the fire has been released
         do {
             timer += Time.deltaTime;
             yield return new WaitForEndOfFrame();
             // check pressState while waiting
             if (!_character.firePressed) pressState = false;
-        } while (timer <= curHurtAnimLength);
+        } while (timer <= waitAnimLength);
         // hold for fire if this has never been released
         if (pressState) {
             yield return new WaitUntil(delegate() { return !_character.firePressed; } );
         }
-        blockDrawInput = false;
+        blockInputForAnim = false;
         _character.attackCD = 0f;
         _character.chargeRate = 0f;
         _controls.Player.Fire.Enable();
         _controls.Player.Zoom.Enable();
     }
 
-    private void _Debug_PrintAnim() {
+    #region DebugStuff
+    /// <summary>
+    /// Debugging function to print the current animation that's being played.
+    /// </summary>
+    private void _PrintAnim() {
         try {
             int hash = Animator.StringToHash(_bowAnimator.GetNextAnimatorClipInfo(0)[0].clip.name);
             print("currentAnim: " + _animHashTable[hash]);
@@ -176,15 +211,19 @@ public class PlayerAnimationController : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Get the current animator state for debugging purposes.
+    /// </summary>
+    /// <returns>Animator state string for debugging output.</returns>
     private string _GetCurrentAnimatorStateName() {
         AnimatorStateInfo info = _bowAnimator.GetCurrentAnimatorStateInfo(0);
 
         if (_animHashTable.TryGetValue(info.shortNameHash, out string stateStr)) {
             return stateStr;
         }
-        Debug.LogWarning("Unknown animator state name found.");
-        return string.Empty;
+        throw new NullReferenceException("Unknown AnimatorState.");
     }
+    #endregion
 
     //functions below aid in cleaning up excessive lines of code due 
     //to seperate animators
@@ -204,7 +243,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _handAnimator.SetTrigger(hash);
     }
 }
-
+// wrapper class for overriding animation clips
 public class AnimationClipOverrides : List<KeyValuePair<AnimationClip, AnimationClip>> {
     public AnimationClipOverrides(int capacity) : base(capacity) {}
     public AnimationClip this[string name] {

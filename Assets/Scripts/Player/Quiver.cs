@@ -60,14 +60,13 @@ public class Quiver : MonoBehaviour
     public bool EquipStandard()
     {
         //don't accept input if the player has drawn an arrow
-        if (_character.attackCharge < 1) //By Christian
+        if (_character.attackCharge < 1)
         {
             if (loadout[(int)Ammo.Standard, ACCESS] == READY)
             {
                 if (equipped != (int)Ammo.Standard)
                 {
                     equipped = (int)Ammo.Standard;
-                    _character.SetArrowInHandByIndex(0);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Standard, RECORD] +
                         " Standard arrows");
@@ -97,7 +96,6 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Bramble)
                 {
                     equipped = (int)Ammo.Bramble;
-                    _character.SetArrowInHandByIndex(1);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Bramble, RECORD] +
                         " Bramble arrows");
@@ -127,7 +125,6 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Warp)
                 {
                     equipped = (int)Ammo.Warp;
-                    _character.SetArrowInHandByIndex(2);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Warp, RECORD] +
                         " Warp arrows");
@@ -157,7 +154,6 @@ public class Quiver : MonoBehaviour
                 if (equipped != (int)Ammo.Airburst)
                 {
                     equipped = (int)Ammo.Airburst;
-                    _character.SetArrowInHandByIndex(3);
                     Debug.Log("Equipped. You have used " +
                         loadout[(int)Ammo.Airburst, RECORD] +
                         " Airburst arrows");

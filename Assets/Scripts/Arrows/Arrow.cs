@@ -60,7 +60,7 @@ public class Arrow : MonoBehaviour
         rb.useGravity = false;
         
         rb.velocity = new Vector3(0, 0, 0);
-        rb.isKinematic = true;
+        //rb.isKinematic = true; // caused Yield Warnings when triggered
         rb.freezeRotation = true;
     }
 
