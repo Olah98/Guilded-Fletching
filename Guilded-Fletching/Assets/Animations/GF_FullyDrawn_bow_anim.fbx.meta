@@ -1,0 +1,194 @@
+fileFormatVersion: 2
+guid: b05b73623f703b84bb854f55c809d20c
+ModelImporter:
+  serializedVersion: 19301
+  internalIDToNameTable:
+  - first:
+      74: 1827226128182048838
+    second: FullyDrawn_BowAnim
+  externalObjects: {}
+  materials:
+    materialImportMode: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 3
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: FullyDrawn_BowAnim
+      takeName: Take 001
+      internalID: 0
+      firstFrame: 90
+      lastFrame: 150
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 0
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    useSRGBMaterialColor: 1
+    sortHierarchyByName: 1
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    fileIdsGeneration: 2
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    skinWeightsMode: 0
+    maxBonesPerVertex: 4
+    minBoneWeight: 0.001
+    meshOptimizationFlags: -1
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+    legacyComputeAllNormalsFromSmoothingGroupsWhenMeshHasBlendShapes: 0
+    blendShapeNormalImportMode: 1
+    normalSmoothingSource: 0
+  referencedClips: []
+  importAnimation: 1
+  humanDescription:
+    serializedVersion: 3
+    human: []
+    skeleton:
+    - name: GF_Hold_bow_anim(Clone)
+      parentName: 
+      position: {x: 0.0000023843409, y: 0.90458554, z: 0.14472276}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GFBow_rig:Bow_rigV6:main_ctrl
+      parentName: GF_Hold_bow_anim(Clone)
+      position: {x: 0.0000000011487281, y: 0, z: 0.05843855}
+      rotation: {x: 0, y: -0, z: -0.24392632, w: 0.9697938}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GFBow_rig:Bow_rigV6:bn_root_jnt
+      parentName: GFBow_rig:Bow_rigV6:main_ctrl
+      position: {x: -1.2470991e-10, y: -0.0006258392, z: -0.08599844}
+      rotation: {x: -0.60119873, y: 0.37223664, z: -0.35354477, w: 0.61237746}
+      scale: {x: 1.0000001, y: 1, z: 1}
+    - name: GFBow_rig:Bow_rigV6:bn_top_bow_01_jnt
+      parentName: GFBow_rig:Bow_rigV6:bn_root_jnt
+      position: {x: -0.18672888, y: 1.5543122e-17, z: -1.1871943e-17}
+      rotation: {x: 0.9772178, y: -0.21223901, z: 0.000026255842, w: -0.00013984738}
+      scale: {x: 1.0000005, y: 1.0000005, z: 1.0000006}
+    - name: GFBow_rig:Bow_rigV6:bn_top_string_01_jnt
+      parentName: GFBow_rig:Bow_rigV6:bn_top_bow_01_jnt
+      position: {x: -0.50208443, y: 0.033530273, z: -0.00009937912}
+      rotation: {x: 0.00050179654, y: -0.00015141982, z: -0.19740358, w: 0.9803222}
+      scale: {x: 1.04969, y: 1.0000002, z: 1}
+    - name: GFBow_rig:Bow_rigV6:be_top_string_01_jnt
+      parentName: GFBow_rig:Bow_rigV6:bn_top_string_01_jnt
+      position: {x: 0.5809199, y: 0.049764857, z: -0.00006364186}
+      rotation: {x: -0.5004502, y: 0.5002042, z: 0.49979383, w: 0.4995514}
+      scale: {x: 1, y: 1, z: 0.99999994}
+    - name: GFBow_rig:Bow_rigV6:bn_bottom_bow_01_jnt
+      parentName: GFBow_rig:Bow_rigV6:bn_root_jnt
+      position: {x: 0.18637508, y: -0.011496428, z: 3.8512384e-13}
+      rotation: {x: -0.00086727715, y: 0.007090194, z: 0.13557757, w: 0.990741}
+      scale: {x: 1.000001, y: 1.0000004, z: 1.000001}
+    - name: GFBow_rig:Bow_rigV6:bn_bottom_string_01_jnt
+      parentName: GFBow_rig:Bow_rigV6:bn_bottom_bow_01_jnt
+      position: {x: 0.6155853, y: -0.037200414, z: 0.000093870425}
+      rotation: {x: -0.027751818, y: -0.14064988, z: -0.98930085, w: 0.02704242}
+      scale: {x: 1.0746675, y: 1.0000005, z: 1.0000002}
+    - name: GFBow_rig:Bow_rigV6:be_bottom_string_01_jnt
+      parentName: GFBow_rig:Bow_rigV6:bn_bottom_string_01_jnt
+      position: {x: -0.6826147, y: -0.0021489346, z: 0.0000045047486}
+      rotation: {x: -0.5004502, y: 0.50020397, z: 0.49979395, w: 0.4995514}
+      scale: {x: 1.0000002, y: 0.9999998, z: 1.0000007}
+    - name: GFBow_rig:Bow_rigV6:geo_grp
+      parentName: GF_Hold_bow_anim(Clone)
+      position: {x: -0.0000023843409, y: -0.059397038, z: -0.12356998}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GFBow_rig:Bow_rigV6:String_geo
+      parentName: GFBow_rig:Bow_rigV6:geo_grp
+      position: {x: -0, y: -0.8451885, z: -0.021152781}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GFBow_rig:Bow_rigV6:Ribbin_geo
+      parentName: GFBow_rig:Bow_rigV6:geo_grp
+      position: {x: -0, y: -0.8451885, z: -0.021152781}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    - name: GFBow_rig:Bow_rigV6:Bow_geo
+      parentName: GFBow_rig:Bow_rigV6:geo_grp
+      position: {x: -0, y: -0.8451885, z: -0.021152781}
+      rotation: {x: 0, y: -0, z: -0, w: 1}
+      scale: {x: 1, y: 1, z: 1}
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    globalScale: 1
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  autoGenerateAvatarMappingIfUnspecified: 1
+  animationType: 2
+  humanoidOversampling: 1
+  avatarSetup: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
