@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Prefabs/Audio/3D sounds.meta
+guid: 98b517b3fc98e1e4faf174a0b9ee0e52
+=======
 guid: 8c088c9289ae7c94dbb30221ccfaf66e
+>>>>>>> Christian-Mullins:Assets/Animations/PlayerHandAndBow.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

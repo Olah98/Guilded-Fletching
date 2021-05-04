@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using TMPro;//By Warren
 
@@ -132,6 +133,7 @@ public class Character : MonoBehaviour
     private void Awake()
     {
         _controls = new Controls(); //By Warren
+
         _controls.Player.Jump.performed += ctx => _isJumpPressed = true;
         _controls.Player.Crouch.started += ctx => _crouchReady = true;
         _controls.Player.Crouch.performed += ctx => _crouchReady = false;
@@ -144,6 +146,13 @@ public class Character : MonoBehaviour
         _controls.Player.Bramble.performed += ctx => Equip("Bramble");
         _controls.Player.Warp.performed += ctx => Equip("Warp");
         _controls.Player.Airburst.performed += ctx => Equip("Airburst");
+
+        //From DapperDino Tutorial
+        string rebinds = PlayerPrefs.GetString("rebinds", string.Empty);
+
+        if (string.IsNullOrEmpty(rebinds)) { return; }
+
+        _controls.LoadBindingOverridesFromJson(rebinds);
     }
 
     private void OnEnable()
@@ -258,8 +267,8 @@ public class Character : MonoBehaviour
         // end camera based updates
 
 #if UNITY_EDITOR
-        //Used for testing, remove at a later date.
-        if (Input.GetKeyDown(KeyCode.U)) Respawn();
+        //Useful for testing. Turned off at the moment
+        //if (Input.GetKeyDown(KeyCode.U)) Respawn();
 #endif
         //Checks if dead and respawns.
         if (dead) Respawn();

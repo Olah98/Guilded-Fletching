@@ -80,8 +80,8 @@ public class LevelManager : MonoBehaviour
                 }
             }
         }
-        var minutes = timer / 60;
-        var seconds = timer % 60;
+        var minutes = Mathf.Floor(timer / 60);
+        var seconds = Mathf.Floor(timer % 60);
         //var fraction = (timer * 100) % 100;
 
         //update the label value
