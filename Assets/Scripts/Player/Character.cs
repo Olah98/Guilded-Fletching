@@ -378,12 +378,7 @@ public class Character : MonoBehaviour
         _Crouching(_crouchReady);
 
         // suspend all firing until damage animation is played
-        if (_pAnimController.blockDrawInput)
-        {
-            //attackCD = 0f;
-            //attackCharge = 0f;
-            return;
-        }
+        if (_pAnimController.blockDrawInput) return;
 
         // grab context
         if (_firePressed)
@@ -641,9 +636,6 @@ public class Character : MonoBehaviour
     public void TakeDamage(int damage)
     {
         if (damageTaken != 0)
-        //print("TAKING DAMAGE");
-        //currentHp -= damage;
-        if (false) //currentHp < 1)
         {
             // implement player death
             damageTaken = 0;
@@ -664,7 +656,6 @@ public class Character : MonoBehaviour
         // if arrow charge is in progress, reset for damage
         attackCharge = 0f;
         attackCD = 0f;
-        //StartCoroutine(_PauseDrawing());
         _pAnimController.TriggerDamageAnim();
     }
 

@@ -141,6 +141,9 @@ public class PlayerAnimationController : MonoBehaviour {
         //_SetAllBools("IsDead", true);
     }
 
+    /// <summary>
+    /// Coroutine to handle logic of input blockingwhen the player takes damage.
+    /// </summary>
     private IEnumerator _BlockFireAnims() {
         float curHurtAnimLength = _bowHurtAnims[_curHurtAnimationClip].length;
         float timer = 0f;
@@ -158,13 +161,8 @@ public class PlayerAnimationController : MonoBehaviour {
             yield return new WaitUntil(delegate() { return !_character.firePressed; } );
         }
         blockDrawInput = false;
-
         _character.attackCD = 0f;
         _character.chargeRate = 0f;
-        //print("curHurtAnim: " + _curHurtAnimationClip);
-        //yield return new WaitForSeconds(_bowHurtAnims[_curHurtAnimationClip].length);
-        //yield return new WaitUntil(delegate() { return !_character.firePressed; });
-        //_Debug_PrintAnim();
         _controls.Player.Fire.Enable();
         _controls.Player.Zoom.Enable();
     }
