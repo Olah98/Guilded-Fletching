@@ -135,6 +135,14 @@ public class Character : MonoBehaviour
     private void Awake()
     {
         _controls = new Controls(); //By Warren
+
+        //From DapperDino Tutorial
+        string rebinds = PlayerPrefs.GetString("rebinds", string.Empty);
+
+        if (string.IsNullOrEmpty(rebinds)) { return; }
+
+        _controls.LoadBindingOverridesFromJson(rebinds);
+
         _controls.Player.Jump.performed += ctx => _isJumpPressed = true;
         _controls.Player.Crouch.started += ctx => _crouchReady = true;
         _controls.Player.Crouch.performed += ctx => _crouchReady = false;
@@ -147,13 +155,6 @@ public class Character : MonoBehaviour
         _controls.Player.Bramble.performed += ctx => Equip("Bramble");
         _controls.Player.Warp.performed += ctx => Equip("Warp");
         _controls.Player.Airburst.performed += ctx => Equip("Airburst");
-
-        //From DapperDino Tutorial
-        string rebinds = PlayerPrefs.GetString("rebinds", string.Empty);
-
-        if (string.IsNullOrEmpty(rebinds)) { return; }
-
-        _controls.LoadBindingOverridesFromJson(rebinds);
     }
 
     private void OnEnable()
