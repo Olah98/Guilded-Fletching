@@ -49,15 +49,18 @@ public class HowToPlayUI : MonoBehaviour
     private bool _showSecondaryControls;
 
     //Specific to Main Menu Controls UI
+    private const int _rebindsLength = 23;
     public TMP_Text titleText;
     public TMP_Text buttonText;
     public GameObject rebindBlock;
     public GameObject[] items = new GameObject[6];
-    public TMP_Text[] refs = new TMP_Text[23];
+    public TMP_Text[] refs = new TMP_Text[_rebindsLength];
+    public Button[] resets = new Button[_rebindsLength];
+    public Button resetsAll;
     private bool _secondScreen;
     private string _firstTitle = "How To Play";
     private string _secondTitle = "Rebind Controls";
-    private const int _rebindsLength = 23;
+
 
     //From DapperDino Tutorial
     private InputActionRebindingExtensions.RebindingOperation _rebindingOperation;
@@ -96,7 +99,7 @@ public class HowToPlayUI : MonoBehaviour
         for (int i = 0; i < items.Length; i++)
         {
             items[i].SetActive(!items[i].activeSelf);
-
+            FlipResetButtons();
         }
 
         _secondScreen = !_secondScreen;
@@ -111,7 +114,6 @@ public class HowToPlayUI : MonoBehaviour
             titleText.text = _firstTitle;
             buttonText.text = _secondTitle;
         }
-
         UpdateStrings();
         UpdateText();
     }//ToggleMenus
@@ -196,7 +198,7 @@ public class HowToPlayUI : MonoBehaviour
 
                 _changeVisibleDescription = "Show Primary Keys";
             }
-        
+
 
             controlsText.text = _controlsDescription;
             secondaryControlsText.text = _changeVisibleDescription;
@@ -214,6 +216,7 @@ public class HowToPlayUI : MonoBehaviour
         }
         else
         {
+            FlipResetButtons();
             refs[0].text = _upKey; refs[1].text = _downKey;
             refs[2].text = _leftKey; refs[3].text = _rightKey;
             refs[4].text = _upKey2; refs[5].text = _downKey2;
@@ -259,9 +262,9 @@ public class HowToPlayUI : MonoBehaviour
     {
         //Specific to Controls UI
         rebindBlock.SetActive(false);
+        _displayKeys.SaveKeys();
         UpdateStrings();
         UpdateText();
-        _displayKeys.SaveKeys();
 
         //From DapperDino Tutorial
         _rebindingOperation.Dispose();
@@ -281,10 +284,50 @@ public class HowToPlayUI : MonoBehaviour
             actedInput.RemoveBindingOverride(boundInput);
         }
 
+        _displayKeys.SaveKeys();
         UpdateStrings();
         UpdateText();
-        _displayKeys.SaveKeys();
     }//ResetAllKeys
+
+    /*
+    * Flip Reset Buttons
+    * Activates and deactivates reset buttons based on overrides
+    */
+    public void FlipResetButtons()
+    {
+        //Specific to Controls UI
+
+        if (!_displayKeys.AnyOverrides())
+        {
+            if (resetsAll.GetComponent<Button>().interactable == true)
+            {
+                resetsAll.GetComponent<Button>().interactable = false;
+            }
+            for (int i = 0; i < _rebindsLength; i++)
+            {
+                if (resets[i].GetComponent<Button>().interactable == true)
+                {
+                    resets[i].GetComponent<Button>().interactable = false;
+                }
+            }
+        } else
+        {
+            if (resetsAll.GetComponent<Button>().interactable == false)
+            {
+                resetsAll.GetComponent<Button>().interactable = true;
+            }
+
+            bool[] _roster = _displayKeys.WhatOverrides();
+
+            for (int i = 0; i < _rebindsLength; i++)
+            {
+                if (resets[i].GetComponent<Button>().interactable != _roster[i])
+                {
+                    resets[i].GetComponent<Button>().interactable = _roster[i];
+                }
+            }
+        }
+    }//FlipResetButtons
 
     /*
     * Reset Key
@@ -297,10 +340,10 @@ public class HowToPlayUI : MonoBehaviour
         int boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
         actedInput.RemoveBindingOverride(boundInput);
 
+        _displayKeys.SaveKeys();
         UpdateStrings();
         UpdateText();
-        _displayKeys.SaveKeys();
-    }//ResetAllKeys
+    }//ResetKey
 
     /*
     * Toggle Secondary Controls View
