@@ -21,6 +21,7 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
+using InputActionPhase = UnityEngine.InputSystem.InputActionPhase;
 
 /// <summary>
 /// Enum to denote animation states.
@@ -33,6 +34,7 @@ public enum AnimState {
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
+    public bool blockDrawInput { get; private set; }
     public Animator handAnimator   => _handAnimator;
     public Animator bowAnimator    => _bowAnimator;
     [SerializeField] private Animator _handAnimator;
@@ -46,13 +48,9 @@ public class PlayerAnimationController : MonoBehaviour {
     private static int _curHurtAnimationClip = 1;
     private AnimatorOverrideController _handOverride;
     private AnimatorOverrideController _bowOverride;
-    private Controls _controls; //By Warren
+    private Controls _controls;
 
     // properties
-    public bool isDamageAnimPlaying { get {
-        AnimatorClipInfo[] c = _bowAnimator.GetNextAnimatorClipInfo(0);
-        return (c.Length > 0 && c[0].clip.name.StartsWith("Hurt"));
-    } }
     private float _jumpMotion => Mathf.Clamp(_character.getVelocity.y / _character.totalJumpPower, 0f, _character.totalJumpPower);
 
     private void Awake()
@@ -63,16 +61,16 @@ public class PlayerAnimationController : MonoBehaviour {
 
     private void OnEnable()
     {
-        _controls.Enable(); //By Warren
+        _controls.Enable();
     }
 
     private void OnDisable()
     {
-        _controls.Disable(); //By Warren
+        _controls.Disable();
     }
-
     
     private void Start() {
+        blockDrawInput = false;
         //store ALL possible animations in _animHashTable
         _animHashTable = new Dictionary<int, string>();
         var allAnims = new List<AnimationClip>(_bowAnimator.runtimeAnimatorController.animationClips);
@@ -87,30 +85,30 @@ public class PlayerAnimationController : MonoBehaviour {
         _handAnimator.runtimeAnimatorController = _handOverride;
         _bowOverride = new AnimatorOverrideController(_bowAnimator.runtimeAnimatorController);
         _bowAnimator.runtimeAnimatorController = _bowOverride;
+
+        //_SetAllBools("IsDead", false);
     }
 
     private void Update() {
-        if (isDamageAnimPlaying) {
-            //_bowAnimator.WriteDefaultValues();
-            //_handAnimator.WriteDefaultValues();
-            return;
-        }
+        //if (isDamageAnimPlaying) return;
 
         #if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.Q))
-            TriggerDamageAnim();
+        if (Input.GetKeyDown(KeyCode.Q)) {
+            _character.TakeDamage(0);
+        }
         #endif
         
         //By Warren from Dapper Dino YT Tutorial Referenced above
         var movementInput = _controls.Player.Movement.ReadValue<Vector2>();
-
-        _SetAllFloats("BowCharge", _character.attackCharge);
+        print("movementPhase: " + _controls.Player.Movement.phase);
+        print("movementInput: " + movementInput);
 
         // set draw animation to sync with charge values
-        if (_character.attackCharge > 0f && !isDamageAnimPlaying)
+        if (_character.attackCharge > 1f)
             _SetAllFloats("DrawSpeed", _character.attackCharge / 100f);
         else
             _SetAllFloats("DrawSpeed", 0f);
+
         // set movement based animations
         _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
         _SetAllBools("IsCrouching", _character.isCrouching);
@@ -118,57 +116,62 @@ public class PlayerAnimationController : MonoBehaviour {
         _SetAllFloats("JumpMotion", Mathf.Abs(_jumpMotion - 1f));
 
         // trigger fire animation
-        if (_character.attackCD > 0)
+        if (_character.attackCD > 0f)
             _SetAllTriggers("Fire");
-    }
-
-    public bool AreAnimatorsEqual() {
-        //make copies of both animators
-        Animator copyHandAnim = _handAnimator;
-        Animator copyBowAnim  = _bowAnimator;
-        //get their overrides
-        var copyHandOverride = new AnimatorOverrideController(copyHandAnim.runtimeAnimatorController);
-        var copyBowOverride  = new AnimatorOverrideController(copyBowAnim.runtimeAnimatorController);
-        var handOverrideList = new AnimationClipOverrides(copyHandOverride.overridesCount);
-        var bowOverrideList  = new AnimationClipOverrides(copyBowOverride.overridesCount);
-        copyHandOverride.GetOverrides(handOverrideList);
-        copyBowOverride.GetOverrides(bowOverrideList);
-        //override all clips to be empty or null
-        var emptyAnimClip = new KeyValuePair<AnimationClip, AnimationClip>(new AnimationClip(), new AnimationClip());
-        for (int i = 0; i < handOverrideList.Count; ++i) {
-            handOverrideList[i] = emptyAnimClip;
-            bowOverrideList[i]  = emptyAnimClip;
-        }
-        copyHandOverride.ApplyOverrides(handOverrideList);
-        copyBowOverride.ApplyOverrides(bowOverrideList);
-        return copyHandAnim.Equals(copyBowAnim);
     }
 
     /// <summary>
     /// Public mutator that triggers the TakeDamageAnimation state
     /// </summary>
     public void TriggerDamageAnim() {
-        int hurtIndex = Random.Range(0, _handHurtAnims.Length);
+        int hurtIndex = Random.Range(0, 3);
         // set clips using the AnimatorOverrideController
         string prefix = "Hurt" + _curHurtAnimationClip + "_";
-
         _bowOverride[prefix + "BowAnim"] = _bowHurtAnims[hurtIndex];
         _handOverride[prefix + "HandAnim"] = _handHurtAnims[hurtIndex];
-        _curHurtAnimationClip = hurtIndex + 1;
+        _curHurtAnimationClip = hurtIndex;
         _SetAllTriggers("Damage");
+
         StartCoroutine(_BlockFireAnims());
+        _controls.Player.Fire.Disable();
+        _controls.Player.Zoom.Disable();
+    }
+
+    public void TriggerDeathAnim() {
+        //_SetAllBools("IsDead", true);
     }
 
     private IEnumerator _BlockFireAnims() {
-        _SetAllBools("IsDamageAnim", true);
-        yield return new WaitWhile(delegate() { return isDamageAnimPlaying; } );
-        _SetAllBools("IsDamageAnim", false);
+        float curHurtAnimLength = _bowHurtAnims[_curHurtAnimationClip].length;
+        float timer = 0f;
+        bool pressState = true;
+        blockDrawInput = true;
+        // wait for animation but check if the fire has been released
+        do {
+            timer += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+            // check pressState while waiting
+            if (!_character.firePressed) pressState = false;
+        } while (timer <= curHurtAnimLength);
+        // hold for fire if this has never been released
+        if (pressState) {
+            yield return new WaitUntil(delegate() { return !_character.firePressed; } );
+        }
+        blockDrawInput = false;
+
+        _character.attackCD = 0f;
+        _character.chargeRate = 0f;
+        //print("curHurtAnim: " + _curHurtAnimationClip);
+        //yield return new WaitForSeconds(_bowHurtAnims[_curHurtAnimationClip].length);
+        //yield return new WaitUntil(delegate() { return !_character.firePressed; });
+        //_Debug_PrintAnim();
+        _controls.Player.Fire.Enable();
+        _controls.Player.Zoom.Enable();
     }
 
     private void _Debug_PrintAnim() {
         try {
             int hash = Animator.StringToHash(_bowAnimator.GetNextAnimatorClipInfo(0)[0].clip.name);
-            
             print("currentAnim: " + _animHashTable[hash]);
         } catch (System.IndexOutOfRangeException) {
             print("currentAnim: N/A");

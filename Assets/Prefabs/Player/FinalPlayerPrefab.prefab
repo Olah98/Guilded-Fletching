@@ -228,7 +228,7 @@ Animator:
   m_GameObject: {fileID: 845903297135598934}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: e897c7069027a7c49af964a349b9bab0, type: 3}
-  m_Controller: {fileID: 9100000, guid: df85d0301884fa144884d2a4db599fed, type: 2}
+  m_Controller: {fileID: 9100000, guid: 804bf65c6e83a4248a30e9f22ba3f1f0, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -580,8 +580,6 @@ MonoBehaviour:
   attackCD: 0
   chargeRate: 0
   attackCharge: 0
-  maxHp: 0
-  currentHp: 0
   dead: 0
   chargeText: {fileID: 5793601341198381860}
   chargeSlider: {fileID: 1523950928097437515}

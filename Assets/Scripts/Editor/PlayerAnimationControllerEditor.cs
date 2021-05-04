@@ -14,6 +14,7 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
+[Obsolete]
 [CustomEditor(typeof(PlayerAnimationController))]
 public class PlayerAnimationControllerEditor : Editor {
     //consts
@@ -33,7 +34,7 @@ public class PlayerAnimationControllerEditor : Editor {
     public override void OnInspectorGUI() {
         base.OnInspectorGUI();
         EditorGUILayout.Space();
-
+        /*
         //output last time this button was used to copy?
         //use DateTime.ToFileTime?
         if (!AreAnimatorControllersSimilar(myPAnim.handAnimator, myPAnim.bowAnimator)) {
@@ -48,7 +49,7 @@ public class PlayerAnimationControllerEditor : Editor {
         else {
             //output some sort of feedback to tell they are already equal
         }
-
+        */
         thisTarget.ApplyModifiedProperties();
     }
 
@@ -62,14 +63,7 @@ public class PlayerAnimationControllerEditor : Editor {
         return bowToHandController;
     }
 
-        /*
-            TODO:
-                -I might have to manually evaluate if these animators are similar enough
-                -necessary variables for manual evaluation:
-                    -states
-                    -parameters
-                    -transitions
-        */
+
     bool AreAnimatorControllersSimilar(in Animator anim1, in Animator anim2) {
         var anim1Controller = anim1.runtimeAnimatorController as AnimatorController;
         var anim2Controller = anim2.runtimeAnimatorController as AnimatorController;
