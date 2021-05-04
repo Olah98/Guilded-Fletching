@@ -42,12 +42,17 @@ public class HowToPlayUI : MonoBehaviour
     public TMP_Text brambText;
     public TMP_Text warpText;
     public TMP_Text airText;
+    public TMP_Text secondaryControlsText;
+    private const string _firstBrambleLevel = "Four";
+    private const string _firstWarpLevel = "Five";
+    private const string _firstAirburstLevel = "Six";
+    private bool _showSecondaryControls;
 
     //Specific to Main Menu Controls UI
     public TMP_Text titleText;
     public TMP_Text buttonText;
     public GameObject rebindBlock;
-    public GameObject[] items = new GameObject[5];
+    public GameObject[] items = new GameObject[6];
     public TMP_Text[] refs = new TMP_Text[23];
     private bool _secondScreen;
     private string _firstTitle = "How To Play";
@@ -159,27 +164,53 @@ public class HowToPlayUI : MonoBehaviour
 
         if (!_secondScreen)
         {
-            controlsText.text = "<b>To Move:</b> " + _upKey + " or " + _upKey2 + ", " +
-                _downKey + " or " + _downKey2 + ", " + _leftKey + " or " + _leftKey2 + ", "
-                + _rightKey + " or " + _rightKey2 + "\n" + "<b>Interact:</b> " + _interactKey + "\n" +
-                "<b>Hold to Fire:</b> " + _fireKey + "\n" + "<b>Zoom:</b> " + _zoomKey + "\n" +
-                "<b>Jump:</b> " + _jumpKey + "\n" + "<b>Pause Game:</b> " + _cancelKey + "\n" +
-                "<b>Equip Special Arrows:</b> " + _standardKey + " or " + _standardKey2 + ", " +
-                _brambleKey + " or " + _brambleKey2 + ", " + _warpKey + " or " + _warpKey2 + ", "
-                + _airburstKey + " or " + _airburstKey2 + "\n" + "<b>Crouch:</b> " + _crouchKey +
-                " or " + _crouchKey2;
+            string _controlsDescription = "";
+            string _changeVisibleDescription = "";
+            if (!_showSecondaryControls)
+            {
+                _controlsDescription = "<b>To Move:</b> " + _upKey + ", " +
+                    _downKey + ", " + _leftKey + ", "
+                    + _rightKey + "\n" + "<b>Interact:</b> " + _interactKey + "\n" +
+                    "<b>Hold to Fire:</b> " + _fireKey + "\n" + "<b>Zoom:</b> " + _zoomKey + "\n" +
+                    "<b>Jump:</b> " + _jumpKey + "\n" + "<b>Pause Game:</b> " + _cancelKey + "\n" +
+                    "<b>Equip Standard Arrows:</b> " + _standardKey + "\n" +
+                    "<b>Equip Bramble Arrows:</b> " + _brambleKey + "\n" +
+                    "<b>Equip Warp Arrows:</b> " + _warpKey + "\n" +
+                    "<b>Equip Airburst Arrows:</b> " + _airburstKey + "\n" +
+                    "<b>Crouch:</b> " + _crouchKey;
 
+                _changeVisibleDescription = "Show Alternate Keys";
+            }
+            else
+            {
+                _controlsDescription = "<b>To Move:</b> " + _upKey2 + ", " +
+                    _downKey2 + ", " + _leftKey2 + ", "
+                    + _rightKey2 + "\n" + "<b>Interact:</b> " + _interactKey + "\n" +
+                    "<b>Hold to Fire:</b> " + _fireKey + "\n" + "<b>Zoom:</b> " + _zoomKey + "\n" +
+                    "<b>Jump:</b> " + _jumpKey + "\n" + "<b>Pause Game:</b> " + _cancelKey + "\n" +
+                    "<b>Equip Standard Arrows:</b> " + _standardKey2 + "\n" +
+                    "<b>Equip Bramble Arrows:</b> " + _brambleKey2 + "\n" +
+                    "<b>Equip Warp Arrows:</b> " + _warpKey2 + "\n" +
+                    "<b>Equip Airburst Arrows:</b> " + _airburstKey2 + "\n" +
+                    "<b>Crouch:</b> " + _crouchKey2;
+
+                _changeVisibleDescription = "Show Primary Keys";
+            }
+        
+
+            controlsText.text = _controlsDescription;
+            secondaryControlsText.text = _changeVisibleDescription;
             standText.text =
-                "Shoot targets with the normal arrow. It is on the " + _standardKey + " key.";
+                "Shoot targets with the Standard Arrow, unlocked in Level One.";
             brambText.text =
-                "Bind moving objects in place for seconds with the bramble arrow. " +
-                "Switch using the " + _brambleKey + " key. Try in level 4.";
+                "Bind objects with the Bramble Arrow, unlocked in Level "
+                + _firstBrambleLevel + ".";
             warpText.text =
-                "Teleport to certain targets by hitting them with the warp arrow. " +
-                "Switch using the " + _warpKey + " key. Needed to navigate level 5.";
+                "Warp around the world with the Warp Arrow, unlocked in Level "
+                + _firstWarpLevel + ".";
             airText.text =
-                "Knock over light objects with the airburst arrow. " +
-                "Switch using the " + _airburstKey + " key.";
+                "Knock over and blow away objects with the Airburst Arrow, unlocked in Level "
+                + _firstAirburstLevel + ".";
         }
         else
         {
@@ -270,4 +301,16 @@ public class HowToPlayUI : MonoBehaviour
         UpdateText();
         _displayKeys.SaveKeys();
     }//ResetAllKeys
+
+    /*
+    * Toggle Secondary Controls View
+    * Switches in and out the view of the primary and secondary
+    * control set ups.
+    */
+    public void ToggleSecondaryControlsView()
+    {
+        _showSecondaryControls = !_showSecondaryControls;
+        UpdateStrings();
+        UpdateText();
+    }//ToggleSecondaryControlsView
 }//HowToPlayUI

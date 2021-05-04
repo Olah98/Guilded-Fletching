@@ -274,8 +274,8 @@ public class Character : MonoBehaviour
         // end camera based updates
 
 #if UNITY_EDITOR
-        //Used for testing, remove at a later date.
-        if (Input.GetKeyDown(KeyCode.U)) Respawn();
+        //Useful for testing. Turned off at the moment
+        //if (Input.GetKeyDown(KeyCode.U)) Respawn();
 #endif
         //Checks if dead and respawns.
         if (dead) Respawn();
