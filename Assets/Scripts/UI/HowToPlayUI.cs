@@ -382,7 +382,32 @@ public class HowToPlayUI : MonoBehaviour
         //Specific to Controls UI
         InputAction actedInput = _displayKeys.ActionsArrayLocation(actionIndex);
         int boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
+
+        string lastEffectivePath = actedInput.bindings[boundInput].effectivePath;
+
         actedInput.RemoveBindingOverride(boundInput);
+
+        //Loop to search for duplicate effective paths
+        for (int i = 0; i < _rebindsLength; i++)
+        {
+            if (i != actionIndex)
+            {
+                if (actedInput.bindings[boundInput].effectivePath ==
+                    _displayKeys.ActionsArrayLocation(i).
+                    bindings[_displayKeys.BindingsArrayLocation(i)].effectivePath)
+                {
+                    //If one is found, the new binding reverts to the last effective path.
+                    InputActionRebindingExtensions.ApplyBindingOverride(actedInput, boundInput, lastEffectivePath);
+
+                    //The button that already had that effective path turns red, via becoming selected.
+                    EventSystem _eventSystem = EventSystem.current;
+                    _eventSystem.SetSelectedGameObject(rebindButtons[i].gameObject);
+
+                    //Loop breaks here as there ideally can't be more than one duplicate
+                    break;
+                }
+            }
+        }
 
         _displayKeys.SaveKeys();
         UpdateStrings();
