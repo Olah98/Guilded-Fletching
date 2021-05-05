@@ -90,7 +90,7 @@ public class Door : MonoBehaviour
             foreach (var r in _rendList)
                 r.material.SetColor("_Color", change);
         else
-            GetComponent<MeshRenderer>().material.SetColor("_Color", change); // error here 
+            GetComponent<MeshRenderer>().material.SetColor("_Color", change); // error here
 
     }
 
