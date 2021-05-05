@@ -85,7 +85,11 @@ public class HowToPlayUI : MonoBehaviour
      */
     void Start()
     {
+        //Needed for general key bindings to text
         UpdateStrings();
+
+        //This version is specific to Controls UI
+        //Please modify in other contexts
         UpdateText();
     }//Start
 
@@ -165,7 +169,8 @@ public class HowToPlayUI : MonoBehaviour
     */
     public void UpdateText()
     {
-        //Specific to Controls UI
+        //This version is specific to Controls UI
+        //Please modify in other contexts
 
         if (!_secondScreen)
         {
