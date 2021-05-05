@@ -51,7 +51,7 @@ GameObject:
   - component: {fileID: 6090510797491188910}
   - component: {fileID: 7955301774897696668}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: ModularBridge
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isModular: 1
-  openSpeed: 10
+  openSpeed: 15
   mySwitches: []
   _angleChange: 90
   _anchorPoint: {x: 13.19, y: 14.5130005, z: -17.557}
@@ -112,16 +112,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1569661391071781339}
     m_Modifications:
-    - target: {fileID: 308632112620046653, guid: a907d7bf5d41f6e49b495747beed0ef0,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 937199365bcbde54f8d3a2aa6bcfd145, type: 2}
-    - target: {fileID: 3520262937529256635, guid: a907d7bf5d41f6e49b495747beed0ef0,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 937199365bcbde54f8d3a2aa6bcfd145, type: 2}
     - target: {fileID: 5183832212563374605, guid: a907d7bf5d41f6e49b495747beed0ef0,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -137,11 +127,6 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -0.0000039041
       objectReference: {fileID: 0}
-    - target: {fileID: 5231004056330539069, guid: a907d7bf5d41f6e49b495747beed0ef0,
-        type: 3}
-      propertyPath: m_Materials.Array.data[0]
-      value: 
-      objectReference: {fileID: 2100000, guid: 937199365bcbde54f8d3a2aa6bcfd145, type: 2}
     - target: {fileID: 6544919571353504428, guid: a907d7bf5d41f6e49b495747beed0ef0,
         type: 3}
       propertyPath: m_RootOrder
