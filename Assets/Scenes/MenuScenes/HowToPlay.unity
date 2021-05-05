@@ -2565,6 +2565,30 @@ MonoBehaviour:
   - {fileID: 1355995938}
   - {fileID: 2007164021}
   - {fileID: 1475623685}
+  rebindButtons:
+  - {fileID: 1318094515}
+  - {fileID: 376353020}
+  - {fileID: 1767339810}
+  - {fileID: 1618598801}
+  - {fileID: 336611222}
+  - {fileID: 220985767}
+  - {fileID: 1574230423}
+  - {fileID: 1717203866}
+  - {fileID: 2067669543}
+  - {fileID: 637225471}
+  - {fileID: 1369928174}
+  - {fileID: 205840291}
+  - {fileID: 1242132419}
+  - {fileID: 1946915431}
+  - {fileID: 1721618185}
+  - {fileID: 1869341176}
+  - {fileID: 1695815471}
+  - {fileID: 1638540356}
+  - {fileID: 681257142}
+  - {fileID: 1041020138}
+  - {fileID: 1474643150}
+  - {fileID: 167141992}
+  - {fileID: 1190328961}
   resetsAll: {fileID: 1710802691}
 --- !u!1 &268283385
 GameObject:

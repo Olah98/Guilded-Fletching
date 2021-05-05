@@ -323,12 +323,12 @@ public class DisplayKeys : MonoBehaviour
         _roster[7] = GetBinding("Movement", 9);
 
         _roster[8] = GetBinding("Standard", 0);
-        _roster[9] = GetBinding("Standard", 1);
-        _roster[10] = GetBinding("Bramble", 0);
-        _roster[11] = GetBinding("Bramble", 1);
-        _roster[12] = GetBinding("Warp", 0);
-        _roster[13] = GetBinding("Warp", 1);
-        _roster[14] = GetBinding("Airburst", 0);
+        _roster[9] = GetBinding("Bramble", 0);
+        _roster[10] = GetBinding("Warp", 0);
+        _roster[11] = GetBinding("Airburst", 0);
+        _roster[12] = GetBinding("Standard", 1);
+        _roster[13] = GetBinding("Bramble", 1);
+        _roster[14] = GetBinding("Warp", 1);
         _roster[15] = GetBinding("Airburst", 1);
 
         _roster[16] = GetBinding("Jump", 0);

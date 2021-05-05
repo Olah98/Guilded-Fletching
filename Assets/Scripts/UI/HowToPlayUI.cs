@@ -5,6 +5,7 @@ Summary: Overview of controls, set to update if keys are rebound.
     In the Main Menu Controls page, this allows rebinding of keys.
     A local copy of DisplayKeys is used to read and bind controls.
 References: Using DapperDino's Tutorial https://youtu.be/dUCcZrPhwSo
+Also https://docs.unity3d.com/Packages/com.unity.inputsystem@1.1/api/UnityEngine.InputSystem.InputActionRebindingExtensions.html
 */
 using System;
 using System.Collections;
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 using UnityEngine.UI;
@@ -56,6 +58,7 @@ public class HowToPlayUI : MonoBehaviour
     public GameObject[] items = new GameObject[6];
     public TMP_Text[] refs = new TMP_Text[_rebindsLength];
     public Button[] resets = new Button[_rebindsLength];
+    public Button[] rebindButtons = new Button[_rebindsLength];
     public Button resetsAll;
     private bool _secondScreen;
     private string _firstTitle = "How To Play";
@@ -244,13 +247,14 @@ public class HowToPlayUI : MonoBehaviour
         //InputBinding boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
         InputAction actedInput = _displayKeys.ActionsArrayLocation(actionIndex);
         int boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
+        string lastEffectivePath = actedInput.bindings[boundInput].effectivePath;
         rebindBlock.SetActive(true);
 
         //From DapperDino Tutorial
         _rebindingOperation =
             actedInput.PerformInteractiveRebinding(boundInput)
             .OnMatchWaitForAnother(0.1f)
-            .OnComplete(operation => RebindComplete())
+            .OnComplete(operation => RebindComplete(actionIndex, lastEffectivePath))
             .Start();
     }//RebindKey
 
@@ -258,16 +262,50 @@ public class HowToPlayUI : MonoBehaviour
     * Rebind Complete
     * Toggles off blocker, deletes rebinder from memory
     */
-    public void RebindComplete()
+    public void RebindComplete(int actionIndex, string lastEffectivePath)
     {
         //Specific to Controls UI
         rebindBlock.SetActive(false);
-        _displayKeys.SaveKeys();
-        UpdateStrings();
-        UpdateText();
 
         //From DapperDino Tutorial
         _rebindingOperation.Dispose();
+
+        InputAction actedInput = _displayKeys.ActionsArrayLocation(actionIndex);
+        int boundInput = _displayKeys.BindingsArrayLocation(actionIndex);
+
+        //Loop to search for duplicate effective paths
+        for (int i = 0; i < _rebindsLength; i++)
+        {
+            if (i != actionIndex)
+            {
+                if (actedInput.bindings[boundInput].effectivePath ==
+                    _displayKeys.ActionsArrayLocation(i).
+                    bindings[_displayKeys.BindingsArrayLocation(i)].effectivePath)
+                {
+                    //If one is found, the new binding reverts to the last effective path.
+                    InputActionRebindingExtensions.ApplyBindingOverride(actedInput, boundInput, lastEffectivePath);
+
+                    //The button that already had that effective path turns red, via becoming selected.
+                    EventSystem _eventSystem = EventSystem.current;
+                    _eventSystem.SetSelectedGameObject(rebindButtons[i].gameObject);
+
+                    //Loop breaks here as there ideally can't be more than one duplicate
+                    break;
+                }
+            }
+        }
+
+        //This deletes any "overrides" that are identical to the default path
+        if (actedInput.bindings[boundInput].path == actedInput.bindings[boundInput].overridePath)
+        {
+            ResetKey(actionIndex);
+        }
+        else
+        {
+            _displayKeys.SaveKeys();
+            UpdateStrings();
+            UpdateText();
+        }
     }//RebindComplete
 
     /*
@@ -310,7 +348,8 @@ public class HowToPlayUI : MonoBehaviour
                     resets[i].GetComponent<Button>().interactable = false;
                 }
             }
-        } else
+        }
+        else
         {
             if (resetsAll.GetComponent<Button>().interactable == false)
             {
