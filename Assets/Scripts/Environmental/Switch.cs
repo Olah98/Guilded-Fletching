@@ -82,6 +82,14 @@ public class Switch : MonoBehaviour {
         platformObjs.ForEach(obj => { obj.IsAllSwitchesFlipped(); });
         // update color at the end in case the ForEach check reverses the flip
         UpdateColor();//By Warren
+
+        //If it is a switch that can only be pulled by hand
+        // (as in a lever) this will physically flip the switch
+        // from an up position to a down position
+        if (!triggerByArrow)
+        {
+            transform.Rotate(0.0f, 0.0f, 180.0f, Space.Self);
+        }
     }
 
     /// <summary>
@@ -97,6 +105,14 @@ public class Switch : MonoBehaviour {
         if (this.tag == "Untagged")
         {
             this.tag = "Interactable"; //By Warren
+        }
+
+        //If it is a switch that can only be pulled by hand
+        // (as in a lever) this will physically flip the switch
+        // from a down position to an up position
+        if (!triggerByArrow)
+        {
+            transform.Rotate(0.0f, 0.0f, -180.0f, Space.Self);
         }
     }
 /*
@@ -147,14 +163,5 @@ public class Switch : MonoBehaviour {
         {
             r.material.SetColor("_Color", change);
         }
-
-        //If it is a switch that can only be pulled by hand
-        // (as in a lever) this will physically flip the switch
-        // from an up/down position to a down/up position
-        if (!triggerByArrow)
-        {
-            transform.Rotate(0.0f, 0.0f, 180.0f, Space.Self);
-        }
     }
-
 }
