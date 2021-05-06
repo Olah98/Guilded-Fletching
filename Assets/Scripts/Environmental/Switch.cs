@@ -93,6 +93,7 @@ public class Switch : MonoBehaviour {
         if (!isFlipped) return;
         isFlipped = false;
         UpdateColor();
+
         if (this.tag == "Untagged")
         {
             this.tag = "Interactable"; //By Warren
@@ -143,6 +144,17 @@ public class Switch : MonoBehaviour {
             change = _isOff;
         }
         foreach (var r in _rend)
+        {
             r.material.SetColor("_Color", change);
+        }
+
+        //If it is a switch that can only be pulled by hand
+        // (as in a lever) this will physically flip the switch
+        // from an up/down position to a down/up position
+        if (!triggerByArrow)
+        {
+            transform.Rotate(0.0f, 0.0f, 180.0f, Space.Self);
+        }
     }
+
 }
