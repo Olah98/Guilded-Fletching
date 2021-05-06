@@ -1,5 +1,14 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 72133df08c66e3642950e0be878a39aa
+=======
+<<<<<<< HEAD:Assets/Scenes/Multiple_Arrow_Blocked.unity.meta
+guid: 72133df08c66e3642950e0be878a39aa
+=======
+guid: 4d30c8f106753c74abed2ae9c53f2417
+folderAsset: yes
+>>>>>>> Christian-Mullins:Assets/Scripts/Testing.meta
+>>>>>>> parent of 37f7d7d (Air_Burst_Laptop)
 DefaultImporter:
   externalObjects: {}
   userData: 

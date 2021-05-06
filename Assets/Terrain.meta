@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 2608aa3bd47de0644abca8a05a7bc3cd
+=======
+<<<<<<< HEAD:Assets/Prefabs/Player/BowAndHands.meta
+guid: 2608aa3bd47de0644abca8a05a7bc3cd
+=======
+guid: 718b1685be248454695b455c321d1964
+>>>>>>> Tyler-Huff:Assets/Terrain.meta
+>>>>>>> parent of 37f7d7d (Air_Burst_Laptop)
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

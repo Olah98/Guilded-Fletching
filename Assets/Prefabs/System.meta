@@ -1,5 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
 guid: 1c38e8e24755d1042bb73ef912925404
+=======
+<<<<<<< HEAD:Assets/Prefabs/System.meta
+guid: 1c38e8e24755d1042bb73ef912925404
+=======
+guid: 433327a72450bf7468a676a4627b3038
+>>>>>>> main:Assets/Prefabs/Environmental.meta
+>>>>>>> parent of 37f7d7d (Air_Burst_Laptop)
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
