@@ -3,8 +3,6 @@ Author: Christian Mullins
 Date: 2/15/2021
 Summary: Editor portion of the Switch script.
 */
-using System.Collections.Generic;
-using System;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.SceneManagement;

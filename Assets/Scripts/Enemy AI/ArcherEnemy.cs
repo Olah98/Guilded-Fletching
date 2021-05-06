@@ -120,11 +120,11 @@ public class ArcherEnemy : BaseEnemy {
     /// <param name="targetPos">Position of the enemy's target.</param>
     /// <returns>Additional y-axis padding.</returns>
     private float _AddShotArc(Vector3 targetPos) {
-        float arc = 0f;
+        float arc = 1.25f;
         // adjust arc for elevation change (negative value means downslope)
         float yDif = targetPos.y - transform.position.y;
-        if (yDif > 5f) arc += 2.5f; 
-        if (yDif < 0f) arc -= 0.75f;
+        if      (yDif > 5f) arc += 2.5f; 
+        else if (yDif < 5f) arc -= 0.75f;
         // adjust arc for horizontal distance
         targetPos.y = 0f;
         Vector3 myPos = Vector3.Scale(transform.position, new Vector3(1,0,1));
