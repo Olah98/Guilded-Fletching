@@ -1,8 +1,4 @@
 fileFormatVersion: 2
-<<<<<<< HEAD
-guid: ee5ff004a2f63c943b082db5648ebc02
-PrefabImporter:
-=======
 <<<<<<< HEAD:Assets/Prefabs/Puzzle Componets/ladderTemo.prefab.meta
 guid: ee5ff004a2f63c943b082db5648ebc02
 PrefabImporter:
@@ -11,7 +7,6 @@ guid: 8b74abb4262d4dd459fd239dd5db70f6
 folderAsset: yes
 DefaultImporter:
 >>>>>>> main:Assets/Models/Base.meta
->>>>>>> parent of 37f7d7d (Air_Burst_Laptop)
   externalObjects: {}
   userData: 
   assetBundleName: 
