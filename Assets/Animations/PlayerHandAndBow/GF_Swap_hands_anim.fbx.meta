@@ -6,6 +6,9 @@ ModelImporter:
   - first:
       74: 1827226128182048838
     second: Swap_HandAnim
+  - first:
+      74: -998496362607748373
+    second: Take 001
   externalObjects: {}
   materials:
     materialImportMode: 1

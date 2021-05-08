@@ -105,7 +105,6 @@ public class Character : MonoBehaviour
     private Quiver _myQuiver;
     private bool _isCrouching;
     private SavedData _currentData;
-    private GameObject _arrowInHand;
     private PlayerAnimationController _pAnimController;
     private Transform _originParent;
     private bool _runOnce;
@@ -624,7 +623,7 @@ public class Character : MonoBehaviour
         projectile = Instantiate(arrow, bowPosition.transform.position, outQuat);
         //grants projectile force based on time spent charging attack
         projectile.GetComponent<Rigidbody>().AddForce(cam.forward * attackCharge * 20f);
-        StartCoroutine(_HideArrowForShot());
+        _pAnimController.TriggerReloadAnim();
         return projectile;
     }
     
@@ -652,6 +651,7 @@ public class Character : MonoBehaviour
         {
             damageTaken = 0;
             dead = true;
+            _pAnimController.TriggerDeathAnim(arrowPosition.gameObject);
         }
         else
         {
@@ -662,13 +662,13 @@ public class Character : MonoBehaviour
             {
                 _blackScreen.GetComponent<ScreenShift>().ToggleDamage();
             }
+            _pAnimController.TriggerDamageAnim();
         }
 
         // Lock out the player from being able to shoot or charge
         // if arrow charge is in progress, reset for damage
         attackCharge = 0f;
         attackCD = 0f;
-        _pAnimController.TriggerDamageAnim();
     }
 
     /// <summary>
@@ -742,13 +742,25 @@ public class Character : MonoBehaviour
 
     #region ArrowInHand_Handling
     /// <summary>
-    /// 
+    /// Delay arrow by a defined delay parameter.
     /// </summary>
-    /// <param name="index"></param>
-    /// <param name="delayTime"></param>
-    /// <returns></returns>
-    public IEnumerator SwapArrowWithDelay(int index, float delayTime) {
+    /// <param name="index">Index of the prefab arrows array.</param>
+    /// <param name="delayTime">Wait time in seconds.</param>
+    public IEnumerator SwapArrowWithDelay(int index, float delayTime) 
+    {
         yield return new WaitForSeconds(delayTime);
+        SetArrowInHandByIndex(index);
+    }
+    /// <summary>
+    /// Sync arrow swapping animation features with event based system.
+    /// </summary>
+    /// <param name="index">Index of the prefab arrows array.</param>
+    public IEnumerator SyncArrowSwapWithAnim(int index) 
+    {
+        yield return new WaitUntil(delegate() 
+        {
+            return _pAnimController.arrowSwapPhase.Equals(SwapPhase.HandOffScreen);
+        });
         SetArrowInHandByIndex(index);
     }
     /// <summary>
@@ -796,12 +808,24 @@ public class Character : MonoBehaviour
     }
 
     /// <summary>
-    /// Hide arrow in-hand GameObject to wait until the player can fire again.
+    /// Hide arrow in-hand GameObject and wait to be sync with animation
     /// </summary>
-    private IEnumerator _HideArrowForShot()
+    public IEnumerator SyncHideArrowWithAnim()
     {
         arrowPosition.gameObject.SetActive(false);
-        yield return new WaitForSeconds(1.0f); // adjust later?
+        yield return new WaitUntil(delegate() 
+        {
+            return _pAnimController.arrowSwapPhase.Equals(SwapPhase.HandOffScreen);
+        });
+        arrowPosition.gameObject.SetActive(true);
+    }
+    /// <summary>
+    /// Hide arrow in-hand GameObject to wait until the player can fire again.
+    /// </summary>
+    public IEnumerator HideArrowForShot(float hideTime)
+    {
+        arrowPosition.gameObject.SetActive(false);
+        yield return new WaitForSeconds(hideTime);
         arrowPosition.gameObject.SetActive(true);
     }
     #endregion
