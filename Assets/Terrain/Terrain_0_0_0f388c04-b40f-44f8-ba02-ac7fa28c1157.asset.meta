@@ -2,7 +2,11 @@ fileFormatVersion: 2
 guid: 48d95020d6dedbe47bc96331e33a2f08
 NativeFormatImporter:
   externalObjects: {}
+<<<<<<< HEAD
+  mainObjectFileID: 0
+=======
   mainObjectFileID: 15600000
+>>>>>>> parent of 37f7d7d (Air_Burst_Laptop)
   userData: 
   assetBundleName: 
   assetBundleVariant: 

@@ -1,9 +1,13 @@
 fileFormatVersion: 2
+<<<<<<< HEAD
+guid: 3d8f0a894d9428f479d839a242474fab
+=======
 <<<<<<< HEAD:Assets/Animations.meta
 guid: 3d8f0a894d9428f479d839a242474fab
 =======
 guid: 3befb8b9d64d7584da49a015c614708c
 >>>>>>> Warren-Rose-II:Assets/Fonts.meta
+>>>>>>> parent of 37f7d7d (Air_Burst_Laptop)
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
