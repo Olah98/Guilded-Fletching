@@ -21,6 +21,8 @@ public class DisplayKeys : MonoBehaviour
     private Controls _controls;
     private InputAction[] _inputs = new InputAction[_rebindsLength];
     private int[] _bindings = new int[_rebindsLength];
+    private bool[] _overrides = new bool[_rebindsLength];
+    private bool _overridesExist;
 
     /*
     * Awake
@@ -115,6 +117,8 @@ public class DisplayKeys : MonoBehaviour
         {
             _controls.Disable();
         }
+
+        UpdateBools();
     }//Start
 
     /*
@@ -214,13 +218,23 @@ public class DisplayKeys : MonoBehaviour
     }//ByPart
 
     /*
-    * Bindings Array Location
+    * Get Binding
+    * Returns bindings
+    */
+    public InputBinding GetBinding(string name, int number)
+    {
+        InputAction target = ActionByName(name);
+        return target.bindings[number];
+    }//GetBinding
+
+    /*
+    * Actions Array Location
     * Returns Input Action stored at that index
     */
     public InputAction ActionsArrayLocation(int index)
     {
         return _inputs[index];
-    }//BindingsArrayLocation
+    }//ActionsArrayLocation
 
     /*
     * Bindings Array Location
@@ -241,5 +255,90 @@ public class DisplayKeys : MonoBehaviour
         string rebinds = _controls.SaveBindingOverridesAsJson();
 
         PlayerPrefs.SetString(_rebindsKey, rebinds);
+
+        UpdateBools();
     }//SaveKeys
+
+    /*
+    * Update Bools
+    * Encodes binding overrides ands saves to PlayerPrefs
+    */
+    public void UpdateBools()
+    {
+        bool _trigger = false;
+        InputBinding[] _currentStatus = GetCurrentStatus();
+
+        for (int i = 0; i < _rebindsLength; i++)
+        {
+            bool _overriden = (_currentStatus[i].overridePath != null);
+
+            _overrides[i] = _overriden;
+
+            if (_overriden && !_trigger)
+            {
+                _trigger = true;
+            }
+        }
+
+        if (_overridesExist != _trigger)
+        {
+            _overridesExist = _trigger;
+        }
+    }//UpdateBools
+
+    /*
+    * Any Overrides
+    * Returns true if overrides are in place
+    */
+    public bool AnyOverrides()
+    {
+        return _overridesExist;
+    }//AnyOverrides
+
+    /*
+    * What Overrides
+    * Shows location of saved overrides
+    */
+    public bool[] WhatOverrides()
+    {
+        return _overrides;
+    }//WhatOverrides
+
+    /*
+    * Get Current Status
+    * Builds list of current bindings
+    */
+    public InputBinding[] GetCurrentStatus()
+    {
+        InputBinding[] _roster = new InputBinding[23];
+
+        //[0] and [5] display "2D Axis" as that is the type of control
+        _roster[0] = GetBinding("Movement", 1);
+        _roster[1] = GetBinding("Movement", 2);
+        _roster[2] = GetBinding("Movement", 3);
+        _roster[3] = GetBinding("Movement", 4);
+        _roster[4] = GetBinding("Movement", 6);
+        _roster[5] = GetBinding("Movement", 7);
+        _roster[6] = GetBinding("Movement", 8);
+        _roster[7] = GetBinding("Movement", 9);
+
+        _roster[8] = GetBinding("Standard", 0);
+        _roster[9] = GetBinding("Bramble", 0);
+        _roster[10] = GetBinding("Warp", 0);
+        _roster[11] = GetBinding("Airburst", 0);
+        _roster[12] = GetBinding("Standard", 1);
+        _roster[13] = GetBinding("Bramble", 1);
+        _roster[14] = GetBinding("Warp", 1);
+        _roster[15] = GetBinding("Airburst", 1);
+
+        _roster[16] = GetBinding("Jump", 0);
+        _roster[17] = GetBinding("Interact", 0);
+        _roster[18] = GetBinding("Cancel", 0);
+        _roster[19] = GetBinding("Fire", 0);
+        _roster[20] = GetBinding("Zoom", 0);
+        _roster[21] = GetBinding("Crouch", 0);
+        _roster[22] = GetBinding("Crouch", 1);
+
+        return _roster;
+    }//GetCurrentStatus
 }//DisplayKeys

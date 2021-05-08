@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/TexturesMaterials/Dirt_Floor_Texture/Materials.meta
+guid: bdbf71f3551a7ab4bbe40e7f7feb29c3
+=======
 guid: b8991410711456445b79d82d4068dd53
+>>>>>>> Jonathan-Mills:Assets/Textures/TargetAndStand/Materials.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -41,7 +41,7 @@ public class ScreenShift : MonoBehaviour
         _red = _color.r; _green = _color.g; _blue = _color.b; _alpha = _color.a;
         _clear = new Color(_red, _green, _blue, 0);
         _rectangle = GetComponent<RectTransform>();
-        _rectangle.sizeDelta = new Vector2(Screen.width, Screen.height);
+        _rectangle.sizeDelta = new Vector2(Screen.width + 100, Screen.height + 100);
 
         _redBorder = redBorder.GetComponent<Image>();
         _rectangleRB = redBorder.GetComponent<RectTransform>();
