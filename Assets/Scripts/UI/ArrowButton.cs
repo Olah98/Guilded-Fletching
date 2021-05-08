@@ -54,7 +54,7 @@ public class ArrowButton : MonoBehaviour
             }
             else
             {
-                _lerpedColor = Color.Lerp(Color.white, Color.clear, Mathf.PingPong(Time.time, 2f));
+                _lerpedColor = Color.Lerp(Color.clear, Color.white, Mathf.PingPong(Time.time, 1.5f));
                 overlay.GetComponent<Image>().color = _lerpedColor;
                 if (myQuiver.getEquipped != type)
                 {
