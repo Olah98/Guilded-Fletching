@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Audio/SFX/Player SFX.meta
 guid: b16f0ac3bbad57b40ad1d589c9f19d7c
+=======
+guid: 0f5445c9fe733ec45a5956d32dd26b4b
+>>>>>>> Tyler-Huff:Assets/AllSkyFree/Night MoonBurst/Materials.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}

@@ -99,7 +99,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _isModular: 1
-  openSpeed: 10
+  openSpeed: 15
   mySwitches: []
   _angleChange: 90
   _anchorPoint: {x: 13.19, y: 14.5130005, z: -17.557}
