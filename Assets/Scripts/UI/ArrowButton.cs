@@ -17,16 +17,20 @@ public class ArrowButton : MonoBehaviour
     public int type;
     public Sprite imageOn;
     public Sprite imageOff;
+    public Image overlay;
+    private Color _lerpedColor;
+
     //public TMP_Text myText;
     // Start is called before the first frame update
     void Start()
     {
         myButton = GetComponent<Button>();
         myButton.image.sprite = imageOff;
+        _lerpedColor = Color.clear;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (myQuiver.GetArrowTypeAccess(type) == false)
         {
@@ -43,14 +47,22 @@ public class ArrowButton : MonoBehaviour
                     myButton.interactable = true;
                     myButton.image.sprite = imageOn;
                     myButton.image.enabled = true;
+                    overlay.GetComponent<Image>().enabled = true;
+                    _lerpedColor = Color.clear;
+                    overlay.GetComponent<Image>().color = _lerpedColor;
                 }
             }
             else
             {
+                _lerpedColor = Color.Lerp(Color.white, Color.clear, Mathf.PingPong(Time.time, 2f));
+                overlay.GetComponent<Image>().color = _lerpedColor;
                 if (myQuiver.getEquipped != type)
                 {
                     myButton.interactable = false;
                     myButton.image.sprite = imageOff;
+                    _lerpedColor = Color.clear;
+                    overlay.GetComponent<Image>().color = _lerpedColor;
+                    overlay.GetComponent<Image>().enabled = false;
                 }
             }
             /*
