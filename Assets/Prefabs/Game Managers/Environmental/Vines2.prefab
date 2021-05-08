@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 6791939886313057719}
   - component: {fileID: 8765454162343221629}
   - component: {fileID: 8603745920590458091}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: Vines2
   m_TagString: Burnable
   m_Icon: {fileID: 0}
