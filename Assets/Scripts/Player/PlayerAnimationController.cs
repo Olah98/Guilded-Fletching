@@ -28,6 +28,10 @@ public enum AnimState {
     SwitchingArrows, DrawingArrow, FullyDrawn, Shooting,
     Crouching,       TakeDamage,   Dead,       NULL
 }
+public enum SwapPhase {
+    NotStarted = -1, Started, HandOffScreen, HandBackOnScreen,
+    Ended = -1
+}
 
 [RequireComponent(typeof(Character))]
 public class PlayerAnimationController : MonoBehaviour {
@@ -48,7 +52,8 @@ public class PlayerAnimationController : MonoBehaviour {
     private float _swapArrowAnimTime;
 
     // properties
-    public bool  blockInputForAnim { get; private set; }
+    public bool  blockInputForAnim  { get; private set; }
+    public SwapPhase arrowSwapPhase { get; private set; }
     private float _jumpMotion => Mathf.Clamp(_character.getVelocity.y / _character.totalJumpPower, 0f, _character.totalJumpPower);
 
     private void Awake()
@@ -94,7 +99,7 @@ public class PlayerAnimationController : MonoBehaviour {
         // code used  for demostration purposes only
         #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Q)) {
-            _character.TakeDamage(0);
+            _character.TakeDamage(1);
         }
         #endif
         */
@@ -113,11 +118,11 @@ public class PlayerAnimationController : MonoBehaviour {
         _SetAllBools("IsMoving", movementInput != Vector2.zero);
         _SetAllFloats("JumpMotion", Mathf.Abs(_jumpMotion - 1f));
 
-        // trigger fire animation
-        if (_character.attackCD > 0f)
-            _SetAllTriggers("Fire");
+        // trigger fire animation (using a bool)
+        _SetAllBools("Fire", (_character.attackCD > 0f));
     }
 
+    #region TriggerAnimationFunctions
     /// <summary>
     /// Public mutator that triggers the TakeDamageAnimation state
     /// </summary>
@@ -135,11 +140,21 @@ public class PlayerAnimationController : MonoBehaviour {
         _controls.Player.Zoom.Disable();
     }
 
-    //placeholder
-    public void TriggerDeathAnim() {
+    /// <summary>
+    /// Execute relavent animations for when the player dies.
+    /// </summary>
+    public void TriggerDeathAnim(GameObject inHandArrowGO) {
         _SetAllBools("IsDead", true);
-        _controls.Disable();
         //lock out player input?
+        _controls.Dispose();
+        // drop bow
+        var newBowRB = _bowAnimator.gameObject.AddComponent<Rigidbody>();
+        var newHandArrowRB = inHandArrowGO.AddComponent<Rigidbody>();
+        newBowRB.isKinematic = false;
+        newBowRB.useGravity = true;
+        newHandArrowRB.isKinematic = false;
+        newHandArrowRB.useGravity = true;
+        inHandArrowGO.transform.parent = null;
     }
 
     /// <summary>
@@ -159,7 +174,23 @@ public class PlayerAnimationController : MonoBehaviour {
             case 'A': arrowIndex = 3; break;
             default: throw new IndexOutOfRangeException(arrowStr + ": is not a valid arrow.");
         }
-        StartCoroutine(_character.SwapArrowWithDelay(arrowIndex, _swapArrowAnimTime / 2f));
+        StartCoroutine(_character.SyncArrowSwapWithAnim(arrowIndex));
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="phase"></param>
+    public void SetSwapPhase(SwapPhase phase) {
+        arrowSwapPhase = phase;
+    }
+
+    /// <summary>
+    /// Execute relavent animations for when the player reloads
+    /// </summary>
+    public void TriggerReloadAnim() {
+        StartCoroutine(_character.SyncHideArrowWithAnim());
+        _WaitForAnim(AnimState.LoadingArrow);
     }
 
     /// <summary>
@@ -172,10 +203,12 @@ public class PlayerAnimationController : MonoBehaviour {
             case AnimState.TakeDamage:
                 waitAnimLength = _bowHurtAnims[_curHurtAnimationClip].length;
                 break;
+            case AnimState.LoadingArrow:
             case AnimState.SwitchingArrows:
                 waitAnimLength = _swapArrowAnimTime;
                 break;
-            default: throw new IndexOutOfRangeException(waitForState + ": is not a valid animation to wait for.");
+            default: 
+                throw new IndexOutOfRangeException(waitForState + ": is not a valid animation to wait for.");
         }
         float timer = 0f;
         bool pressState = true;
@@ -186,17 +219,21 @@ public class PlayerAnimationController : MonoBehaviour {
             yield return new WaitForEndOfFrame();
             // check pressState while waiting
             if (!_character.firePressed) pressState = false;
-        } while (timer <= waitAnimLength);
+        } while ((!waitForState.Equals(AnimState.TakeDamage) && arrowSwapPhase.Equals(SwapPhase.Ended))
+               /*|| (waitForState.Equals(AnimState.TakeDamage) */&& timer <= waitAnimLength);
+
         // hold for fire if this has never been released
-        if (pressState) {
+        if (waitForState.Equals(AnimState.TakeDamage) && pressState) {
             yield return new WaitUntil(delegate() { return !_character.firePressed; } );
         }
         blockInputForAnim = false;
         _character.attackCD = 0f;
         _character.chargeRate = 0f;
+        //_SetAllBools("Fire", false);
         _controls.Player.Fire.Enable();
         _controls.Player.Zoom.Enable();
     }
+    #endregion
 
     #region DebugStuff
     /// <summary>
