@@ -99,7 +99,7 @@ public class PlayerAnimationController : MonoBehaviour {
         // code used  for demostration purposes only
         #if UNITY_EDITOR
         if (Input.GetKeyDown(KeyCode.Q)) {
-            _character.TakeDamage(0);
+            _character.TakeDamage(1);
         }
         #endif
         */
@@ -122,6 +122,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _SetAllBools("Fire", (_character.attackCD > 0f));
     }
 
+    #region TriggerAnimationFunctions
     /// <summary>
     /// Public mutator that triggers the TakeDamageAnimation state
     /// </summary>
@@ -139,11 +140,21 @@ public class PlayerAnimationController : MonoBehaviour {
         _controls.Player.Zoom.Disable();
     }
 
-    //placeholder
-    public void TriggerDeathAnim() {
+    /// <summary>
+    /// Execute relavent animations for when the player dies.
+    /// </summary>
+    public void TriggerDeathAnim(GameObject inHandArrowGO) {
         _SetAllBools("IsDead", true);
-        _controls.Disable();
         //lock out player input?
+        _controls.Dispose();
+        // drop bow
+        var newBowRB = _bowAnimator.gameObject.AddComponent<Rigidbody>();
+        var newHandArrowRB = inHandArrowGO.AddComponent<Rigidbody>();
+        newBowRB.isKinematic = false;
+        newBowRB.useGravity = true;
+        newHandArrowRB.isKinematic = false;
+        newHandArrowRB.useGravity = true;
+        inHandArrowGO.transform.parent = null;
     }
 
     /// <summary>
@@ -166,10 +177,17 @@ public class PlayerAnimationController : MonoBehaviour {
         StartCoroutine(_character.SyncArrowSwapWithAnim(arrowIndex));
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="phase"></param>
     public void SetSwapPhase(SwapPhase phase) {
         arrowSwapPhase = phase;
     }
 
+    /// <summary>
+    /// Execute relavent animations for when the player reloads
+    /// </summary>
     public void TriggerReloadAnim() {
         StartCoroutine(_character.SyncHideArrowWithAnim());
         _WaitForAnim(AnimState.LoadingArrow);
@@ -215,6 +233,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _controls.Player.Fire.Enable();
         _controls.Player.Zoom.Enable();
     }
+    #endregion
 
     #region DebugStuff
     /// <summary>

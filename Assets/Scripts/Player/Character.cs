@@ -105,7 +105,6 @@ public class Character : MonoBehaviour
     private Quiver _myQuiver;
     private bool _isCrouching;
     private SavedData _currentData;
-    private GameObject _arrowInHand;
     private PlayerAnimationController _pAnimController;
     private Transform _originParent;
     private bool _runOnce;
@@ -652,6 +651,7 @@ public class Character : MonoBehaviour
         {
             damageTaken = 0;
             dead = true;
+            _pAnimController.TriggerDeathAnim(arrowPosition.gameObject);
         }
         else
         {
@@ -662,13 +662,13 @@ public class Character : MonoBehaviour
             {
                 _blackScreen.GetComponent<ScreenShift>().ToggleDamage();
             }
+            _pAnimController.TriggerDamageAnim();
         }
 
         // Lock out the player from being able to shoot or charge
         // if arrow charge is in progress, reset for damage
         attackCharge = 0f;
         attackCD = 0f;
-        _pAnimController.TriggerDamageAnim();
     }
 
     /// <summary>

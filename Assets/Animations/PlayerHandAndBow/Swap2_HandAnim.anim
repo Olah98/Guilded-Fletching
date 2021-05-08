@@ -28727,7 +28727,7 @@ AnimationClip:
     messageOptions: 0
   - time: 1
     functionName: RaiseEvent
-    data: HandsOnScreen
+    data: HandsBackOnScreen
     objectReferenceParameter: {fileID: 11500000, guid: d9b51a4ab5509d5488803ccc02d46a79,
       type: 3}
     floatParameter: 0
