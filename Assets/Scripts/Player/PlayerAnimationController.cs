@@ -16,6 +16,7 @@ Referencing: DapperDino's UI Tutorial https://www.youtube.com/watch?v=Ikt5T-v2Zr
 */
 using UnityEngine;
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using Random = UnityEngine.Random;
@@ -42,6 +43,19 @@ public class PlayerAnimationController : MonoBehaviour {
     [Header("Randomized Hurt Animations")]
     [SerializeField] private AnimationClip[] _handHurtAnims;
     [SerializeField] private AnimationClip[] _bowHurtAnims;
+
+    public readonly Dictionary<string, int> playerAnimHashTable 
+        = new Dictionary<string, int> {
+            { "DrawSpeed",   Animator.StringToHash("DrawSpeed")   },
+            { "IsGrounded",  Animator.StringToHash("IsGrounded")  },
+            { "IsCrouching", Animator.StringToHash("IsCrouching") },
+            { "IsMoving",    Animator.StringToHash("IsMoving")    },
+            { "IsDead",      Animator.StringToHash("IsDead")      },
+            { "JumpMotion",  Animator.StringToHash("JumpMotion")  },
+            { "Fire",        Animator.StringToHash("Fire")        },
+            { "Damage",      Animator.StringToHash("Damage")      },
+            { "SwitchArrow", Animator.StringToHash("SwitchArrow") },
+    };
     // animator overriding variables
     private Character _character;
     private Dictionary<int, string> _animHashTable;
@@ -88,7 +102,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _bowOverride = new AnimatorOverrideController(_bowAnimator.runtimeAnimatorController);
         _bowAnimator.runtimeAnimatorController = _bowOverride;
 
-        _SetAllBools("IsDead", false);
+        _SetAllBools(playerAnimHashTable["IsDead"], false);
         // grab time for arrow swap animation from the current RuntimeAnimatorController
         _swapArrowAnimTime = new List<AnimationClip>(_bowOverride.animationClips).Find(ac => ac.name.StartsWith("Swap")).length;
     }
@@ -108,18 +122,18 @@ public class PlayerAnimationController : MonoBehaviour {
 
         // set draw animation to sync with charge values
         if (_character.attackCharge > 1f)
-            _SetAllFloats("DrawSpeed", _character.attackCharge / 100f);
+            _SetAllFloats(playerAnimHashTable["DrawSpeed"], _character.attackCharge / 100f);
         else
-            _SetAllFloats("DrawSpeed", 0f);
+            _SetAllFloats(playerAnimHashTable["DrawSpeed"], 0f);
 
         // set movement based animations
-        _SetAllBools("IsGrounded", (_character.jumpCD <= 0f));
-        _SetAllBools("IsCrouching", _character.isCrouching);
-        _SetAllBools("IsMoving", movementInput != Vector2.zero);
-        _SetAllFloats("JumpMotion", Mathf.Abs(_jumpMotion - 1f));
+        _SetAllBools(playerAnimHashTable["IsGrounded"], (_character.jumpCD <= 0f));
+        _SetAllBools(playerAnimHashTable["IsCrouching"], _character.isCrouching);
+        _SetAllBools(playerAnimHashTable["IsMoving"], movementInput != Vector2.zero);
+        _SetAllFloats(playerAnimHashTable["JumpMotion"], Mathf.Abs(_jumpMotion - 1f));
 
         // trigger fire animation (using a bool)
-        _SetAllBools("Fire", (_character.attackCD > 0f));
+        _SetAllBools(playerAnimHashTable["Fire"], (_character.attackCD > 0f));
     }
 
     #region TriggerAnimationFunctions
@@ -133,7 +147,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _bowOverride[prefix + "BowAnim"] = _bowHurtAnims[hurtIndex];
         _handOverride[prefix + "HandAnim"] = _handHurtAnims[hurtIndex];
         _curHurtAnimationClip = hurtIndex;
-        _SetAllTriggers("Damage");
+        _SetAllTriggers(playerAnimHashTable["Damage"]);
 
         StartCoroutine(_WaitForAnim(AnimState.TakeDamage));
         _controls.Player.Fire.Disable();
@@ -144,10 +158,9 @@ public class PlayerAnimationController : MonoBehaviour {
     /// Execute relavent animations for when the player dies.
     /// </summary>
     public void TriggerDeathAnim(GameObject inHandArrowGO) {
-        _SetAllBools("IsDead", true);
-        //lock out player input?
+        _SetAllBools(playerAnimHashTable["IsDead"], true);
         _controls.Dispose();
-        // drop bow
+        // drop bow and arrow
         var newBowRB = _bowAnimator.gameObject.AddComponent<Rigidbody>();
         var newHandArrowRB = inHandArrowGO.AddComponent<Rigidbody>();
         newBowRB.isKinematic = false;
@@ -163,7 +176,7 @@ public class PlayerAnimationController : MonoBehaviour {
     /// <param name="arrowStr"></param>
     public void TriggerArrowSwapAnim(in string arrowStr) {
         // trigger animation
-        _SetAllTriggers("SwitchArrow");
+        _SetAllTriggers(playerAnimHashTable["SwitchArrow"]);
         StartCoroutine(_WaitForAnim(AnimState.SwitchingArrows));
         int arrowIndex;
         // char comparisons are faster (preferable in animation)
@@ -178,9 +191,9 @@ public class PlayerAnimationController : MonoBehaviour {
     }
 
     /// <summary>
-    /// 
+    /// Set the current phase to the argument phase.
     /// </summary>
-    /// <param name="phase"></param>
+    /// <param name="phase">New phase to be set.</param>
     public void SetSwapPhase(SwapPhase phase) {
         arrowSwapPhase = phase;
     }
@@ -264,18 +277,15 @@ public class PlayerAnimationController : MonoBehaviour {
 
     //functions below aid in cleaning up excessive lines of code due 
     //to seperate animators
-    private void _SetAllBools(string name, bool value) {
-        int hash = Animator.StringToHash(name);
+    private void _SetAllBools(int hash, bool value) {
         _bowAnimator.SetBool(hash, value);
         _handAnimator.SetBool(hash, value);
     }
-    private void _SetAllFloats(string name, float value) {
-        int hash = Animator.StringToHash(name);
+    private void _SetAllFloats(int hash, float value) {
         _bowAnimator.SetFloat(hash, value);
         _handAnimator.SetFloat(hash, value);
     }
-    private void _SetAllTriggers(string name) {
-        int hash = Animator.StringToHash(name);
+    private void _SetAllTriggers(int hash) {
         _bowAnimator.SetTrigger(hash);
         _handAnimator.SetTrigger(hash);
     }

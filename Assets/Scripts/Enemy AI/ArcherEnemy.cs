@@ -14,6 +14,7 @@ public class ArcherEnemy : BaseEnemy {
 
     private float _retreatTimer;
     private Vector3 _startPos;
+    private ArcherAnimController _aAnimController;
     // for calculating player velocity
     private Vector3 _playerVelocity;
     private Vector3 _lastPlayerPos;
@@ -23,15 +24,18 @@ public class ArcherEnemy : BaseEnemy {
         _startPos = transform.position;
         _playerVelocity = Vector3.zero;
         _lastPlayerPos = _playerTrans.position;
+        _aAnimController = GetComponent<ArcherAnimController>();
+    }
+
+    protected override void Update() {
+        base.Update();
+        _lastPlayerPos = _playerTrans.position;
+        _playerVelocity = _GetCurrentPlayerVelocity();
     }
 
     protected override void FixedUpdate() {
         if (_isBrambled) return;
         Vector3 moveDir = Vector3.zero;
-
-        _playerVelocity = _GetCurrentPlayerVelocity();
-        _lastPlayerPos = _playerTrans.position;
-
         // check for aggro, increment timer, check for attack range
         isAggroed = IsPlayerInAggroRange();
         if (isAggroed) _attackTimer += Time.fixedDeltaTime;
@@ -68,6 +72,7 @@ public class ArcherEnemy : BaseEnemy {
     /// </summary>
     /// <param name="target">Vector3 of position to shot.</param>
     protected override void _ShootAt(in Vector3 shotDir) {
+        _aAnimController.TriggerEnemyAttackAnim();
         // create gameObject at bowPos
         var outQuat = Quaternion.Euler(0f, 0f, 90f);
         GameObject shotGO = Instantiate(arrowGO, bowTrans);
@@ -78,6 +83,7 @@ public class ArcherEnemy : BaseEnemy {
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
         shotGO.GetComponent<Rigidbody>().AddForce(shotDir * power, ForceMode.VelocityChange);
         _attackTimer = 0f;
+
     }
 
     /// <summary>
