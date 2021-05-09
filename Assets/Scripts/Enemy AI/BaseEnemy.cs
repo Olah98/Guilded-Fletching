@@ -3,6 +3,7 @@ Author: Christian Mullins
 Date: 02/11/2021
 Summary: Parent script to all enemy AI.
 */
+using System.Collections;
 using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour, IBrambleable {
@@ -53,7 +54,7 @@ public class BaseEnemy : MonoBehaviour, IBrambleable {
     /// <summary>
     /// Public variable that enables enemies to take damage from other scripts.
     /// </summary>
-    /// <param name="damage">Damage value that the enemy will take.</param>
+    /// <param name="damage">Damage v0alue that the enemy will take.</param>
     public void TakeDamage(int damageTaking) {
         health -= damageTaking;
         if (health < 1) {

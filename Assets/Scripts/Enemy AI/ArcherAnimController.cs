@@ -12,8 +12,8 @@ public class ArcherAnimController : MonoBehaviour {
 
     public readonly Dictionary<string, int> enemyAnimHashTable
         = new Dictionary<string, int> {
-            { "Attacking", Animator.StringToHash("Attacking")   },
-            { "Dead",      Animator.StringToHash("Dead")        },
+            { "Attacking", Animator.StringToHash("Attacking") },
+            { "Dead",      Animator.StringToHash("Dead")      },
     };
 
     public bool isFiringAnimation { get; private set; }
@@ -22,17 +22,19 @@ public class ArcherAnimController : MonoBehaviour {
         _bodyAnimator = GetComponent<Animator>();
         thisEnemy = GetComponent<ArcherEnemy>();
         isFiringAnimation = false;
-        //get length of firing animation
-        _SetAllBools(enemyAnimHashTable["Dead"], false);
-        _SetAllBools(enemyAnimHashTable["Attacking"], false);
     }
 
     public IEnumerator TriggerEnemyAttackAnim() {
+        _SetAllTriggers(enemyAnimHashTable["Attacking"]);
+        yield return null;
+        /*
+        if (isFiringAnimation) yield return null;
         isFiringAnimation = true;
         _SetAllBools(enemyAnimHashTable["Attacking"], true);
-        yield return new WaitForSeconds(2f); // set as length of fire anim
+        yield return new WaitForSeconds(0.75f); // set as length of fire anim
         _SetAllBools(enemyAnimHashTable["Attacking"], false);
         isFiringAnimation = false;
+        */
     }
 
     public void TriggerDeathAnim() {

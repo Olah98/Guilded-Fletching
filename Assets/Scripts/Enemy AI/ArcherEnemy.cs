@@ -3,6 +3,7 @@ Author: Christian Mullins
 Date: 02/14/2021
 Summary: Child of BaseEnemy class, specialized in range based attacks.
 */
+using System.Collections;
 using UnityEngine;
 
 public class ArcherEnemy : BaseEnemy {
@@ -51,20 +52,25 @@ public class ArcherEnemy : BaseEnemy {
                 return;
             }
         }
+        
         else {
+            moveDir = _playerTrans.position - transform.position;
+            /*
+            return;
             // math based on: targetPos - currentPos = desiredDirection
             // move to player or retreat to startPos
             if (isAggroed)
-                moveDir = _playerTrans.position - transform.position;
             // am I at the startPos?
             else if ((_startPos - transform.position).magnitude > 1f)
                 moveDir = _startPos - transform.position;
+                */
         }
         // apply movement if necessary
         moveDir.y = 0f;
         transform.position += moveDir.normalized * speed * Time.fixedDeltaTime;
         // adjust rotation to always look forward
         transform.LookAt(moveDir + transform.position, transform.up);
+        
     }
 
     /// <summary>
@@ -72,12 +78,11 @@ public class ArcherEnemy : BaseEnemy {
     /// </summary>
     /// <param name="target">Vector3 of position to shot.</param>
     protected override void _ShootAt(in Vector3 shotDir) {
-        _aAnimController.TriggerEnemyAttackAnim();
+        StartCoroutine(_aAnimController.TriggerEnemyAttackAnim());
         // create gameObject at bowPos
         var outQuat = Quaternion.Euler(0f, 0f, 90f);
         GameObject shotGO = Instantiate(arrowGO, bowTrans);
         shotGO.transform.parent = null;
-
         // base power off of distance
         float power = Vector3.Distance(bowTrans.position, new Vector3(_playerTrans.position.x, _playerTrans.position.y +.5f, _playerTrans.position.z)) / 2.5f;
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
