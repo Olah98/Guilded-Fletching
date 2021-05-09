@@ -45,7 +45,9 @@ GameObject:
   - component: {fileID: 4683969253859708086}
   - component: {fileID: 4683969253859708087}
   - component: {fileID: 1306703145072622667}
+  - component: {fileID: 7037993432228648330}
   - component: {fileID: 1306703145072622666}
+  - component: {fileID: 5818802474854858157}
   m_Layer: 0
   m_Name: swingingParts
   m_TagString: Stoppable
@@ -163,6 +165,20 @@ CapsuleCollider:
   m_Height: 161.9
   m_Direction: 2
   m_Center: {x: 0, y: -268.1, z: 0}
+--- !u!136 &7037993432228648330
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7511253484456103767}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 13.07
+  m_Height: 321.13077
+  m_Direction: 1
+  m_Center: {x: 0, y: -143.38461, z: -0.000030517578}
 --- !u!114 &1306703145072622666
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -179,3 +195,17 @@ MonoBehaviour:
   startDelay: 0
   damage: 0
   force: 100
+--- !u!136 &5818802474854858157
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7511253484456103767}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 19.9
+  m_Height: 431.7
+  m_Direction: 0
+  m_Center: {x: 0, y: -0.3, z: -0.000030517578}
