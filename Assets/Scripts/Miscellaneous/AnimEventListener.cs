@@ -9,9 +9,13 @@ using UnityEngine;
 
 public class AnimEventListener : MonoBehaviour {
     private PlayerAnimationController _animController;
+    private ArcherAnimController _archerAnimController;
 
     private void OnEnable() {
-        _animController = GetComponentInParent<PlayerAnimationController>();
+        if (tag == "Enemy")
+            _archerAnimController = GetComponent<ArcherAnimController>();
+        else
+            _animController = GetComponentInParent<PlayerAnimationController>();
     }
 
     /// <summary>
@@ -30,8 +34,19 @@ public class AnimEventListener : MonoBehaviour {
             case "Ended": phase = SwapPhase.Ended;
                 break;
             default:
-                throw new ArgumentException("'" + eventStr + "' is not a valid event");
+                throw new ArgumentException("'" + eventStr + "' is not a valid event.");
         }
         _animController.SetSwapPhase(phase);
+    }
+
+    /// <summary>
+    /// Public mutator for enemy ArcherAnimController.
+    /// </summary>
+    /// <param name="stateInt">Integer representation of bool.</param>
+    public void IsEnemyReadyToFire(int stateInt) {
+        if (stateInt != 0 && stateInt != 1)
+            throw new IndexOutOfRangeException("Parameter must be 0 or 1.");
+
+        _archerAnimController.SetFiringBool(stateInt == 1);
     }
 }

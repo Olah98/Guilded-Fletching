@@ -48,7 +48,7 @@ public class ArcherEnemy : BaseEnemy {
                 moveDir.y = 0f;
                 shotDir.y += _AddShotArc(targetPos);
                 transform.LookAt(moveDir + transform.position, transform.up);
-                _ShootAt(shotDir);
+                StartCoroutine(_ShootAt(shotDir));
                 return;
             }
         }
@@ -77,17 +77,18 @@ public class ArcherEnemy : BaseEnemy {
     /// Fire arrowGO at target position.
     /// </summary>
     /// <param name="target">Vector3 of position to shot.</param>
-    protected override void _ShootAt(in Vector3 shotDir) {
+    protected override IEnumerator _ShootAt(Vector3 shotDir) {
+        _attackTimer = 0f;
         _aAnimController.TriggerEnemyAttackAnim();
         // create gameObject at bowPos
         var outQuat = Quaternion.Euler(0f, 0f, 90f);
+        yield return new WaitUntil(delegate() { return _aAnimController.isFiringAnimation; });
         GameObject shotGO = Instantiate(arrowGO, bowTrans);
         shotGO.transform.parent = null;
         // base power off of distance
         float power = Vector3.Distance(bowTrans.position, new Vector3(_playerTrans.position.x, _playerTrans.position.y +.5f, _playerTrans.position.z)) / 2.5f;
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
         shotGO.GetComponent<Rigidbody>().AddForce(shotDir * power, ForceMode.VelocityChange);
-        _attackTimer = 0f;
 
     }
 
@@ -119,7 +120,7 @@ public class ArcherEnemy : BaseEnemy {
         Vector3 shotDir = Vector3.Lerp(transform.position, target, 0.5f)
                         - transform.position;
         shotDir.y += _AddShotArc(target);
-        _ShootAt(shotDir);
+        StartCoroutine(_ShootAt(shotDir));
     }
     #endregion
 

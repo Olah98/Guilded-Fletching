@@ -82,7 +82,7 @@ public class BaseEnemy : MonoBehaviour, IBrambleable {
     /// Inheritted function that will act differently depending on the enemy.
     /// </summary>
     /// <param name="target">Vector3 of position to shoot.</param>
-    protected virtual void _ShootAt(in Vector3 target) {}
+    protected virtual IEnumerator _ShootAt(Vector3 target) { yield return null; }
 
 
     /// <summary>

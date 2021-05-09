@@ -24,6 +24,10 @@ public class ArcherAnimController : MonoBehaviour {
         isFiringAnimation = false;
     }
 
+    public void SetFiringBool(bool setTo) {
+        isFiringAnimation = setTo;
+    }
+
     public void TriggerEnemyAttackAnim() {
         _SetAllTriggers(enemyAnimHashTable["Attacking"]);
     }
