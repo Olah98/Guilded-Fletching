@@ -1730,7 +1730,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6753024186943641106}
-  - component: {fileID: 5279255404446208104}
+  - component: {fileID: 6890449543381057569}
   - component: {fileID: 4890522384938208335}
   - component: {fileID: 7221391928035448268}
   - component: {fileID: 1730770953454234808}
@@ -1762,8 +1762,8 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!136 &5279255404446208104
-CapsuleCollider:
+--- !u!65 &6890449543381057569
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1772,10 +1772,9 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
-  m_Radius: 0.6
-  m_Height: 3
-  m_Direction: 1
-  m_Center: {x: 0, y: 1.13, z: 0.2}
+  serializedVersion: 2
+  m_Size: {x: 1, y: 2.49, z: 1}
+  m_Center: {x: 0, y: 1.25, z: 0}
 --- !u!54 &4890522384938208335
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1809,12 +1808,11 @@ MonoBehaviour:
   damage: 10
   attackFrequency: 3
   rangeOfAttack: 10
-  aggroArea: 11
+  aggroArea: 0
   _isBrambled: 0
   shotAccuracy: 90
   arrowGO: {fileID: 2895406901005049204, guid: e3e3cb8c0af09c54b9646225fe14e68f, type: 3}
-  bowTrans: {fileID: 6444446404314253524, guid: e41cc2b9629108944980777dc031faba,
-    type: 3}
+  bowTrans: {fileID: 3874909020884265817}
 --- !u!114 &1730770953454234808
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1843,7 +1841,13 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
-  m_WarningMessage: 
+  m_WarningMessage: "\nBinding warning: Some generic clip(s) animate transforms that
+    are already bound by a Humanoid avatar. These transforms can only be changed
+    by Humanoid clips.\n\tTransform 'bn_LeftHand'\n\tTransform 'bn_RightHandPinky3'\n\tTransform
+    'bn_RightHandIndex1'\n\tTransform 'bn_RightHandRing1'\n\tTransform 'bn_Spine'\n\tTransform
+    'bn_LeftUpLeg'\n\tTransform 'bn_RightHandPinky2'\n\tTransform 'bn_RightHand'\n\tTransform
+    'bn_RightArm'\n\tTransform 'bn_RightHandRing3'\n\tand more ...\n\tFrom animation
+    clip 'Firing_EnemyAnim'"
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
@@ -2947,6 +2951,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: GF_Idle_EnemyBow_anim
       objectReference: {fileID: 0}
+    - target: {fileID: 2899630718050298945, guid: a8d1ecf66e437474db74f5ef49990587,
+        type: 3}
+      propertyPath: m_Name
+      value: Enemy_Bow(BowPos)
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a8d1ecf66e437474db74f5ef49990587, type: 3}
 --- !u!1 &5952668550235112497 stripped
@@ -2958,6 +2967,12 @@ GameObject:
 --- !u!4 &6473907072291774091 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: a8d1ecf66e437474db74f5ef49990587,
+    type: 3}
+  m_PrefabInstance: {fileID: 6799671637096167776}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &3874909020884265817 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -1469518823195864519, guid: a8d1ecf66e437474db74f5ef49990587,
     type: 3}
   m_PrefabInstance: {fileID: 6799671637096167776}
   m_PrefabAsset: {fileID: 0}
