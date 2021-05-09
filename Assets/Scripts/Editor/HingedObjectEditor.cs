@@ -53,7 +53,7 @@ public class HingedObjectEditor : Editor {
         }
 
         // force scene to be dirty if changes have occured (otherwise changes don't save)
-        if (GUI.changed) {
+        if (GUI.changed || thisTarget.hasModifiedProperties) {
             EditorUtility.SetDirty(target);
             EditorSceneManager.MarkSceneDirty(SceneManager.GetActiveScene());
         }
