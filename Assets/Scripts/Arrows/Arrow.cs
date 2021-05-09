@@ -102,8 +102,8 @@ public class Arrow : MonoBehaviour
             //Burn objects and switch objects
             if (hit.transform.tag == "Burnable" && isLit)
             {
-                Destroy(hit.transform.gameObject);
                 Destroy(gameObject);
+                hit.transform.GetComponent<Burnable>().Burn();
                 return;
             }
             else if (hit.transform.gameObject.GetComponent<Switch>())
