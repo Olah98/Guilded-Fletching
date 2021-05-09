@@ -23,10 +23,11 @@ public class Burnable : MonoBehaviour
         Collider[] hits = new Collider[3];
         // max number of collisions = hits.Length
         
-        hits = Physics.OverlapBox(transform.position, transform.localScale, Quaternion.identity, mask);
+        hits = Physics.OverlapBox(transform.position, new Vector3 (.25f, .25f, .25f), Quaternion.identity, mask);
 
         foreach (Collider hit in hits)
         {
+            Debug.Log(hit.transform.name);
             if (hit.gameObject.tag == "Burnable" && !hit.gameObject.GetComponent<Burnable>().burned)
             {
                 StartCoroutine(BurnDelay(hit.gameObject));
