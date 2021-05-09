@@ -3,6 +3,7 @@ Author: Christian Mullins
 Date: 02/14/2021
 Summary: Child of BaseEnemy class, specialized in range based attacks.
 */
+using System.Collections;
 using UnityEngine;
 
 public class ArcherEnemy : BaseEnemy {
@@ -14,6 +15,7 @@ public class ArcherEnemy : BaseEnemy {
 
     private float _retreatTimer;
     private Vector3 _startPos;
+    private ArcherAnimController _aAnimController;
     // for calculating player velocity
     private Vector3 _playerVelocity;
     private Vector3 _lastPlayerPos;
@@ -23,61 +25,71 @@ public class ArcherEnemy : BaseEnemy {
         _startPos = transform.position;
         _playerVelocity = Vector3.zero;
         _lastPlayerPos = _playerTrans.position;
+        _aAnimController = GetComponent<ArcherAnimController>();
+    }
+
+    protected override void Update() {
+        base.Update();
+        _lastPlayerPos = _playerTrans.position;
+        _playerVelocity = _GetCurrentPlayerVelocity();
     }
 
     protected override void FixedUpdate() {
         if (_isBrambled) return;
         Vector3 moveDir = Vector3.zero;
-
-        _playerVelocity = _GetCurrentPlayerVelocity();
-        _lastPlayerPos = _playerTrans.position;
-
         // check for aggro, increment timer, check for attack range
         isAggroed = IsPlayerInAggroRange();
         if (isAggroed) _attackTimer += Time.fixedDeltaTime;
         if (IsPlayerInAttackRange()) {
             if (_attackTimer >= attackFrequency) {
                 Vector3 targetPos = _GetNewShotPosition();
-                moveDir = Vector3.Lerp(transform.position, targetPos, 0.5f) - transform.position;
+                moveDir = Vector3.Lerp(bowTrans.position, targetPos, 0.5f) - bowTrans.position;
                 Vector3 shotDir = moveDir;
                 moveDir.y = 0f;
                 shotDir.y += _AddShotArc(targetPos);
                 transform.LookAt(moveDir + transform.position, transform.up);
-                _ShootAt(shotDir);
+                StartCoroutine(_ShootAt(shotDir));
                 return;
             }
         }
+        
         else {
+            moveDir = _playerTrans.position - transform.position;
+            /*
+            return;
             // math based on: targetPos - currentPos = desiredDirection
             // move to player or retreat to startPos
             if (isAggroed)
-                moveDir = _playerTrans.position - transform.position;
             // am I at the startPos?
             else if ((_startPos - transform.position).magnitude > 1f)
                 moveDir = _startPos - transform.position;
+                */
         }
         // apply movement if necessary
         moveDir.y = 0f;
-        transform.position += moveDir.normalized * speed * Time.fixedDeltaTime;
+        // transform.position += moveDir.normalized * speed * Time.fixedDeltaTime;
         // adjust rotation to always look forward
         transform.LookAt(moveDir + transform.position, transform.up);
+        
     }
 
     /// <summary>
     /// Fire arrowGO at target position.
     /// </summary>
     /// <param name="target">Vector3 of position to shot.</param>
-    protected override void _ShootAt(in Vector3 shotDir) {
+    protected override IEnumerator _ShootAt(Vector3 shotDir) {
+        _attackTimer = 0f;
+        _aAnimController.TriggerEnemyAttackAnim();
         // create gameObject at bowPos
         var outQuat = Quaternion.Euler(0f, 0f, 90f);
+        yield return new WaitUntil(delegate() { return _aAnimController.isFiringAnimation; });
         GameObject shotGO = Instantiate(arrowGO, bowTrans);
         shotGO.transform.parent = null;
-
         // base power off of distance
         float power = Vector3.Distance(bowTrans.position, new Vector3(_playerTrans.position.x, _playerTrans.position.y +.5f, _playerTrans.position.z)) / 2.5f;
         // ForceMode.VelocityChange doesn't take rigidbody mass into account
         shotGO.GetComponent<Rigidbody>().AddForce(shotDir * power, ForceMode.VelocityChange);
-        _attackTimer = 0f;
+
     }
 
     /// <summary>
@@ -108,7 +120,7 @@ public class ArcherEnemy : BaseEnemy {
         Vector3 shotDir = Vector3.Lerp(transform.position, target, 0.5f)
                         - transform.position;
         shotDir.y += _AddShotArc(target);
-        _ShootAt(shotDir);
+        StartCoroutine(_ShootAt(shotDir));
     }
     #endregion
 

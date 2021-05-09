@@ -3,9 +3,11 @@ Author: Christian Mullins
 Date: 02/11/2021
 Summary: Parent script to all enemy AI.
 */
+using System.Collections;
 using UnityEngine;
 
 public class BaseEnemy : MonoBehaviour, IBrambleable {
+    [Header("Game Values")]
     public int health;
     public float speed;
     public int damage;
@@ -39,7 +41,8 @@ public class BaseEnemy : MonoBehaviour, IBrambleable {
 
     protected virtual void FixedUpdate() {}
 
-    protected void Update() {
+    // overriding should only be used for animation (base.Update() MUST be called)
+    protected virtual void Update() {
         if (isDead) {
             SaveManager.instance.activeSave.unsavedDead.Add(gameObject.name);
             Destroy(gameObject);
@@ -51,11 +54,14 @@ public class BaseEnemy : MonoBehaviour, IBrambleable {
     /// <summary>
     /// Public variable that enables enemies to take damage from other scripts.
     /// </summary>
-    /// <param name="damage">Damage value that the enemy will take.</param>
+    /// <param name="damage">Damage v0alue that the enemy will take.</param>
     public void TakeDamage(int damageTaking) {
         health -= damageTaking;
         if (health < 1) {
-            isDead = true; 
+            isDead = true;
+            // animation is only implemented for Archer
+            if (TryGetComponent<ArcherAnimController>(out var controller))
+                controller.TriggerDeathAnim();
         }
     }
 
@@ -76,7 +82,7 @@ public class BaseEnemy : MonoBehaviour, IBrambleable {
     /// Inheritted function that will act differently depending on the enemy.
     /// </summary>
     /// <param name="target">Vector3 of position to shoot.</param>
-    protected virtual void _ShootAt(in Vector3 target) {}
+    protected virtual IEnumerator _ShootAt(Vector3 target) { yield return null; }
 
 
     /// <summary>
