@@ -43,7 +43,7 @@ public class ArcherEnemy : BaseEnemy {
         if (IsPlayerInAttackRange()) {
             if (_attackTimer >= attackFrequency) {
                 Vector3 targetPos = _GetNewShotPosition();
-                moveDir = Vector3.Lerp(transform.position, targetPos, 0.5f) - transform.position;
+                moveDir = Vector3.Lerp(bowTrans.position, targetPos, 0.5f) - bowTrans.position;
                 Vector3 shotDir = moveDir;
                 moveDir.y = 0f;
                 shotDir.y += _AddShotArc(targetPos);
@@ -67,7 +67,7 @@ public class ArcherEnemy : BaseEnemy {
         }
         // apply movement if necessary
         moveDir.y = 0f;
-        transform.position += moveDir.normalized * speed * Time.fixedDeltaTime;
+        // transform.position += moveDir.normalized * speed * Time.fixedDeltaTime;
         // adjust rotation to always look forward
         transform.LookAt(moveDir + transform.position, transform.up);
         
@@ -78,7 +78,7 @@ public class ArcherEnemy : BaseEnemy {
     /// </summary>
     /// <param name="target">Vector3 of position to shot.</param>
     protected override void _ShootAt(in Vector3 shotDir) {
-        StartCoroutine(_aAnimController.TriggerEnemyAttackAnim());
+        _aAnimController.TriggerEnemyAttackAnim();
         // create gameObject at bowPos
         var outQuat = Quaternion.Euler(0f, 0f, 90f);
         GameObject shotGO = Instantiate(arrowGO, bowTrans);

@@ -10209,6 +10209,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: ArcherEnemy
       objectReference: {fileID: 0}
+    - target: {fileID: 978655701629266336, guid: e41cc2b9629108944980777dc031faba,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2435569553457631189, guid: e41cc2b9629108944980777dc031faba,
         type: 3}
       propertyPath: m_RootOrder
@@ -70287,8 +70292,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7221391928035448268, guid: dc72ecfbdc7e9f84297ecf5ba6910c57,
         type: 3}
-      propertyPath: aggroArea
-      value: 10
+      propertyPath: _isBrambled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7286267319130434756, guid: dc72ecfbdc7e9f84297ecf5ba6910c57,
         type: 3}

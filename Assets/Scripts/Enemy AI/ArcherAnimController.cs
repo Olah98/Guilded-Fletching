@@ -24,17 +24,8 @@ public class ArcherAnimController : MonoBehaviour {
         isFiringAnimation = false;
     }
 
-    public IEnumerator TriggerEnemyAttackAnim() {
+    public void TriggerEnemyAttackAnim() {
         _SetAllTriggers(enemyAnimHashTable["Attacking"]);
-        yield return null;
-        /*
-        if (isFiringAnimation) yield return null;
-        isFiringAnimation = true;
-        _SetAllBools(enemyAnimHashTable["Attacking"], true);
-        yield return new WaitForSeconds(0.75f); // set as length of fire anim
-        _SetAllBools(enemyAnimHashTable["Attacking"], false);
-        isFiringAnimation = false;
-        */
     }
 
     public void TriggerDeathAnim() {
