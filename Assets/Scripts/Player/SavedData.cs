@@ -31,7 +31,7 @@ public class SavedData {
     [Range(0.0f, 1.0f)] public float masterVol = 1f;
     [Range(0.0f, 1.0f)] public float musicVol = 1f;
     [Range(0.0f, 1.0f)] public float soundFXVol = 1f;
-    [Range(0.1f, 1.0f)] public float mouseSensitivity = 0.3f;
+    [Range(0.01f, 0.3f)] public float mouseSensitivity = 0.1f;
     // 20 units left for room to zoom in
     [Range(20f, 200f)]  public float baseFOV = 60f; // default Unity FOV
     [Header("Misc Values")]
@@ -260,7 +260,7 @@ public class SavedData {
         string dataSuffix = "_" + saveSlot.ToString();
         var options = new OptionsData();
         options.graphicsQuality  = PlayerPrefs.GetFloat("GraphicsQuality"  + dataSuffix, 1.0f);
-        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 0.3f);
+        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 0.1f);
         options.baseFOV          = PlayerPrefs.GetFloat("BaseFOV"          + dataSuffix, 60f);
         options.masterVol        = PlayerPrefs.GetFloat("MasterVolume"     + dataSuffix, 1.0f);
         options.soundFXVol       = PlayerPrefs.GetFloat("SoundFXVolume"    + dataSuffix, 1.0f);
