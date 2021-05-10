@@ -670,8 +670,7 @@ public class Character : MonoBehaviour
         attackCharge = 0f;
         attackCD = 0f;
     }
-
-    /// <summary>
+    
     /// Construct save data based on current game conditions and return them.
     /// </summary>
     /// <returns>Up-to-date SavedData.</returns>
