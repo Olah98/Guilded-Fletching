@@ -14,7 +14,7 @@ public class LevelSelectButtons : MonoBehaviour
     public GameObject Buttons1, Buttons2, Buttons3;
     public Button LeftButton, RightButton;
 
-    private int _scrollMax = 3; //Current levels (12) divided by 4, rounded up
+    private int _scrollMax = 2; //Current levels (12) divided by 4, rounded up
 
     private int _set = 1;
     // Start is called before the first frame update
@@ -55,8 +55,10 @@ public class LevelSelectButtons : MonoBehaviour
         {
             Buttons2.SetActive(true);
             LeftButton.GetComponent<Button>().interactable = true;
-            RightButton.GetComponent<Button>().interactable = true;
-        } else if (_set == 3)
+            //RightButton.GetComponent<Button>().interactable = true;
+            RightButton.GetComponent<Button>().interactable = false;
+        }
+        else if (_set == 3)
         {
             Buttons3.SetActive(true);
             LeftButton.GetComponent<Button>().interactable = true;
