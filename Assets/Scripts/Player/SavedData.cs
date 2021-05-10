@@ -260,7 +260,7 @@ public class SavedData {
         string dataSuffix = "_" + saveSlot.ToString();
         var options = new OptionsData();
         options.graphicsQuality  = PlayerPrefs.GetFloat("GraphicsQuality"  + dataSuffix, 1.0f);
-        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 1.0f);
+        options.mouseSensitivity = PlayerPrefs.GetFloat("MouseSensitivity" + dataSuffix, 0.3f);
         options.baseFOV          = PlayerPrefs.GetFloat("BaseFOV"          + dataSuffix, 60f);
         options.masterVol        = PlayerPrefs.GetFloat("MasterVolume"     + dataSuffix, 1.0f);
         options.soundFXVol       = PlayerPrefs.GetFloat("SoundFXVolume"    + dataSuffix, 1.0f);
