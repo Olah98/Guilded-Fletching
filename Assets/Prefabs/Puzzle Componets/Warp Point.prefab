@@ -137,6 +137,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: Warp Particles
       objectReference: {fileID: 0}
+    - target: {fileID: 1002069402822194276, guid: 7ac7607ee466e5048bb74697bb822222,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1002069402822194276, guid: 7ac7607ee466e5048bb74697bb822222,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9f3080141f1f64197825663e067f94f8, type: 2}
     - target: {fileID: 1002069402822194278, guid: 7ac7607ee466e5048bb74697bb822222,
         type: 3}
       propertyPath: m_RootOrder
