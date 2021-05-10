@@ -202,7 +202,7 @@ public class PlayerAnimationController : MonoBehaviour {
     /// Execute relavent animations for when the player reloads
     /// </summary>
     public void TriggerReloadAnim() {
-        _SetAllTriggers(playerAnimHashTable["Fire"]);
+        _SetAllBools(playerAnimHashTable["Fire"], true);
         StartCoroutine(_character.SyncHideArrowWithAnim());
         StartCoroutine(_WaitForAnim(AnimState.LoadingArrow));
     }
@@ -231,6 +231,7 @@ public class PlayerAnimationController : MonoBehaviour {
             yield return new WaitUntil(delegate() { return arrowSwapPhase.Equals(SwapPhase.HandBackOnScreen); });
         }
         yield return new WaitUntil(delegate() { return !_character.firePressed; } );
+        _SetAllBools(playerAnimHashTable["Fire"], false);
         blockInputForAnim = false;
         _character.attackCD = 0f;
         _character.chargeRate = 0f;
