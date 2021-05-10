@@ -133,7 +133,7 @@ public class PlayerAnimationController : MonoBehaviour {
         _SetAllFloats(playerAnimHashTable["JumpMotion"], Mathf.Abs(_jumpMotion - 1f));
 
         // trigger fire animation (using a bool)
-        _SetAllBools(playerAnimHashTable["Fire"], (_character.attackCD > 0f));
+        //_SetAllBools(playerAnimHashTable["Fire"], (_character.attackCD >= 0.1f));
     }
 
     #region TriggerAnimationFunctions
@@ -202,8 +202,9 @@ public class PlayerAnimationController : MonoBehaviour {
     /// Execute relavent animations for when the player reloads
     /// </summary>
     public void TriggerReloadAnim() {
+        _SetAllTriggers(playerAnimHashTable["Fire"]);
         StartCoroutine(_character.SyncHideArrowWithAnim());
-        _WaitForAnim(AnimState.LoadingArrow);
+        StartCoroutine(_WaitForAnim(AnimState.LoadingArrow));
     }
 
     /// <summary>
@@ -223,26 +224,16 @@ public class PlayerAnimationController : MonoBehaviour {
             default: 
                 throw new IndexOutOfRangeException(waitForState + ": is not a valid animation to wait for.");
         }
-        float timer = 0f;
-        bool pressState = true;
         blockInputForAnim = true;
-        // wait for animation but check if the fire has been released
-        do {
-            timer += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-            // check pressState while waiting
-            if (!_character.firePressed) pressState = false;
-        } while ((!waitForState.Equals(AnimState.TakeDamage) && arrowSwapPhase.Equals(SwapPhase.Ended))
-               /*|| (waitForState.Equals(AnimState.TakeDamage) */&& timer <= waitAnimLength);
+        yield return new WaitForSeconds(waitAnimLength);
 
-        // hold for fire if this has never been released
-        if (waitForState.Equals(AnimState.TakeDamage) && pressState) {
-            yield return new WaitUntil(delegate() { return !_character.firePressed; } );
+        if (!waitForState.Equals(AnimState.TakeDamage)) {
+            yield return new WaitUntil(delegate() { return arrowSwapPhase.Equals(SwapPhase.HandBackOnScreen); });
         }
+        yield return new WaitUntil(delegate() { return !_character.firePressed; } );
         blockInputForAnim = false;
         _character.attackCD = 0f;
         _character.chargeRate = 0f;
-        //_SetAllBools("Fire", false);
         _controls.Player.Fire.Enable();
         _controls.Player.Zoom.Enable();
     }
