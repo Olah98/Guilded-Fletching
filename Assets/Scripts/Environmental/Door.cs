@@ -22,8 +22,8 @@ public class Door : MonoBehaviour
     protected Mesh _myMesh;
     //By Warren
     //Edit to change whether color or material is being affected.
-    private Color _isOn = new Color(0f, .5f, 0f, 1f);
-    private Color _isOff = new Color(.5f, 0f, 0f, 1f);
+    private Color _isOn = new Color(.2f, 1f, .2f, 1f);
+    private Color _isOff = new Color(1f, .2f, .2f, 1f);
     // _rend converted to array to accomodate modular assets
     private List<MeshRenderer> _rendList = new List<MeshRenderer>();
 
