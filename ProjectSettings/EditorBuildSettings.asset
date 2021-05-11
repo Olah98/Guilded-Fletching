@@ -36,6 +36,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Level Blockouts/Air_Burst_Arrow_Blocked.unity
     guid: 72133df08c66e3642950e0be878a39aa
   - enabled: 1
+    path: Assets/Scenes/Level Blockouts/Combat-Focused_Blocked.unity
+    guid: 65e469e7e30978a47bc96c66a77ccffe
+  - enabled: 1
     path: Assets/Scenes/MenuScenes/Credits.unity
     guid: e468fe91986ce7c43878d4bd2c9f05d6
   - enabled: 1
