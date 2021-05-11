@@ -87683,7 +87683,7 @@ PrefabInstance:
     - target: {fileID: 7475731539839733375, guid: 00ba2029d2a8e4940a9ba3238787ad07,
         type: 3}
       propertyPath: m_Name
-      value: StoneWall (126)
+      value: Invisible Ceiling
       objectReference: {fileID: 0}
     - target: {fileID: 7851166779406849221, guid: 00ba2029d2a8e4940a9ba3238787ad07,
         type: 3}
