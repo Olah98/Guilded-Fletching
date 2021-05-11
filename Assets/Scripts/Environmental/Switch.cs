@@ -88,7 +88,8 @@ public class Switch : MonoBehaviour {
         // from an up position to a down position
         if (!triggerByArrow)
         {
-            transform.Rotate(0.0f, 0.0f, 180.0f, Space.Self);
+            foreach (Transform child in transform)
+                child.transform.Rotate(0.0f, 0.0f, 180.0f, Space.Self);
         }
     }
 
@@ -112,7 +113,8 @@ public class Switch : MonoBehaviour {
         // from a down position to an up position
         if (!triggerByArrow)
         {
-            transform.Rotate(0.0f, 0.0f, -180.0f, Space.Self);
+            foreach (Transform child in transform)
+                child.transform.Rotate(0.0f, 0.0f, -180.0f, Space.Self);
         }
     }
 /*

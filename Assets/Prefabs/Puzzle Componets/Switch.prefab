@@ -25,12 +25,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4385485731136742984}
-  m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 99.708046, y: 179.5801, z: -36.037933}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 8.280437, y: -2.5265334, z: -35.23489}
+  m_LocalScale: {x: 5.2638564, y: 3.2720516, z: 5.2638564}
   m_Children: []
-  m_Father: {fileID: 3918424783556710843}
-  m_RootOrder: 1
+  m_Father: {fileID: 7444021463959071312}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &2472410306727573264
 MeshFilter:
@@ -109,7 +109,6 @@ Transform:
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
   - {fileID: 7444021463959071312}
-  - {fileID: 2087706605379332535}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 270, z: 0}
@@ -125,9 +124,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd7b8a15527203c489db1f469d068f97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  myDoor: {fileID: 0}
-  myBridge: {fileID: 0}
-  myPlatform: {fileID: 0}
+  doorObjs: []
+  hingedObjs: []
+  platformObjs: []
+  mySwitchType: 0
   isTimedByArrow: 0
   isFlipped: 0
   isInteractable: 1
@@ -173,7 +173,8 @@ Transform:
   m_LocalRotation: {x: 0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 98.134995, y: 180.35225, z: -29.3442}
   m_LocalScale: {x: 0.18997478, y: 0.30561864, z: 0.18997478}
-  m_Children: []
+  m_Children:
+  - {fileID: 2087706605379332535}
   m_Father: {fileID: 3918424783556710843}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
