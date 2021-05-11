@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5725057095142770331}
   - component: {fileID: 8709018904701143358}
   - component: {fileID: 6861323937889877492}
+  - component: {fileID: -383882810014523135}
   m_Layer: 0
   m_Name: Brazier Goblet Stand
   m_TagString: Untagged
@@ -79,3 +80,17 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!136 &-383882810014523135
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4915869985913494561}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 37.35
+  m_Height: 0
+  m_Direction: 1
+  m_Center: {x: 0, y: 31.2, z: 0}
