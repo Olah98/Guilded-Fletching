@@ -202,9 +202,12 @@ public class PlayerAnimationController : MonoBehaviour {
     /// Execute relavent animations for when the player reloads
     /// </summary>
     public void TriggerReloadAnim() {
+        if (_bowAnimator.GetBool(playerAnimHashTable["Fire"])) return;
+        _controls.Player.Fire.Disable();
+        _controls.Player.Zoom.Disable();
         _SetAllBools(playerAnimHashTable["Fire"], true);
-        StartCoroutine(_character.SyncHideArrowWithAnim());
         StartCoroutine(_WaitForAnim(AnimState.LoadingArrow));
+        StartCoroutine(_character.SyncHideArrowWithAnim());
     }
 
     /// <summary>
@@ -226,17 +229,17 @@ public class PlayerAnimationController : MonoBehaviour {
         }
         blockInputForAnim = true;
         yield return new WaitForSeconds(waitAnimLength);
-
         if (!waitForState.Equals(AnimState.TakeDamage)) {
             yield return new WaitUntil(delegate() { return arrowSwapPhase.Equals(SwapPhase.HandBackOnScreen); });
         }
+        yield return new WaitForSeconds(0.5f);
         yield return new WaitUntil(delegate() { return !_character.firePressed; } );
         _SetAllBools(playerAnimHashTable["Fire"], false);
-        blockInputForAnim = false;
         _character.attackCD = 0f;
         _character.chargeRate = 0f;
         _controls.Player.Fire.Enable();
         _controls.Player.Zoom.Enable();
+        blockInputForAnim = false;
     }
     #endregion
 

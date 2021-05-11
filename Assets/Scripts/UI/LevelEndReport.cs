@@ -58,15 +58,16 @@ public class LevelEndReport : MonoBehaviour
             //as they're all currently set to MainMenu
             if (fourth_build)
             {
+                //order: walking, shooting, advancedshooting, bramble, warp, airburst, combat
                 switch (_lastLocation)
                 {
-                    case "WalkingTutorial":
+                    case "Final_Movment": // the scene has a typo
                         _nextLocation = "BOShootingTutorial";
                         break;
                     case "BOShootingTutorial":
-                        _nextLocation = "Combat-Focused_Blocked";
+                        _nextLocation = "BOAdvancedShooting";
                         break;
-                    case "Combat-Focused_Blocked":
+                    case "BOAdvancedShooting":
                         _nextLocation = "BOBrambleTutorial";
                         break;
                     case "BOBrambleTutorial":
@@ -74,6 +75,9 @@ public class LevelEndReport : MonoBehaviour
                         break;
                     case "Warp_Arrow_Blocked":
                         _nextLocation = "Air_Burst_Arrow_Blocked";
+                        break;
+                    case "Air_Burst_Arrow_Blocked":
+                        _nextLocation = "Combat-Focused_Blocked";
                         break;
                     default:
                         Debug.Log("No record of next level in chain");
