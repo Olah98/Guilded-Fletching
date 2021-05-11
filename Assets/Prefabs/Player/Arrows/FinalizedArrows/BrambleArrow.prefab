@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: -793442015070382675}
   - component: {fileID: -8287925471111869301}
   - component: {fileID: -3099823741885013466}
+  - component: {fileID: 2601083912650834849}
   m_Layer: 0
   m_Name: BrambleArrow
   m_TagString: Arrow
@@ -33,7 +34,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0.01, y: 0.01, z: 0.01}
   m_Children:
-  - {fileID: 7433703666994989642}
+  - {fileID: 6733867743244815228}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -146,7 +147,104 @@ MonoBehaviour:
   isLit: 0
   ps: {fileID: 0}
   type: 1
---- !u!1001 &8430769723375607823
+  DestroyAfterUse: 0
+--- !u!82 &2601083912650834849
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 678091282981851478}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: bc7e74b3c6dc3914993294a36267e2d7, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 1000
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!1001 &5717970037688181049
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -166,17 +264,17 @@ PrefabInstance:
     - target: {fileID: 1308804201721801285, guid: dd8e8bd31f29e3645a735f7732cb0d8e,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -36.5
+      value: -37.22
       objectReference: {fileID: 0}
     - target: {fileID: 1308804201721801285, guid: dd8e8bd31f29e3645a735f7732cb0d8e,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0.35
+      value: 0.54
       objectReference: {fileID: 0}
     - target: {fileID: 1308804201721801285, guid: dd8e8bd31f29e3645a735f7732cb0d8e,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.02
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 1308804201721801285, guid: dd8e8bd31f29e3645a735f7732cb0d8e,
         type: 3}
@@ -215,9 +313,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dd8e8bd31f29e3645a735f7732cb0d8e, type: 3}
---- !u!4 &7433703666994989642 stripped
+--- !u!4 &6733867743244815228 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1308804201721801285, guid: dd8e8bd31f29e3645a735f7732cb0d8e,
     type: 3}
-  m_PrefabInstance: {fileID: 8430769723375607823}
+  m_PrefabInstance: {fileID: 5717970037688181049}
   m_PrefabAsset: {fileID: 0}

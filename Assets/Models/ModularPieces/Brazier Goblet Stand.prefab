@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5467608078391492877}
   - component: {fileID: 8957381488397766312}
   - component: {fileID: 6605641870952053346}
+  - component: {fileID: 3763116108118206650}
   m_Layer: 0
   m_Name: Brazier Goblet Stand
   m_TagString: Untagged
@@ -81,6 +82,20 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!136 &3763116108118206650
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4659827279162284983}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 37.35
+  m_Height: 0
+  m_Direction: 1
+  m_Center: {x: 0, y: 31.2, z: 0}
 --- !u!1001 &1611760351080047452
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -162,6 +177,26 @@ PrefabInstance:
         type: 3}
       propertyPath: looping
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6179628450030411283, guid: 77d167cda88808141b15e321e02ee0ad,
+        type: 3}
+      propertyPath: lengthInSec
+      value: 8.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6179628450030411283, guid: 77d167cda88808141b15e321e02ee0ad,
+        type: 3}
+      propertyPath: InitialModule.startSize.scalar
+      value: 1.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 6179628450030411283, guid: 77d167cda88808141b15e321e02ee0ad,
+        type: 3}
+      propertyPath: InitialModule.startSpeed.scalar
+      value: 2.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6179628450030411283, guid: 77d167cda88808141b15e321e02ee0ad,
+        type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 6179628450030411309, guid: 77d167cda88808141b15e321e02ee0ad,
         type: 3}

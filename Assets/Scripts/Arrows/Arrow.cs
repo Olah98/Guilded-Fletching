@@ -20,10 +20,16 @@ public class Arrow : MonoBehaviour
     public enum Type { standard, bramble, warp, airburst}
     [Header("Determine the type of arrow being shot")]
     public Type type;
+
+    [Header("Destroys after audio finishes playing.")]
+    public bool DestroyAfterUse;
+
+    private AudioSource _audioPlayer;
     // Start is called before the first frame update
 
     void Start()
     {
+        _audioPlayer = gameObject.GetComponent<AudioSource>();
         mask = LayerMask.GetMask("Character", "Arrow");
         transform.rotation = Quaternion.LookRotation(rb.velocity);
         Destroy(gameObject, stickTime);
@@ -47,6 +53,18 @@ public class Arrow : MonoBehaviour
         {
             HitDetection();
         }
+
+        if (stuck)
+        {
+            if (DestroyAfterUse)
+            {
+                if (_audioPlayer.isPlaying == false)
+                    Destroy(gameObject);
+
+            }
+
+        }
+   
         
     }
 
@@ -54,6 +72,8 @@ public class Arrow : MonoBehaviour
 
     public void Stuck()
     {
+        _audioPlayer.volume = 1 * (SavedData.GetStoredOptionsAt(1).masterVol) * (SavedData.GetStoredOptionsAt(1).soundFXVol);
+        _audioPlayer.Play();
         stuck = true;
        
         GetComponent<BoxCollider>().enabled = false;
@@ -62,6 +82,8 @@ public class Arrow : MonoBehaviour
         rb.velocity = new Vector3(0, 0, 0);
         //rb.isKinematic = true; // caused Yield Warnings when triggered
         rb.freezeRotation = true;
+
+        
     }
 
     /// <summary>
@@ -80,6 +102,8 @@ public class Arrow : MonoBehaviour
             }
         }
     }
+
+
 
     public void HitDetection()
     {
@@ -118,15 +142,19 @@ public class Arrow : MonoBehaviour
             switch (type)
             {
                 case Type.airburst:
+                    
                     gameObject.GetComponent<AirburstArrow>().Use();
                     break;
                 case Type.bramble:
+                    
                     gameObject.GetComponent<BrambleArrow>().Use(hit.transform.gameObject);
                     break;
                 case Type.warp:
+                    
                     gameObject.GetComponent<WarpArrow>().Use(hit.transform.gameObject);
                     break;
                 case Type.standard:
+                   
                     gameObject.GetComponent<BaseArrow>().Impact(hit.transform.gameObject);
                     break;
                 default:

@@ -145,7 +145,7 @@ public class AirburstArrow : BaseArrow {
 
             }
         } // end forloop
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
     
 

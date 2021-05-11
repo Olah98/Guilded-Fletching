@@ -29,8 +29,8 @@ public class Switch : MonoBehaviour {
 
     //By Warren
     //Edit to change whether color or material is being affected.
-    private Color _isOn = Color.green;
-    private Color _isOff = Color.red;
+    private Color _isOn = new Color(.2f, 1f, .2f, 1f);
+    private Color _isOff = new Color(1f, .2f, .2f, 1f);
     private List<MeshRenderer> _rend = new List<MeshRenderer>();
 
     private void Start()

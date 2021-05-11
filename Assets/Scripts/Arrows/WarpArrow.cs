@@ -33,6 +33,6 @@ public class WarpArrow : BaseArrow {
             pTrans.GetComponent<CharacterController>().enabled = true;
         }
         //Warp arrow is fragile and will break on collision
-        Destroy(gameObject);
+        //Destroy(gameObject);
     }
 }

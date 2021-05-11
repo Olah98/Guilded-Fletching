@@ -84,11 +84,11 @@ public class Character : MonoBehaviour
 
     private Camera _cam;
     private float _clampedMaxZoom { get {
-        return Mathf.Clamp(s_baseFOV + maxZoomVal, 0f, 200f);
+        return Mathf.Clamp(_baseFOV + maxZoomVal, 0f, 200f);
     } }
     // store option vars
-    private float s_baseFOV;
-    private float s_mouseSensitivity;
+    private float _baseFOV;
+    private float _mouseSensitivity;
     // consts
     private const float LOWER_ZOOM_BOUNDARY = 20f;
     private const float UPPER_ZOOM_BOUNDARY = 60f;
@@ -173,8 +173,8 @@ public class Character : MonoBehaviour
         _isCrouching = false;
         _pAnimController = GetComponent<PlayerAnimationController>();
         interactionHintText.enabled = false;
-        s_baseFOV = getCurrentData?.baseFOV ?? 60f;
-        _cam.fieldOfView = s_baseFOV;
+        _baseFOV = getCurrentData?.baseFOV ?? 60f;
+        _cam.fieldOfView = _baseFOV;
         // set up mouse for FPS view
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
@@ -199,7 +199,7 @@ public class Character : MonoBehaviour
         _currentData = SavedData.GetDataStoredAt(SavedData.currentSaveSlot) ?? new SavedData();
         UpdateCharacterToSaveData(_currentData);
         //grab options preferences and set them
-
+        SetOptionVals(new OptionsData(_currentData));
     }
 
     private void Update()
@@ -257,7 +257,7 @@ public class Character : MonoBehaviour
             StartCoroutine("_ZoomIn");
             _zoomInReady = false;
         }
-        else if (_zoomOutReady && _cam.fieldOfView < s_baseFOV)
+        else if (_zoomOutReady && _cam.fieldOfView < _baseFOV)
         {
             _zoomOutReady = false;
             StopCoroutine("_ZoomIn");
@@ -325,9 +325,8 @@ public class Character : MonoBehaviour
         // gather look input appropriately
         //By Warren from Dapper Dino YT Tutorial Referenced above
         var lookInput = _controls.Player.Look.ReadValue<Vector2>();
-
-        float xInput = lookInput.x * lookSpeed * s_mouseSensitivity;
-        float yInput = -lookInput.y * lookSpeed * s_mouseSensitivity;
+        float xInput = lookInput.x * lookSpeed * _mouseSensitivity;
+        float yInput = -lookInput.y * lookSpeed * _mouseSensitivity;
         Vector3 lookRot = new Vector3(0f, xInput, 0f);
         // check if this point of looking rotation is valid
         if (yInput + _cam.transform.localEulerAngles.x < lowerBoundary
@@ -439,9 +438,9 @@ public class Character : MonoBehaviour
     /// <param name="data">SavedData that will update settings.</param>
     public void SetOptionVals(in OptionsData data)
     {
-        s_baseFOV = data.baseFOV;
-        _cam.fieldOfView = s_baseFOV;
-        s_mouseSensitivity = data.mouseSensitivity;
+        _baseFOV = data.baseFOV;
+        _cam.fieldOfView = _baseFOV;
+        _mouseSensitivity = data.mouseSensitivity;
     }
 
     /// <summary>
@@ -450,8 +449,8 @@ public class Character : MonoBehaviour
     /// </summary>
     private IEnumerator _ZoomIn()
     {
-        // FOV starts at s_baseFOV, ends at s_baseFOV - maxZoomVal
-        while (_cam.fieldOfView > s_baseFOV - maxZoomVal)
+        // FOV starts at _baseFOV, ends at _baseFOV - maxZoomVal
+        while (_cam.fieldOfView > _baseFOV - maxZoomVal)
         {
             --_cam.fieldOfView;
             yield return new WaitForSeconds(Time.deltaTime * 2f);
@@ -464,8 +463,8 @@ public class Character : MonoBehaviour
     /// </summary>
     private IEnumerator _ZoomOut()
     {
-        // FOV starts at s_baseFOV - maxZoomVal, ends at s_baseFOV
-        while (_cam.fieldOfView < s_baseFOV)
+        // FOV starts at _baseFOV - maxZoomVal, ends at _baseFOV
+        while (_cam.fieldOfView < _baseFOV)
         {
             ++_cam.fieldOfView;
             yield return new WaitForEndOfFrame();
@@ -671,7 +670,6 @@ public class Character : MonoBehaviour
         attackCD = 0f;
     }
 
-    /// <summary>
     /// Construct save data based on current game conditions and return them.
     /// </summary>
     /// <returns>Up-to-date SavedData.</returns>

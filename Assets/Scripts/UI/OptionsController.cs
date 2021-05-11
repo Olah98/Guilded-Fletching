@@ -47,13 +47,7 @@ public class OptionsController : MonoBehaviour
 
     //private int curSaveIndex = -1;
     private GameObject blackScreen; //By Warren
-    private bool _isOptionsMenu
-    {
-        get
-        {
-            return SceneManager.GetActiveScene().name == "Options";
-        }
-    }
+    private bool _isOptionsMenu => SceneManager.GetActiveScene().name.Equals("Options");
 
     private void Start()
     {
@@ -164,9 +158,9 @@ public class OptionsController : MonoBehaviour
         _options[0].numStr.text = ((int)curOptionsData.graphicsQuality * 100f).ToString();
         // mouse sensitivity
         curOptionsData.mouseSensitivity
-            = Mathf.Clamp(curOptionsData.mouseSensitivity, 0.1f, 1.0f);
+            = Mathf.Clamp(curOptionsData.mouseSensitivity, 0.01f, 0.3f);
         _options[1].slider.value = curOptionsData.mouseSensitivity;
-        _options[1].numStr.text = ((int)(curOptionsData.mouseSensitivity * 100f)).ToString();
+        _options[1].numStr.text = ((int)(curOptionsData.mouseSensitivity * 30f)).ToString();
         // base fov(field of view)
         _options[2].slider.value = curOptionsData.baseFOV * 0.005f;
         _options[2].numStr.text = ((int)curOptionsData.baseFOV).ToString();
@@ -203,7 +197,7 @@ public class OptionsController : MonoBehaviour
 
         if (optionIndex == (int)OptionType.MouseSensitivity)
         {
-            _options[1].numStr.text = ((int)(_options[1].slider.value * 100f)).ToString();
+            _options[1].numStr.text = ((int)(_options[1].slider.value * 30f)).ToString();
         }
         else if (optionIndex == (int)OptionType.BaseFOV)
         {
